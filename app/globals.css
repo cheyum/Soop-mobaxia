@@ -913,8 +913,13 @@ body {
   margin: 40px auto 0;
 
   display: grid;
+
+  /* 가로 3분할 */
   grid-template-columns: repeat(3, 1fr);
+
   gap: 22px;
+
+  align-items: stretch;
 }
 
 .infoBox {
