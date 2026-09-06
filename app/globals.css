@@ -908,18 +908,14 @@ body {
 
 .bottomSections {
   width: 100%;
-  max-width: 1200px;
+  max-width: 900px;
 
   margin: 40px auto 0;
 
   display: grid;
+  grid-template-columns: 1fr;
 
-  /* 가로 3분할 */
-  grid-template-columns: repeat(3, 1fr);
-
-  gap: 22px;
-
-  align-items: stretch;
+  gap: 24px;
 }
 
 .infoBox {
