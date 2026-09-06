@@ -331,6 +331,7 @@ export default function Home() {
   </div>
 
 </section>
+</section>
 
       {/* 하단 */}
       <footer className="footer">
