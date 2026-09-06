@@ -76,7 +76,7 @@ export default function Home() {
 
           <div>
             <h1>MOBASHA</h1>
-            <p>SOOP STREAMER</p>
+            <p>SOOP VIRTUAL STREAMER</p>
           </div>
         </div>
 
@@ -95,12 +95,12 @@ export default function Home() {
           ) : status.live ? (
             <>
               <span className="statusDot liveDot" />
-              지금 방송 중이에요!
+              바샤좀 놀아죠!
             </>
           ) : (
             <>
               <span className="statusDot offlineDot" />
-              지금은 쉬고 있어요
+              바샤는 쉬는중
             </>
           )}
 
@@ -171,7 +171,8 @@ export default function Home() {
               <span className="moonIcon">
                 ♡
               </span>
-              - OFFLINE -
+              OFFLINE
+              <span>♡</span>
             </>
           )}
 
