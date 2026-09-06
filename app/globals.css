@@ -902,4 +902,204 @@ body {
   .heart2 {
     opacity: 0.45;
   }
+}/* =========================
+   하단 3분할 섹션
+========================= */
+
+.bottomSections {
+  width: 100%;
+  max-width: 1200px;
+
+  margin: 40px auto 0;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.infoBox {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 186, 215, 0.75);
+  border-radius: 28px;
+
+  padding: 22px 20px 20px;
+
+  box-shadow: 0 14px 35px rgba(207, 116, 157, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.infoBoxHeader {
+  margin-bottom: 18px;
+}
+
+.infoBoxHeader h3 {
+  margin: 0 0 4px;
+  color: #5a3d49;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.infoBoxHeader span {
+  color: #c28ea4;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+
+/* 글 목록 */
+
+.postList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.postList li {
+  border-radius: 14px;
+  background: rgba(255, 245, 249, 0.95);
+  border: 1px solid rgba(246, 212, 226, 0.9);
+  transition: 0.2s;
+}
+
+.postList li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(228, 142, 177, 0.08);
+}
+
+.postList li a {
+  display: block;
+  padding: 13px 14px;
+
+  text-decoration: none;
+  color: #7b5664;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.noticeList li a {
+  font-weight: 600;
+}
+
+
+/* 작은 버튼 */
+
+.miniButton {
+  width: 100%;
+  margin-top: 18px;
+
+  border: none;
+  border-radius: 15px;
+
+  padding: 13px 14px;
+
+  background: linear-gradient(135deg, #ffd2e4, #ffb5d1);
+  color: #7d4058;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.miniButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(239, 151, 188, 0.18);
+}
+
+
+/* 배너 */
+
+.bannerBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.bannerCard {
+  display: block;
+  text-decoration: none;
+
+  border-radius: 22px;
+  overflow: hidden;
+
+  background: linear-gradient(135deg, #ffbfd9, #ff8dbc);
+  color: white;
+
+  min-height: 180px;
+
+  box-shadow: 0 14px 28px rgba(239, 122, 173, 0.18);
+
+  transition: 0.2s;
+}
+
+.bannerCard:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 18px 34px rgba(239, 122, 173, 0.28);
+}
+
+.bannerInner {
+  height: 100%;
+  padding: 24px 22px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.bannerSmall {
+  font-size: 11px;
+  letter-spacing: 2px;
+  opacity: 0.9;
+  margin-bottom: 10px;
+}
+
+.bannerTitle {
+  font-size: 28px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.bannerText {
+  font-size: 14px;
+  opacity: 0.95;
+}
+
+.subBanner {
+  margin-top: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 52px;
+
+  border-radius: 16px;
+
+  background: rgba(255, 244, 248, 0.95);
+  border: 1px dashed rgba(235, 169, 196, 0.9);
+
+  color: #a56d84;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+
+  transition: 0.2s;
+}
+
+.subBanner:hover {
+  background: #fff7fa;
+}
+
+
+/* 모바일 */
+
+@media (max-width: 980px) {
+  .bottomSections {
+    grid-template-columns: 1fr;
+  }
 }

@@ -242,8 +242,95 @@ export default function Home() {
           <span>✦</span>
         </div>
 
-      </section>
+      <section className="bottomSections">
 
+  {/* 자유게시판 */}
+  <div className="infoBox">
+    <div className="infoBoxHeader">
+      <h3>자유게시판</h3>
+      <span>Free Board</span>
+    </div>
+
+    <ul className="postList">
+      <li>
+        <a href="#">모바샤 오늘 방송 너무 재밌었어요 💗</a>
+      </li>
+      <li>
+        <a href="#">팬아트 올려도 되나요?</a>
+      </li>
+      <li>
+        <a href="#">다음 합방 일정 기대중이에요!</a>
+      </li>
+      <li>
+        <a href="#">굿즈 나오면 사고 싶어요 🌸</a>
+      </li>
+    </ul>
+
+    <button className="miniButton">
+      게시판 바로가기
+    </button>
+  </div>
+
+
+  {/* 공지사항 */}
+  <div className="infoBox">
+    <div className="infoBoxHeader">
+      <h3>공지사항</h3>
+      <span>Notice</span>
+    </div>
+
+    <ul className="postList noticeList">
+      <li>
+        <a href="#">[공지] 방송 일정은 캘린더 참고 부탁드려요</a>
+      </li>
+      <li>
+        <a href="#">[공지] 방송국 규칙을 확인해주세요</a>
+      </li>
+      <li>
+        <a href="#">[공지] 이벤트 참여 방법 안내</a>
+      </li>
+      <li>
+        <a href="#">[공지] 배너 및 팬아트 제보 환영 ♡</a>
+      </li>
+    </ul>
+
+    <button className="miniButton">
+      공지 전체보기
+    </button>
+  </div>
+
+
+  {/* 배너 */}
+  <div className="infoBox bannerBox">
+    <div className="infoBoxHeader">
+      <h3>배너</h3>
+      <span>Banner</span>
+    </div>
+
+    <a
+      href="https://www.sooplive.com/station/mobaxia"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="bannerCard"
+    >
+      <div className="bannerInner">
+        <div className="bannerSmall">MOBASHA</div>
+        <div className="bannerTitle">모바샤 방송국</div>
+        <div className="bannerText">
+          방송 보러가기 · 소식 확인하기
+        </div>
+      </div>
+    </a>
+
+    <a
+      href="#"
+      className="subBanner"
+    >
+      팬카페 / SNS / 일정표 배너 영역
+    </a>
+  </div>
+
+</section>
 
       {/* 하단 */}
       <footer className="footer">
