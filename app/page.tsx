@@ -113,7 +113,7 @@ export default function Home() {
       <section className="heroCard">
 
         <div className="cuteTag">
-          ♡ Welcome to Mobasha&apos;s Room ♡
+          ♡ S급 서민영애 청설모 모씨 모바샤🐿️ ♡
         </div>
 
 
@@ -143,7 +143,7 @@ export default function Home() {
         </div>
 
         <p className="subTitle">
-          SOOP Virtual Streamer
+          생일 : 8월25일 / 언제나 24살 / 감성파 ESTJ
         </p>
 
 
@@ -164,14 +164,14 @@ export default function Home() {
           ) : status.live ? (
             <>
               <span className="broadcastDot" />
-              LIVE · 모바샤가 방송 중이에요!
+              LIVE · 바샤랑 노라죠!!!
             </>
           ) : (
             <>
               <span className="moonIcon">
                 ♡
               </span>
-              현재 방송은 쉬는 중이에요
+              - OFFLINE -
             </>
           )}
 
@@ -195,17 +195,12 @@ export default function Home() {
             </>
           ) : (
             <>
-              <span>🌸</span>
-
               <p>
-                S급 서민영애 청설모 모씨 모바샤🐿️
-                <br />
-                상세 스케쥴은 캘린더 참고
+                🌸 상세 스케쥴은 캘린더 참고 🌸
                 <br />
                 매주 월~금 오후 6시 , 토~일 오후 11시 (주1회 휴방) 바샤 등장( ̳- ·̫ - ̳ˆ )◞❤︎
               </p>
 
-              <span>🌸</span>
             </>
           )}
 
