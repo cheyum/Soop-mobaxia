@@ -31,10 +31,8 @@ export default function Home() {
 
   const [upPosts, setUpPosts] = useState<SoopPost[]>([]);
   const [postsLoading, setPostsLoading] = useState(true);
-  const [postsError, setPostsError] = useState(false);
-  const [upBoardUrl, setUpBoardUrl] = useState(
-    "https://www.sooplive.com/station/mobaxia/board"
-  );
+  const [postsError, setPostsError] = useState<string | null>(null);
+  const [upBoardUrl, setUpBoardUrl] = useState("");
 
   async function checkLive() {
     try {
@@ -80,16 +78,27 @@ export default function Home() {
 
       const text = await response.text();
 
-      if (!response.ok || !text.trim()) {
-        setPostsError(true);
+      if (!text.trim()) {
+        setPostsError("SOOP 게시판 응답이 비어 있어요");
         setPostsLoading(false);
         return;
       }
 
       const data = JSON.parse(text);
 
-      if (data.error) {
-        setPostsError(true);
+      // 게시글 조회가 실패하더라도 게시판 번호까지 찾았다면
+      // 'UP해줘 전체보기'는 해당 게시판으로 바로 연결되게 유지
+      if (typeof data.boardUrl === "string" && data.boardUrl) {
+        setUpBoardUrl(data.boardUrl);
+      }
+
+      if (!response.ok || data.error) {
+        setUpPosts([]);
+        setPostsError(
+          typeof data.message === "string"
+            ? data.message
+            : "게시글을 불러오지 못했어요"
+        );
         setPostsLoading(false);
         return;
       }
@@ -100,14 +109,11 @@ export default function Home() {
           : []
       );
 
-      if (typeof data.boardUrl === "string") {
-        setUpBoardUrl(data.boardUrl);
-      }
-
-      setPostsError(false);
+      setPostsError(null);
     } catch (error) {
       console.error("UP해줘 게시글 확인 실패:", error);
-      setPostsError(true);
+      setUpPosts([]);
+      setPostsError("게시글을 불러오지 못했어요");
     }
 
     setPostsLoading(false);
@@ -394,7 +400,10 @@ export default function Home() {
                 최신 글을 불러오는 중이에요 ♡
               </div>
             ) : postsError ? (
-              <div className="postItem">
+              <div
+                className="postItem"
+                title={postsError}
+              >
                 게시글을 불러오지 못했어요
               </div>
             ) : upPosts.length > 0 ? (
@@ -420,7 +429,15 @@ export default function Home() {
           <button
             type="button"
             className="cardButton"
+            disabled={!upBoardUrl}
+            title={
+              upBoardUrl
+                ? "𓍢ִ໋ 🌿바샤업UP.. 게시판 바로가기"
+                : "게시판 주소를 확인하는 중이에요"
+            }
             onClick={() => {
+              if (!upBoardUrl) return;
+
               window.open(
                 upBoardUrl,
                 "_blank",

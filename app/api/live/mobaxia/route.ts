@@ -1,73 +1,169 @@
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 const TARGET_BOARD_NAME = "𓍢ִ໋ 🌿바샤업UP..";
 const TARGET_BOARD_KEYWORD = "바샤업UP";
+const POSTS_PER_PAGE = 50;
+const MAX_PAGES = 6;
+const MAX_POSTS = 4;
+
+type AnyRecord = Record<string, any>;
 
 function normalizeBoardName(value: unknown) {
   return String(value ?? "")
     .normalize("NFKC")
-    .replace(/\uFE0F/g, "")
+    .replace(/[\uFE0E\uFE0F]/g, "")
     .replace(/\s+/g, "")
     .trim()
     .toLowerCase();
 }
 
+function getBoardName(board: AnyRecord) {
+  return String(
+    board?.name ??
+      board?.bbsName ??
+      board?.bbs_name ??
+      board?.boardName ??
+      board?.board_name ??
+      board?.menuName ??
+      board?.menu_name ??
+      board?.title ??
+      ""
+  ).trim();
+}
+
+function getBbsNo(board: AnyRecord) {
+  return (
+    board?.bbsNo ??
+    board?.bbs_no ??
+    board?.boardNo ??
+    board?.board_no ??
+    null
+  );
+}
+
+// SOOP 응답 구조가 조금 바뀌어도 bbsNo + 이름이 있는 객체를 찾도록 보조 검색
+function collectBoardCandidates(value: unknown, result: AnyRecord[] = []) {
+  if (!value || typeof value !== "object") {
+    return result;
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      collectBoardCandidates(item, result);
+    }
+    return result;
+  }
+
+  const record = value as AnyRecord;
+
+  if (getBbsNo(record) !== null && getBoardName(record)) {
+    result.push(record);
+  }
+
+  for (const child of Object.values(record)) {
+    if (child && typeof child === "object") {
+      collectBoardCandidates(child, result);
+    }
+  }
+
+  return result;
+}
+
+function makeHeaders(streamerId: string, domain: "com" | "co.kr") {
+  const origin =
+    domain === "com"
+      ? "https://www.sooplive.com"
+      : "https://www.sooplive.co.kr";
+
+  return {
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152.0.0.0 Safari/537.36",
+    Accept: "application/json, text/plain, */*",
+    "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.8",
+    Origin: origin,
+    Referer: `${origin}/station/${streamerId}/board`,
+  };
+}
+
+// SOOP 쪽에서 도메인별 Referer/Origin을 다르게 검사할 가능성에 대비해 2회 시도
+async function fetchSoop(url: string, streamerId: string) {
+  let lastResponse: Response | null = null;
+
+  for (const domain of ["com", "co.kr"] as const) {
+    const response = await fetch(url, {
+      headers: makeHeaders(streamerId, domain),
+      cache: "no-store",
+    });
+
+    lastResponse = response;
+
+    if (response.ok) {
+      return response;
+    }
+
+    // 인증/접근 계열 오류가 아니면 같은 URL을 굳이 한 번 더 요청하지 않음
+    if (![401, 403, 429].includes(response.status)) {
+      break;
+    }
+  }
+
+  return lastResponse;
+}
+
+function jsonResponse(body: AnyRecord, status = 200) {
+  return NextResponse.json(body, {
+    status,
+    headers: {
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+    },
+  });
+}
+
 export async function GET(request: Request) {
   try {
-    // 현재 요청 주소에서 스트리머 ID 추출
-    // 예: /api/posts/mobaxia → mobaxia
     const requestUrl = new URL(request.url);
-
-    const pathParts = requestUrl.pathname
-      .split("/")
-      .filter(Boolean);
-
+    const pathParts = requestUrl.pathname.split("/").filter(Boolean);
     const streamerId = decodeURIComponent(
       pathParts[pathParts.length - 1] || ""
     );
 
     if (!streamerId) {
-      return NextResponse.json(
+      return jsonResponse(
         {
           posts: [],
           error: true,
           message: "스트리머 ID가 없습니다.",
         },
-        { status: 400 }
+        400
       );
     }
 
-    const commonHeaders = {
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-      Accept: "application/json, text/plain, */*",
-      Referer:
-        `https://www.sooplive.com/station/${streamerId}`,
-    };
-
-    // 1. 방송국 게시판 메뉴 목록 확인
+    // --------------------------------------------------
+    // 1) 방송국 게시판 메뉴에서 바샤업UP 게시판 번호 찾기
+    // --------------------------------------------------
     const menuUrl =
       `https://api-channel.sooplive.co.kr/v1.1/channel/` +
       `${encodeURIComponent(streamerId)}/menu`;
 
-    const menuResponse = await fetch(menuUrl, {
-      headers: commonHeaders,
-      cache: "no-store",
-    });
+    const menuResponse = await fetchSoop(menuUrl, streamerId);
 
-    if (!menuResponse.ok) {
-      return NextResponse.json({
+    if (!menuResponse || !menuResponse.ok) {
+      return jsonResponse({
         id: streamerId,
         posts: [],
         error: true,
-        message: `SOOP 게시판 메뉴 HTTP 오류 ${menuResponse.status}`,
+        message: `SOOP 게시판 메뉴 HTTP 오류 ${
+          menuResponse?.status ?? "UNKNOWN"
+        }`,
       });
     }
 
     const menuText = await menuResponse.text();
 
     if (!menuText.trim()) {
-      return NextResponse.json({
+      return jsonResponse({
         id: streamerId,
         posts: [],
         error: true,
@@ -75,14 +171,14 @@ export async function GET(request: Request) {
       });
     }
 
-    let menuData: any;
+    let menuData: AnyRecord;
 
     try {
       menuData = JSON.parse(menuText);
     } catch (error) {
       console.error("SOOP 게시판 메뉴 JSON 변환 실패:", error);
 
-      return NextResponse.json({
+      return jsonResponse({
         id: streamerId,
         posts: [],
         error: true,
@@ -90,144 +186,146 @@ export async function GET(request: Request) {
       });
     }
 
-    const boards = Array.isArray(menuData?.board)
+    const directBoards = Array.isArray(menuData?.board)
       ? menuData.board
-      : [];
+      : Array.isArray(menuData?.data?.board)
+        ? menuData.data.board
+        : [];
 
-    const normalizedTarget = normalizeBoardName(
-      TARGET_BOARD_NAME
-    );
+    const boards =
+      directBoards.length > 0
+        ? directBoards
+        : collectBoardCandidates(menuData);
 
-    const normalizedKeyword = normalizeBoardName(
-      TARGET_BOARD_KEYWORD
-    );
+    const normalizedTarget = normalizeBoardName(TARGET_BOARD_NAME);
+    const normalizedKeyword = normalizeBoardName(TARGET_BOARD_KEYWORD);
 
-    // 장식문자/공백 차이가 있어도 찾을 수 있도록
-    // 정확히 일치 → 핵심 이름 포함 순서로 검색
     const targetBoard =
       boards.find(
-        (board: any) =>
-          normalizeBoardName(board?.name) ===
-          normalizedTarget
+        (board: AnyRecord) =>
+          normalizeBoardName(getBoardName(board)) === normalizedTarget
       ) ??
-      boards.find((board: any) =>
-        normalizeBoardName(board?.name).includes(
-          normalizedKeyword
-        )
+      boards.find((board: AnyRecord) =>
+        normalizeBoardName(getBoardName(board)).includes(normalizedKeyword)
       );
 
     if (!targetBoard) {
-      return NextResponse.json({
+      return jsonResponse({
         id: streamerId,
         posts: [],
         error: true,
-        message:
-          `"${TARGET_BOARD_NAME}" 게시판을 찾지 못했습니다.`,
+        message: `"${TARGET_BOARD_NAME}" 게시판을 찾지 못했습니다.`,
+        availableBoards: boards
+          .map((board: AnyRecord) => ({
+            name: getBoardName(board),
+            bbsNo: getBbsNo(board),
+          }))
+          .filter((board: AnyRecord) => board.name && board.bbsNo != null),
       });
     }
 
-    const bbsNo =
-      targetBoard.bbsNo ??
-      targetBoard.bbs_no;
+    const bbsNo = getBbsNo(targetBoard);
+    const boardName = getBoardName(targetBoard) || TARGET_BOARD_NAME;
 
-    if (bbsNo === undefined || bbsNo === null) {
-      return NextResponse.json({
+    if (bbsNo === null || bbsNo === undefined || bbsNo === "") {
+      return jsonResponse({
         id: streamerId,
         posts: [],
         error: true,
-        message: "게시판 번호(bbsNo)를 찾지 못했습니다.",
+        message: "바샤업UP 게시판 번호(bbsNo)를 찾지 못했습니다.",
       });
     }
 
-    // 2. 해당 게시판 글 목록 조회
-    const postsApiUrl = new URL(
-      `https://chapi.sooplive.co.kr/api/` +
-      `${encodeURIComponent(streamerId)}/board/`
-    );
+    const boardUrl =
+      `https://www.sooplive.com/station/` +
+      `${encodeURIComponent(streamerId)}/board/${encodeURIComponent(
+        String(bbsNo)
+      )}`;
 
-    postsApiUrl.searchParams.set("per_page", "20");
-    postsApiUrl.searchParams.set("start_date", "");
-    postsApiUrl.searchParams.set("end_date", "");
-    postsApiUrl.searchParams.set(
-      "field",
-      "title,contents,user_nick,user_id,hashtags"
-    );
-    postsApiUrl.searchParams.set("keyword", "");
-    postsApiUrl.searchParams.set("type", "all");
-    postsApiUrl.searchParams.set("order_by", "reg_date");
-    postsApiUrl.searchParams.set(
-      "board_number",
-      String(bbsNo)
-    );
-    postsApiUrl.searchParams.set("page", "1");
+    // --------------------------------------------------
+    // 2) 전체 게시글 API를 최신순으로 조회한 뒤 bbs_no로 필터링
+    //    SOOP 실제 사용 예시도 board_number를 비워두고 가져온 뒤
+    //    post.bbs_no와 board.bbsNo를 비교하는 방식임.
+    // --------------------------------------------------
+    const matchedPosts: AnyRecord[] = [];
+    const seen = new Set<string>();
 
-    const postsResponse = await fetch(
-      postsApiUrl.toString(),
-      {
-        headers: commonHeaders,
-        cache: "no-store",
+    for (let page = 1; page <= MAX_PAGES; page += 1) {
+      const postsApiUrl = new URL(
+        `https://chapi.sooplive.co.kr/api/` +
+          `${encodeURIComponent(streamerId)}/board/`
+      );
+
+      postsApiUrl.searchParams.set("per_page", String(POSTS_PER_PAGE));
+      postsApiUrl.searchParams.set("start_date", "");
+      postsApiUrl.searchParams.set("end_date", "");
+      postsApiUrl.searchParams.set(
+        "field",
+        "title,contents,user_nick,user_id,hashtags"
+      );
+      postsApiUrl.searchParams.set("keyword", "");
+      postsApiUrl.searchParams.set("type", "all");
+      postsApiUrl.searchParams.set("order_by", "reg_date");
+      postsApiUrl.searchParams.set("board_number", "");
+      postsApiUrl.searchParams.set("page", String(page));
+
+      const postsResponse = await fetchSoop(
+        postsApiUrl.toString(),
+        streamerId
+      );
+
+      if (!postsResponse || !postsResponse.ok) {
+        return jsonResponse({
+          id: streamerId,
+          boardName,
+          bbsNo: String(bbsNo),
+          boardUrl,
+          posts: [],
+          error: true,
+          message: `SOOP 게시글 HTTP 오류 ${
+            postsResponse?.status ?? "UNKNOWN"
+          }`,
+        });
       }
-    );
 
-    if (!postsResponse.ok) {
-      return NextResponse.json({
-        id: streamerId,
-        boardName: targetBoard.name,
-        bbsNo: String(bbsNo),
-        posts: [],
-        error: true,
-        message: `SOOP 게시글 HTTP 오류 ${postsResponse.status}`,
-      });
-    }
+      const postsText = await postsResponse.text();
 
-    const postsText = await postsResponse.text();
+      if (!postsText.trim()) {
+        break;
+      }
 
-    if (!postsText.trim()) {
-      return NextResponse.json({
-        id: streamerId,
-        boardName: targetBoard.name,
-        bbsNo: String(bbsNo),
-        boardUrl:
-          `https://www.sooplive.com/station/` +
-          `${streamerId}/board/${bbsNo}`,
-        posts: [],
-        error: false,
-      });
-    }
+      let postsData: AnyRecord;
 
-    let postsData: any;
+      try {
+        postsData = JSON.parse(postsText);
+      } catch (error) {
+        console.error("SOOP 게시글 JSON 변환 실패:", error);
 
-    try {
-      postsData = JSON.parse(postsText);
-    } catch (error) {
-      console.error("SOOP 게시글 JSON 변환 실패:", error);
+        return jsonResponse({
+          id: streamerId,
+          boardName,
+          bbsNo: String(bbsNo),
+          boardUrl,
+          posts: [],
+          error: true,
+          message: "SOOP 게시글을 JSON으로 변환하지 못했습니다.",
+        });
+      }
 
-      return NextResponse.json({
-        id: streamerId,
-        posts: [],
-        error: true,
-        message: "SOOP 게시글을 JSON으로 변환하지 못했습니다.",
-      });
-    }
+      const rawPosts = Array.isArray(postsData?.data)
+        ? postsData.data
+        : Array.isArray(postsData?.response?.data)
+          ? postsData.response.data
+          : [];
 
-    const rawPosts = Array.isArray(postsData?.data)
-      ? postsData.data
-      : [];
-
-    const posts = rawPosts
-      .filter((post: any) => {
+      for (const post of rawPosts) {
         const postBbsNo =
-          post?.bbs_no ??
-          post?.bbsNo;
+          post?.bbs_no ?? post?.bbsNo ?? post?.board_no ?? post?.boardNo;
 
-        // board_number로 이미 필터링했지만 한 번 더 안전하게 확인
-        return (
-          postBbsNo === undefined ||
-          postBbsNo === null ||
-          String(postBbsNo) === String(bbsNo)
-        );
-      })
-      .map((post: any) => {
+        if (String(postBbsNo ?? "") !== String(bbsNo)) {
+          continue;
+        }
+
         const titleNo =
           post?.title_no ??
           post?.titleNo ??
@@ -236,48 +334,60 @@ export async function GET(request: Request) {
           post?.id;
 
         const title = String(
-          post?.title ??
-          post?.title_name ??
-          post?.subject ??
-          "제목 없는 글"
+          post?.title ?? post?.title_name ?? post?.subject ?? "제목 없는 글"
         ).trim();
 
-        return {
-          id: String(
-            titleNo ??
-            `${title}-${post?.reg_date ?? ""}`
-          ),
+        const uniqueKey = String(
+          titleNo ?? `${title}-${post?.reg_date ?? post?.regDate ?? ""}`
+        );
+
+        if (seen.has(uniqueKey)) {
+          continue;
+        }
+
+        seen.add(uniqueKey);
+
+        matchedPosts.push({
+          id: uniqueKey,
           title,
-          regDate:
-            post?.reg_date ??
-            post?.regDate ??
-            "",
+          regDate: post?.reg_date ?? post?.regDate ?? "",
           url: titleNo
-            ? `https://www.sooplive.com/station/${streamerId}/post/${titleNo}`
-            : `https://www.sooplive.com/station/${streamerId}/board/${bbsNo}`,
-        };
-      })
-      .sort((a: any, b: any) => {
+            ? `https://www.sooplive.com/station/${encodeURIComponent(
+                streamerId
+              )}/post/${encodeURIComponent(String(titleNo))}`
+            : boardUrl,
+        });
+      }
+
+      if (matchedPosts.length >= MAX_POSTS) {
+        break;
+      }
+
+      if (rawPosts.length < POSTS_PER_PAGE) {
+        break;
+      }
+    }
+
+    const posts = matchedPosts
+      .sort((a: AnyRecord, b: AnyRecord) => {
         const aTime = new Date(a.regDate || 0).getTime();
         const bTime = new Date(b.regDate || 0).getTime();
         return bTime - aTime;
       })
-      .slice(0, 4);
+      .slice(0, MAX_POSTS);
 
-    return NextResponse.json({
+    return jsonResponse({
       id: streamerId,
-      boardName: targetBoard.name,
+      boardName,
       bbsNo: String(bbsNo),
-      boardUrl:
-        `https://www.sooplive.com/station/` +
-        `${streamerId}/board/${bbsNo}`,
+      boardUrl,
       posts,
       error: false,
     });
   } catch (error) {
     console.error("SOOP UP해줘 게시판 조회 오류:", error);
 
-    return NextResponse.json({
+    return jsonResponse({
       posts: [],
       error: true,
       message:

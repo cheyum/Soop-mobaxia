@@ -1427,3 +1427,14 @@ input {
   }
 
 }
+
+/* UP해줘 게시판 주소 확인 전 버튼 */
+.cardButton:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.cardButton:disabled:hover {
+  background: #ffc0d7;
+  transform: none;
+}
