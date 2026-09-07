@@ -7,12 +7,12 @@ type LiveStatus = {
   error?: boolean;
 };
 
-const freePosts = [
-  "모바샤 오늘 방송 너무 재밌었어요 💗",
-  "팬아트 올려도 되나요?",
-  "다음 합방 일정 기다리는중!",
-  "굿즈 나오면 사고 싶어요 🌸",
-];
+type SoopPost = {
+  id: string;
+  title: string;
+  url: string;
+  regDate?: string;
+};
 
 const notices = [
   "[공지] 방송 일정은 캘린더 참고 부탁드려요",
@@ -28,6 +28,13 @@ export default function Home() {
   });
 
   const [loading, setLoading] = useState(true);
+
+  const [upPosts, setUpPosts] = useState<SoopPost[]>([]);
+  const [postsLoading, setPostsLoading] = useState(true);
+  const [postsError, setPostsError] = useState(false);
+  const [upBoardUrl, setUpBoardUrl] = useState(
+    "https://www.sooplive.com/station/mobaxia/board"
+  );
 
   async function checkLive() {
     try {
@@ -65,12 +72,64 @@ export default function Home() {
     setLoading(false);
   }
 
+  async function checkPosts() {
+    try {
+      const response = await fetch("/api/posts/mobaxia", {
+        cache: "no-store",
+      });
+
+      const text = await response.text();
+
+      if (!response.ok || !text.trim()) {
+        setPostsError(true);
+        setPostsLoading(false);
+        return;
+      }
+
+      const data = JSON.parse(text);
+
+      if (data.error) {
+        setPostsError(true);
+        setPostsLoading(false);
+        return;
+      }
+
+      setUpPosts(
+        Array.isArray(data.posts)
+          ? data.posts.slice(0, 4)
+          : []
+      );
+
+      if (typeof data.boardUrl === "string") {
+        setUpBoardUrl(data.boardUrl);
+      }
+
+      setPostsError(false);
+    } catch (error) {
+      console.error("UP해줘 게시글 확인 실패:", error);
+      setPostsError(true);
+    }
+
+    setPostsLoading(false);
+  }
+
   useEffect(() => {
     checkLive();
 
     // 1분마다 방송 상태 갱신
     const timer = setInterval(() => {
       checkLive();
+    }, 60000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    checkPosts();
+
+    // 1분마다 바샤업UP 게시판 갱신
+    const timer = setInterval(() => {
+      checkPosts();
     }, 60000);
 
     return () => clearInterval(timer);
@@ -132,7 +191,7 @@ export default function Home() {
         ========================== */}
         <div className="profileMain">
           <div className="welcomeTag">
-            ♡ 모셔 서면엔 청설모 모셔 모바샤 🐿 ♡
+            ♡ S급 서민영애 청설모 모씨 모바샤🐿️ ♡
           </div>
 
           {/* 방송 화면 */}
@@ -322,30 +381,54 @@ export default function Home() {
           하단 콘텐츠
       ========================== */}
       <section className="contentGrid">
-        {/* 자유게시판 */}
+        {/* UP해줘 - SOOP 바샤업UP 게시판 연동 */}
         <article className="contentCard">
           <div className="cardTitle">
-            <h3>자유게시판</h3>
-            <span>Free Board</span>
+            <h3>UP해줘</h3>
+            <span>BASHA UP</span>
           </div>
 
           <div className="postList">
-            {freePosts.map((post, index) => (
-              <a
-                href="#"
-                className="postItem"
-                key={`free-${index}`}
-              >
-                {post}
-              </a>
-            ))}
+            {postsLoading ? (
+              <div className="postItem">
+                최신 글을 불러오는 중이에요 ♡
+              </div>
+            ) : postsError ? (
+              <div className="postItem">
+                게시글을 불러오지 못했어요
+              </div>
+            ) : upPosts.length > 0 ? (
+              upPosts.map((post) => (
+                <a
+                  href={post.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="postItem"
+                  key={post.id}
+                  title={post.title}
+                >
+                  {post.title}
+                </a>
+              ))
+            ) : (
+              <div className="postItem">
+                아직 등록된 글이 없어요 ♡
+              </div>
+            )}
           </div>
 
           <button
             type="button"
             className="cardButton"
+            onClick={() => {
+              window.open(
+                upBoardUrl,
+                "_blank",
+                "noopener,noreferrer"
+              );
+            }}
           >
-            게시판 바로가기
+            UP해줘 전체보기
           </button>
         </article>
 
