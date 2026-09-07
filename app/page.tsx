@@ -292,7 +292,7 @@ export default function Home() {
         {/* UP해줘 */}
         <article className="contentCard">
           <div className="cardTitle">
-            <h3>UP해줘</h3>
+            <h3>𓍢ִ໋ 🌿바샤업UP..</h3>
             <span>BASHA UP</span>
           </div>
 
@@ -328,7 +328,7 @@ export default function Home() {
               window.open(UP_BOARD_URL, "_blank", "noopener,noreferrer");
             }}
           >
-            UP해줘 전체보기
+            𓍢ִ໋ 🌿바샤업UP.. 전체보기
           </button>
         </article>
 
