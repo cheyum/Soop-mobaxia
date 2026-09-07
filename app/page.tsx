@@ -32,7 +32,9 @@ export default function Home() {
   const [upPosts, setUpPosts] = useState<SoopPost[]>([]);
   const [postsLoading, setPostsLoading] = useState(true);
   const [postsError, setPostsError] = useState<string | null>(null);
-  const [upBoardUrl, setUpBoardUrl] = useState("");
+  const [upBoardUrl, setUpBoardUrl] = useState(
+    "https://www.sooplive.com/station/mobaxia/board/124110231"
+  );
 
   async function checkLive() {
     try {
@@ -88,9 +90,6 @@ export default function Home() {
 
       // 게시글 조회가 실패하더라도 게시판 번호까지 찾았다면
       // 'UP해줘 전체보기'는 해당 게시판으로 바로 연결되게 유지
-      if (typeof data.boardUrl === "string" && data.boardUrl) {
-        setUpBoardUrl(data.boardUrl);
-      }
 
       if (!response.ok || data.error) {
         setUpPosts([]);
