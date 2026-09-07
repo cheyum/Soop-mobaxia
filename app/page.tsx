@@ -46,7 +46,7 @@ export default function Home() {
 
   async function refreshMobaxia() {
     try {
-      const response = await fetch("/api/mobaxia", {
+      const response = await fetch("/api/live/mobaxia", {
         cache: "no-store",
       });
 
