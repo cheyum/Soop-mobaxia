@@ -542,90 +542,6 @@ input {
   display: none;
 }
 
-
-.soopButton {
-  position: relative;
-
-  width: 100%;
-
-  margin-top: 20px;
-
-  padding:
-    16px
-    55px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 9px;
-
-  border-radius: 17px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #ff9ac2,
-      #ff68a6
-    );
-
-  color: white;
-
-  text-decoration: none;
-
-  font-weight: 800;
-
-  font-size: 14px;
-
-  box-shadow:
-    0 12px 27px
-    rgba(240, 115, 166, 0.22);
-
-  transition: 0.2s;
-}
-
-
-.soopButton:hover {
-  transform:
-    translateY(-3px);
-
-  box-shadow:
-    0 16px 34px
-    rgba(240, 115, 166, 0.33);
-}
-
-
-.soopButtonLive {
-  background:
-    linear-gradient(
-      135deg,
-      #ff78ae,
-      #ff3f8a
-    );
-}
-
-
-.buttonArrow {
-  position: absolute;
-
-  right: 22px;
-
-  font-size: 18px;
-}
-
-
-.happyMessage {
-  margin-top: 18px;
-
-  text-align: center;
-
-  color: #d29db2;
-
-  font-size: 10px;
-}
-
-
 /* =====================================
    PC 하단 3분할
 ===================================== */
@@ -1475,4 +1391,199 @@ input {
   .identityRow .basicInfo {
     font-size: 7px;
   }
+}
+/* =====================================
+   오른쪽 프로필 영역
+===================================== */
+
+.profileDetails {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 22px;
+}
+
+
+/* 프로필 */
+
+.profileDetails .identityRow {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 17px;
+
+  padding: 4px 2px;
+}
+
+
+.profileDetails .smallProfileRing {
+  width: 78px;
+  height: 78px;
+
+  flex: 0 0 78px;
+
+  padding: 4px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffc2da,
+      #ffffff,
+      #ff93bb
+    );
+
+  box-shadow:
+    0 9px 25px
+    rgba(224, 119, 162, 0.18);
+}
+
+
+.profileDetails .identityName h2 {
+  margin: 0;
+
+  font-size: 30px;
+
+  color: #49323c;
+
+  letter-spacing: 3px;
+}
+
+
+.profileDetails .basicInfo {
+  margin-top: 7px;
+
+  color: #c17f9a;
+
+  font-size: 10px;
+}
+
+
+/* =====================================
+   스케줄 하단 메시지
+===================================== */
+
+.scheduleMessage {
+  margin-top: 17px;
+  padding-top: 14px;
+
+  border-top:
+    1px dashed
+    rgba(226, 158, 187, 0.55);
+
+  color: #cf98ae;
+
+  font-size: 10px;
+
+  text-align: center;
+}
+
+
+/* =====================================
+   링크 버튼 4개
+===================================== */
+
+.linkButtonRow {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 12px;
+}
+
+
+.squareLinkButton {
+  aspect-ratio: 1 / 1;
+
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 18px;
+
+  border:
+    1px solid
+    #f3bfd4;
+
+  text-decoration: none;
+
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
+}
+
+
+/* 방송국 홈 버튼 */
+
+.homeButton {
+  background:
+    linear-gradient(
+      135deg,
+      #ff99c1,
+      #ff67a4
+    );
+
+  color: white;
+
+  box-shadow:
+    0 10px 25px
+    rgba(239, 111, 165, 0.22);
+
+  cursor: pointer;
+}
+
+
+.homeButton:hover {
+  transform:
+    translateY(-4px);
+
+  box-shadow:
+    0 15px 30px
+    rgba(239, 111, 165, 0.34);
+}
+
+
+/* 집 아이콘 */
+
+.linkIcon {
+  width: 31px;
+  height: 31px;
+}
+
+
+/* 아직 사용하지 않는 빈 버튼 */
+
+.emptyLinkButton {
+  background:
+    rgba(
+      255,
+      250,
+      252,
+      0.75
+    );
+
+  border:
+    1px dashed
+    #edb4cc;
+}
+
+
+.emptyLinkButton:hover {
+  background:
+    #fff1f7;
+
+  transform:
+    translateY(-2px);
 }

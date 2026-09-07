@@ -177,89 +177,179 @@ export default function Home() {
           </div>
 
           {/* 프로필 + 닉네임 */}
-          <div className="identityRow">
-            <div
-              className={`smallProfileRing ${
-                status.live ? "smallProfileLive" : ""
-              }`}
-            >
-              <ProfileImage />
-            </div>
+<div className="identityRow">
+  <div
+    className={`smallProfileRing ${
+      status.live ? "smallProfileLive" : ""
+    }`}
+  >
+    <ProfileImage />
+  </div>
 
-            <div className="identityText">
-              <div className="identityName">
-                <h2>모바샤</h2>
+  <div className="identityText">
+    <div className="identityName">
+      <h2>모바샤</h2>
 
-                {status.live && !loading && !status.error && (
-                  <span className="identityLiveBadge">
-                    LIVE
-                  </span>
-                )}
-              </div>
+      {status.live && !loading && !status.error && (
+        <span className="identityLiveBadge">
+          LIVE
+        </span>
+      )}
+    </div>
 
-              <div className="basicInfo">
-                생일 · 8월25일
+    <div className="basicInfo">
+      생일 · 8월25일
 
-                <span>/</span>
+      <span>/</span>
 
-                언제나 24살
+      언제나 24살
 
-                <span>/</span>
+      <span>/</span>
 
-                감성파 ESTJ
-              </div>
-            </div>
-          </div>
+      감성파 ESTJ
+    </div>
+  </div>
+</div>
         </div>
 
         {/* =========================
             오른쪽 - 일정 및 링크
         ========================== */}
-        <div className="profileDetails">
-          <div className="scheduleBox">
-            <strong>
-              🌸 상시 스케줄은 캘린더 참고 🌸
-            </strong>
+       <div className="profileDetails">
 
-            <p>
-              매주 월~금 오후 6시
-              <br className="mobileBreak" />
+  {/* =========================
+      프로필 + 닉네임
+  ========================== */}
+  <div className="identityRow">
 
-              <span className="pcDivider">
-                {" "}·{" "}
-              </span>
+    <div
+      className={`smallProfileRing ${
+        status.live ? "smallProfileLive" : ""
+      }`}
+    >
+      <ProfileImage />
+    </div>
 
-              토~일 오후 11시
+    <div className="identityText">
 
-              <br />
+      <div className="identityName">
 
-              (주1회 휴방) 바샤 등장(˶ᵔ ᵕ ᵔ˶)♥
-            </p>
-          </div>
+        <h2>모바샤</h2>
 
-          <a
-            href="https://www.sooplive.com/station/mobaxia"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`soopButton ${
-              status.live ? "soopButtonLive" : ""
-            }`}
-          >
-            <span>♥</span>
+        {status.live && !loading && !status.error && (
+          <span className="identityLiveBadge">
+            LIVE
+          </span>
+        )}
 
-            {status.live
-              ? "지금 모바샤 방송 보러가기"
-              : "모바샤 방송국 놀러가기"}
+      </div>
 
-            <span className="buttonArrow">
-              →
-            </span>
-          </a>
+      <div className="basicInfo">
 
-          <div className="happyMessage">
-            ✦ 오늘도 모바샤와 함께 행복한 하루 ✦
-          </div>
-        </div>
+        생일 · 8월25일
+
+        <span>/</span>
+
+        언제나 24살
+
+        <span>/</span>
+
+        감성파 ESTJ
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  {/* =========================
+      상시 스케줄
+  ========================== */}
+  <div className="scheduleBox">
+
+    <strong>
+      🌸 상시 스케줄은 캘린더 참고 🌸
+    </strong>
+
+    <p>
+      매주 월~금 오후 6시
+      <br className="mobileBreak" />
+
+      <span className="pcDivider">
+        {" "}·{" "}
+      </span>
+
+      토~일 오후 11시
+
+      <br />
+
+      (주1회 휴방) 바샤 등장(˶ᵔ ᵕ ᵔ˶)♥
+    </p>
+
+
+    {/* 기존 버튼 밑 문구 이동 */}
+    <div className="scheduleMessage">
+      ✦ 오늘도 모바샤와 함께 행복한 하루 ✦
+    </div>
+
+  </div>
+
+
+  {/* =========================
+      링크 버튼 4개
+  ========================== */}
+  <div className="linkButtonRow">
+
+    {/* 1번 - SOOP 방송국 */}
+    <a
+      href="https://www.sooplive.com/station/mobaxia"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="squareLinkButton homeButton"
+      aria-label="모바샤 방송국"
+      title="모바샤 방송국"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        className="linkIcon"
+        aria-hidden="true"
+      >
+        <path
+          d="M3 10.8 12 3l9 7.8v9.7a.5.5 0 0 1-.5.5H15v-6H9v6H3.5a.5.5 0 0 1-.5-.5v-9.7Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </a>
+
+
+    {/* 2번 - 추후 링크 */}
+    <div
+      className="squareLinkButton emptyLinkButton"
+      title="링크 추가 예정"
+    />
+
+
+    {/* 3번 - 추후 링크 */}
+    <div
+      className="squareLinkButton emptyLinkButton"
+      title="링크 추가 예정"
+    />
+
+
+    {/* 4번 - 추후 링크 */}
+    <div
+      className="squareLinkButton emptyLinkButton"
+      title="링크 추가 예정"
+    />
+
+  </div>
+
+</div>
       </section>
 
       {/* =========================
