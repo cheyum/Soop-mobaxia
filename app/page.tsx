@@ -38,9 +38,12 @@ export default function Home() {
 
   async function checkLive() {
     try {
-      const response = await fetch("/api/live/mobaxia", {
-        cache: "no-store",
-      });
+      const response = await fetch(
+  `/api/posts/mobaxia?boardUrl=${encodeURIComponent(upBoardUrl)}`,
+  {
+    cache: "no-store",
+  }
+);
 
       const text = await response.text();
 
