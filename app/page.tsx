@@ -1,580 +1,269 @@
-"use client";
+import { NextResponse } from "next/server";
 
-import { useEffect, useState } from "react";
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
-type LiveStatus = {
-  live: boolean;
-  error?: boolean;
+const STREAMER_ID = "mobaxia";
+
+type AnyRecord = Record<string, any>;
+
+type Attempt = {
+  name: string;
+  ok: boolean;
+  status?: number;
+  detail?: string;
 };
 
-type SoopPost = {
-  id: string;
-  title: string;
-  url: string;
-  regDate?: string;
-};
-
-const notices = [
-  "[공지] 방송 일정은 캘린더 참고 부탁드려요",
-  "[공지] 방송국 규칙을 확인해주세요",
-  "[공지] 이벤트 참여 방법 안내",
-  "[공지] 배너 및 팬아트 제보 환영 ♡",
-];
-
-export default function Home() {
-  const [status, setStatus] = useState<LiveStatus>({
-    live: false,
-    error: false,
+function reply(body: AnyRecord, status = 200) {
+  return NextResponse.json(body, {
+    status,
+    headers: {
+      "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+    },
   });
-
-  const [loading, setLoading] = useState(true);
-
-  const [upPosts, setUpPosts] = useState<SoopPost[]>([]);
-  const [postsLoading, setPostsLoading] = useState(true);
-  const [postsError, setPostsError] = useState<string | null>(null);
-  const [upBoardUrl, setUpBoardUrl] = useState(
-    "https://www.sooplive.com/station/mobaxia/board/124110231"
-  );
-
-  async function checkLive() {
-    try {
-      const response = await fetch(
-  `/api/posts/mobaxia?boardUrl=${encodeURIComponent(upBoardUrl)}`,
-  {
-    cache: "no-store",
-  }
-);
-
-      const text = await response.text();
-
-      if (!response.ok || !text.trim()) {
-        setStatus({
-          live: false,
-          error: true,
-        });
-
-        setLoading(false);
-        return;
-      }
-
-      const data = JSON.parse(text);
-
-      setStatus({
-        live: Boolean(data.live),
-        error: Boolean(data.error),
-      });
-    } catch (error) {
-      console.error("방송 상태 확인 실패:", error);
-
-      setStatus({
-        live: false,
-        error: true,
-      });
-    }
-
-    setLoading(false);
-  }
-
-  async function checkPosts() {
-    try {
-      const response = await fetch("/api/posts/mobaxia", {
-        cache: "no-store",
-      });
-
-      const text = await response.text();
-
-      if (!text.trim()) {
-        setPostsError("SOOP 게시판 응답이 비어 있어요");
-        setPostsLoading(false);
-        return;
-      }
-
-      const data = JSON.parse(text);
-
-      // 게시글 조회가 실패하더라도 게시판 번호까지 찾았다면
-      // 'UP해줘 전체보기'는 해당 게시판으로 바로 연결되게 유지
-
-      if (!response.ok || data.error) {
-        setUpPosts([]);
-        setPostsError(
-          typeof data.message === "string"
-            ? data.message
-            : "게시글을 불러오지 못했어요"
-        );
-        setPostsLoading(false);
-        return;
-      }
-
-      setUpPosts(
-        Array.isArray(data.posts)
-          ? data.posts.slice(0, 4)
-          : []
-      );
-
-      setPostsError(null);
-    } catch (error) {
-      console.error("UP해줘 게시글 확인 실패:", error);
-      setUpPosts([]);
-      setPostsError("게시글을 불러오지 못했어요");
-    }
-
-    setPostsLoading(false);
-  }
-
-  useEffect(() => {
-    checkLive();
-
-    // 1분마다 방송 상태 갱신
-    const timer = setInterval(() => {
-      checkLive();
-    }, 60000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    checkPosts();
-
-    // 1분마다 바샤업UP 게시판 갱신
-    const timer = setInterval(() => {
-      checkPosts();
-    }, 60000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <main className="page">
-      {/* 배경 장식 */}
-      <div className="bgHeart bgHeart1">♡</div>
-      <div className="bgHeart bgHeart2">♡</div>
-
-      <div className="bgStar bgStar1">✦</div>
-      <div className="bgStar bgStar2">✦</div>
-
-      {/* =========================
-          HEADER
-      ========================== */}
-      <header className="header">
-        <div className="brand">
-          <div className="brandIcon">♥</div>
-
-          <div>
-            <h1>MOBASHA</h1>
-            <p>SOOP VIRTUAL STREAMER</p>
-          </div>
-        </div>
-
-        <div className="topStatus">
-          {loading ? (
-            <>
-              <span className="statusDot loadingDot" />
-              방송 상태 확인 중
-            </>
-          ) : status.error ? (
-            <>
-              <span className="statusDot errorDot" />
-              상태 확인 중
-            </>
-          ) : status.live ? (
-            <>
-              <span className="statusDot liveDot" />
-              바샤좀 놀아줘!
-            </>
-          ) : (
-            <>
-              <span className="statusDot offlineDot" />
-              바샤는 쉬는중
-            </>
-          )}
-        </div>
-      </header>
-
-      {/* =========================
-          메인 프로필 카드
-      ========================== */}
-      <section className="profileCard">
-        {/* =========================
-            왼쪽 - 방송화면
-        ========================== */}
-        <div className="profileMain">
-          <div className="welcomeTag">
-            ♡ S급 서민영애 청설모 모씨 모바샤🐿️ ♡
-          </div>
-
-          {/* 방송 화면 */}
-          <div
-            className={`streamScreen ${
-              status.live ? "streamOnline" : "streamOffline"
-            }`}
-          >
-            {loading ? (
-              <div className="streamPlaceholder">
-                <span className="loadingStreamDot" />
-
-                <strong>CHECKING</strong>
-
-                <p>방송 상태를 확인하고 있어요</p>
-              </div>
-            ) : status.error ? (
-              <div className="streamPlaceholder offlineScreen">
-                <span className="offlineHeart">♡</span>
-
-                <strong>CHECKING</strong>
-
-                <p>방송 상태를 확인하고 있어요</p>
-              </div>
-            ) : status.live ? (
-              <iframe
-                src="https://play.sooplive.com/mobaxia/embed"
-                title="모바샤 SOOP LIVE"
-                className="soopPlayer"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-              />
-            ) : (
-              <div className="streamPlaceholder offlineScreen">
-                <span className="offlineHeart">♡</span>
-
-                <strong>OFFLINE</strong>
-
-                <p>지금은 방송을 쉬고 있어요</p>
-              </div>
-            )}
-          </div>
-
-        </div>
-
-        {/* =========================
-            오른쪽 - 일정 및 링크
-        ========================== */}
-       <div className="profileDetails">
-
-  {/* =========================
-      프로필 + 닉네임
-  ========================== */}
-  <div className="identityRow">
-
-    <div
-      className={`smallProfileRing ${
-        status.live ? "smallProfileLive" : ""
-      }`}
-    >
-      <ProfileImage />
-    </div>
-
-    <div className="identityText">
-
-      <div className="identityName">
-
-        <h2>모바샤</h2>
-
-        {status.live && !loading && !status.error && (
-          <span className="identityLiveBadge">
-            LIVE
-          </span>
-        )}
-
-      </div>
-
-      <div className="basicInfo">
-
-        생일 · 8월25일
-
-        <span>/</span>
-
-        언제나 24살
-
-        <span>/</span>
-
-        감성파 ESTJ
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  {/* =========================
-      상시 스케줄
-  ========================== */}
-  <div className="scheduleBox">
-
-    <strong>
-      🌸 상시 스케줄은 캘린더 참고 🌸
-    </strong>
-
-    <p>
-      매주 월~금 오후 6시
-      <br className="mobileBreak" />
-
-      <span className="pcDivider">
-        {" "}·{" "}
-      </span>
-
-      토~일 오후 11시
-
-      <br />
-
-      (주1회 휴방) 바샤 등장(˶ᵔ ᵕ ᵔ˶)♥
-    </p>
-
-
-    {/* 기존 버튼 밑 문구 이동 */}
-    <div className="scheduleMessage">
-      ✦ 오늘도 모바샤와 함께 행복한 하루 ✦
-    </div>
-
-  </div>
-
-
-  {/* =========================
-      링크 버튼 4개
-  ========================== */}
-  <div className="linkButtonRow">
-
-    {/* 1번 - SOOP 방송국 */}
-    <a
-      href="https://www.sooplive.com/station/mobaxia"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="squareLinkButton homeButton"
-      aria-label="모바샤 방송국"
-      title="모바샤 방송국"
-    >
-      <svg
-        viewBox="0 0 24 24"
-        className="linkIcon"
-        aria-hidden="true"
-      >
-        <path
-          d="M3 10.8 12 3l9 7.8v9.7a.5.5 0 0 1-.5.5H15v-6H9v6H3.5a.5.5 0 0 1-.5-.5v-9.7Z"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </a>
-
-
-    {/* 2번 - 추후 링크 */}
-    <div
-      className="squareLinkButton emptyLinkButton"
-      title="링크 추가 예정"
-    />
-
-
-    {/* 3번 - 추후 링크 */}
-    <div
-      className="squareLinkButton emptyLinkButton"
-      title="링크 추가 예정"
-    />
-
-
-    {/* 4번 - 추후 링크 */}
-    <div
-      className="squareLinkButton emptyLinkButton"
-      title="링크 추가 예정"
-    />
-
-  </div>
-
-</div>
-      </section>
-
-      {/* =========================
-          하단 콘텐츠
-      ========================== */}
-      <section className="contentGrid">
-        {/* UP해줘 - SOOP 바샤업UP 게시판 연동 */}
-        <article className="contentCard">
-          <div className="cardTitle">
-            <h3>UP해줘</h3>
-            <span>BASHA UP</span>
-          </div>
-
-          <div className="postList">
-            {postsLoading ? (
-              <div className="postItem">
-                최신 글을 불러오는 중이에요 ♡
-              </div>
-            ) : postsError ? (
-              <div
-                className="postItem"
-                title={postsError}
-              >
-                게시글을 불러오지 못했어요
-              </div>
-            ) : upPosts.length > 0 ? (
-              upPosts.map((post) => (
-                <a
-                  href={post.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="postItem"
-                  key={post.id}
-                  title={post.title}
-                >
-                  {post.title}
-                </a>
-              ))
-            ) : (
-              <div className="postItem">
-                아직 등록된 글이 없어요 ♡
-              </div>
-            )}
-          </div>
-
-          <button
-            type="button"
-            className="cardButton"
-            disabled={!upBoardUrl}
-            title={
-              upBoardUrl
-                ? "𓍢ִ໋ 🌿바샤업UP.. 게시판 바로가기"
-                : "게시판 주소를 확인하는 중이에요"
-            }
-            onClick={() => {
-              if (!upBoardUrl) return;
-
-              window.open(
-                upBoardUrl,
-                "_blank",
-                "noopener,noreferrer"
-              );
-            }}
-          >
-            UP해줘 전체보기
-          </button>
-        </article>
-
-        {/* 공지사항 */}
-        <article className="contentCard">
-          <div className="cardTitle">
-            <h3>공지사항</h3>
-            <span>Notice</span>
-          </div>
-
-          <div className="postList">
-            {notices.map((notice, index) => (
-              <a
-                href="#"
-                className="postItem noticeItem"
-                key={`notice-${index}`}
-              >
-                {notice}
-              </a>
-            ))}
-          </div>
-
-          <button
-            type="button"
-            className="cardButton"
-          >
-            공지 전체보기
-          </button>
-        </article>
-
-        {/* 배너 */}
-        <article className="contentCard">
-          <div className="cardTitle">
-            <h3>배너</h3>
-            <span>Banner</span>
-          </div>
-
-          <a
-            href="https://www.sooplive.com/station/mobaxia"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mainBanner"
-          >
-            <span className="bannerSmall">
-              MOBASHA
-            </span>
-
-            <strong>
-              모바샤 방송국
-            </strong>
-
-            <p>
-              방송 보러가기 · 소식 확인하기
-            </p>
-
-            <span className="bannerHeart">
-              ♡
-            </span>
-          </a>
-
-          <a
-            href="#"
-            className="subBanner"
-          >
-            팬카페 / BNB / 일정표 배너 영역
-          </a>
-        </article>
-      </section>
-
-      {/* =========================
-          FOOTER
-      ========================== */}
-      <footer className="footer">
-        ♡ &nbsp; MOBASHA FAN PAGE &nbsp; ♡
-      </footer>
-    </main>
-  );
 }
 
-/* =================================
-   SOOP 프로필 이미지 자동 연동
-================================= */
+function browserHeaders(referer: string) {
+  return {
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+    Accept: "application/json, text/plain, */*",
+    "Accept-Language": "ko-KR,ko;q=0.9,en;q=0.8",
+    Referer: referer,
+  };
+}
 
-function ProfileImage() {
-  const streamerId = "mobaxia";
+async function checkPlayerApi(base: string, attempts: Attempt[]) {
+  const url = `${base}/afreeca/player_live_api.php`;
 
-  const prefix =
-    streamerId.slice(0, 2).toLowerCase();
+  try {
+    const body = new URLSearchParams({
+      bid: STREAMER_ID,
+      bno: "null",
+      type: "live",
+      pwd: "",
+      player_type: "html5",
+      stream_type: "common",
+      quality: "HD",
+      mode: "landing",
+      from_api: "0",
+      is_revive: "false",
+    });
 
-  const sources = [
-    `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/m/${streamerId}.webp`,
+    const response = await fetch(url, {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        ...browserHeaders(`https://play.sooplive.com/${STREAMER_ID}`),
+        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+      },
+      body: body.toString(),
+      signal: AbortSignal.timeout(10000),
+    });
 
-    `https://profile.img.sooplive.com/LOGO/${prefix}/${streamerId}/m/${streamerId}.jpg`,
+    const text = await response.text();
 
-    `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/${streamerId}.jpg`,
-
-    `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/${streamerId}.webp`,
-  ];
-
-  const [index, setIndex] =
-    useState(0);
-
-  const [failed, setFailed] =
-    useState(false);
-
-  function handleError() {
-    if (index + 1 < sources.length) {
-      setIndex(index + 1);
-    } else {
-      setFailed(true);
+    if (!response.ok) {
+      attempts.push({
+        name: url,
+        ok: false,
+        status: response.status,
+        detail: text.slice(0, 180),
+      });
+      return null;
     }
-  }
 
-  if (failed) {
-    return (
-      <div className="profileFallback">
-        모
-      </div>
-    );
-  }
+    let data: AnyRecord;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      attempts.push({
+        name: url,
+        ok: false,
+        status: response.status,
+        detail: "JSON 변환 실패",
+      });
+      return null;
+    }
 
-  return (
-    <img
-      src={sources[index]}
-      alt="모바샤 프로필"
-      className="profileImage"
-      onError={handleError}
-    />
+    const channel = data?.CHANNEL;
+    if (!channel || typeof channel !== "object") {
+      attempts.push({
+        name: url,
+        ok: false,
+        status: response.status,
+        detail: "CHANNEL 데이터 없음",
+      });
+      return null;
+    }
+
+    const bno = String(channel?.BNO ?? "").trim();
+    const result = Number(channel?.RESULT ?? 0);
+    const live = result === 1 && /^\d+$/.test(bno) && Number(bno) > 0;
+
+    attempts.push({
+      name: url,
+      ok: true,
+      status: response.status,
+      detail: `RESULT=${String(channel?.RESULT ?? "")}, BNO=${bno || "없음"}`,
+    });
+
+    return {
+      live,
+      broadNo: live ? bno : null,
+      source: "player_live_api",
+    };
+  } catch (error) {
+    attempts.push({
+      name: url,
+      ok: false,
+      detail: error instanceof Error ? error.message : "요청 실패",
+    });
+    return null;
+  }
+}
+
+async function checkChannelApi(attempts: Attempt[]) {
+  const url =
+    `https://api-channel.sooplive.co.kr/v1.1/channel/` +
+    `${STREAMER_ID}/home/section/broad`;
+
+  try {
+    const response = await fetch(url, {
+      cache: "no-store",
+      headers: browserHeaders(
+        `https://www.sooplive.com/station/${STREAMER_ID}`
+      ),
+      signal: AbortSignal.timeout(10000),
+    });
+
+    const text = await response.text();
+
+    if (response.status === 204 || response.status === 404) {
+      attempts.push({ name: url, ok: true, status: response.status });
+      return { live: false, broadNo: null, source: "channel_api" };
+    }
+
+    if (!response.ok) {
+      attempts.push({
+        name: url,
+        ok: false,
+        status: response.status,
+        detail: text.slice(0, 180),
+      });
+      return null;
+    }
+
+    if (!text.trim()) {
+      attempts.push({ name: url, ok: true, status: response.status });
+      return { live: false, broadNo: null, source: "channel_api" };
+    }
+
+    let data: AnyRecord;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      attempts.push({
+        name: url,
+        ok: false,
+        status: response.status,
+        detail: "JSON 변환 실패",
+      });
+      return null;
+    }
+
+    const live =
+      data !== null &&
+      typeof data === "object" &&
+      !Array.isArray(data) &&
+      Object.keys(data).length > 0;
+
+    const broadNo =
+      data?.broadNo ??
+      data?.broad_no ??
+      data?.bno ??
+      data?.BNO ??
+      null;
+
+    attempts.push({
+      name: url,
+      ok: true,
+      status: response.status,
+      detail: live ? "방송 데이터 있음" : "방송 데이터 없음",
+    });
+
+    return {
+      live,
+      broadNo: broadNo ? String(broadNo) : null,
+      source: "channel_api",
+    };
+  } catch (error) {
+    attempts.push({
+      name: url,
+      ok: false,
+      detail: error instanceof Error ? error.message : "요청 실패",
+    });
+    return null;
+  }
+}
+
+export async function GET(request: Request) {
+  const debug = new URL(request.url).searchParams.get("debug") === "1";
+  const attempts: Attempt[] = [];
+
+  // 현재 SOOP 웹 플레이어가 사용하는 API를 우선 사용합니다.
+  const playerCom = await checkPlayerApi(
+    "https://live.sooplive.com",
+    attempts
   );
+
+  if (playerCom) {
+    return reply({
+      id: STREAMER_ID,
+      live: playerCom.live,
+      broadNo: playerCom.broadNo,
+      error: false,
+      source: playerCom.source,
+      ...(debug ? { debug: attempts } : {}),
+    });
+  }
+
+  // 이전 도메인도 fallback으로 확인합니다.
+  const playerKr = await checkPlayerApi(
+    "https://live.sooplive.co.kr",
+    attempts
+  );
+
+  if (playerKr) {
+    return reply({
+      id: STREAMER_ID,
+      live: playerKr.live,
+      broadNo: playerKr.broadNo,
+      error: false,
+      source: playerKr.source,
+      ...(debug ? { debug: attempts } : {}),
+    });
+  }
+
+  // 마지막 fallback: 채널 홈의 방송 섹션 API
+  const channel = await checkChannelApi(attempts);
+
+  if (channel) {
+    return reply({
+      id: STREAMER_ID,
+      live: channel.live,
+      broadNo: channel.broadNo,
+      error: false,
+      source: channel.source,
+      ...(debug ? { debug: attempts } : {}),
+    });
+  }
+
+  return reply({
+    id: STREAMER_ID,
+    live: false,
+    error: true,
+    message: "SOOP 방송 상태 API에 연결하지 못했습니다.",
+    ...(debug ? { debug: attempts } : {}),
+  });
 }
