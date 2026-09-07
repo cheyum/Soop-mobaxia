@@ -176,40 +176,6 @@ export default function Home() {
             )}
           </div>
 
-          {/* 프로필 + 닉네임 */}
-<div className="identityRow">
-  <div
-    className={`smallProfileRing ${
-      status.live ? "smallProfileLive" : ""
-    }`}
-  >
-    <ProfileImage />
-  </div>
-
-  <div className="identityText">
-    <div className="identityName">
-      <h2>모바샤</h2>
-
-      {status.live && !loading && !status.error && (
-        <span className="identityLiveBadge">
-          LIVE
-        </span>
-      )}
-    </div>
-
-    <div className="basicInfo">
-      생일 · 8월25일
-
-      <span>/</span>
-
-      언제나 24살
-
-      <span>/</span>
-
-      감성파 ESTJ
-    </div>
-  </div>
-</div>
         </div>
 
         {/* =========================
