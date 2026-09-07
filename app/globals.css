@@ -1181,3 +1181,298 @@ input {
     opacity: 0.4;
   }
 }
+/* =====================================
+   방송 화면
+===================================== */
+
+.streamScreen {
+  position: relative;
+
+  width: 100%;
+
+  aspect-ratio: 16 / 9;
+
+  margin-bottom: 24px;
+
+  overflow: hidden;
+
+  border-radius: 24px;
+
+  background: #fff4f8;
+
+  border: 1px solid #f5bfd5;
+
+  box-shadow:
+    0 15px 35px
+    rgba(225, 127, 168, 0.12);
+}
+
+.soopPlayer {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  border: 0;
+
+  background: #000;
+}
+
+.streamOnline {
+  border-color: #ff8fba;
+
+  box-shadow:
+    0 15px 40px
+    rgba(255, 93, 157, 0.22);
+}
+
+.streamOffline {
+  background:
+    radial-gradient(
+      circle at center,
+      #fffdfd,
+      #ffedf4
+    );
+}
+
+.streamPlaceholder {
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  color: #a87388;
+}
+
+.streamPlaceholder strong {
+  font-size: 25px;
+
+  letter-spacing: 5px;
+}
+
+.streamPlaceholder p {
+  margin: 9px 0 0;
+
+  color: #c696a9;
+
+  font-size: 11px;
+}
+
+.offlineHeart {
+  margin-bottom: 8px;
+
+  color: #efa6c2;
+
+  font-size: 24px;
+}
+
+.loadingStreamDot {
+  width: 9px;
+  height: 9px;
+
+  margin-bottom: 12px;
+
+  border-radius: 50%;
+
+  background: #ff91bc;
+
+  box-shadow:
+    0 0 13px
+    rgba(255, 105, 165, 0.6);
+
+  animation:
+    streamLoading 1.3s infinite;
+}
+
+@keyframes streamLoading {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+}
+
+
+/* =====================================
+   작은 프로필 + 닉네임
+===================================== */
+
+.identityRow {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 16px;
+
+  text-align: left;
+}
+
+.smallProfileRing {
+  width: 72px;
+  height: 72px;
+
+  flex: 0 0 72px;
+
+  padding: 4px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffc4da,
+      #ffffff,
+      #ff9bc1
+    );
+
+  box-shadow:
+    0 8px 22px
+    rgba(224, 119, 162, 0.16);
+}
+
+.smallProfileRing .profileImage,
+.smallProfileRing .profileFallback {
+  width: 100%;
+  height: 100%;
+
+  border-radius: 50%;
+}
+
+.smallProfileLive {
+  box-shadow:
+    0 0 0 3px
+    rgba(255, 89, 151, 0.1),
+    0 0 22px
+    rgba(255, 89, 151, 0.35);
+}
+
+.identityText {
+  flex: 1;
+
+  min-width: 0;
+}
+
+.identityName {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 7px;
+}
+
+.identityName h2 {
+  margin: 0;
+
+  color: #49323c;
+
+  font-size: 30px;
+
+  letter-spacing: 3px;
+}
+
+.identityLiveBadge {
+  padding: 5px 8px;
+
+  border-radius: 7px;
+
+  background: #ff5c9a;
+
+  color: white;
+
+  font-size: 8px;
+
+  font-weight: 900;
+
+  letter-spacing: 1px;
+}
+
+.identityRow .basicInfo {
+  margin: 0;
+
+  font-size: 10px;
+}
+
+
+/* =====================================
+   PC 메인 카드 비율
+===================================== */
+
+.profileCard {
+  grid-template-columns:
+    minmax(480px, 1.2fr)
+    minmax(380px, 0.8fr);
+}
+
+
+/* =====================================
+   모바일
+===================================== */
+
+@media (max-width: 768px) {
+  .profileCard {
+    display: block;
+  }
+
+  .streamScreen {
+    margin-bottom: 17px;
+
+    border-radius: 17px;
+  }
+
+  .streamPlaceholder strong {
+    font-size: 18px;
+  }
+
+  .streamPlaceholder p {
+    font-size: 8px;
+  }
+
+  .identityRow {
+    gap: 11px;
+  }
+
+  .smallProfileRing {
+    width: 52px;
+    height: 52px;
+
+    flex: 0 0 52px;
+
+    padding: 3px;
+  }
+
+  .identityName {
+    gap: 7px;
+
+    margin-bottom: 5px;
+  }
+
+  .identityName h2 {
+    font-size: 21px;
+
+    letter-spacing: 2px;
+  }
+
+  .identityLiveBadge {
+    padding: 4px 6px;
+
+    font-size: 6px;
+  }
+
+  .identityRow .basicInfo {
+    font-size: 7px;
+  }
+}
