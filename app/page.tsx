@@ -26,6 +26,10 @@ type MobaxiaApiResponse = {
   schedulePosts?: SoopPost[];
   schedulePostsError?: boolean;
   schedulePostsMessage?: string;
+  
+  wakiPosts?: SoopPost[];
+  wakiPostsError?: boolean;
+  wakiPostsMessage?: string;
 };
 
 const UP_BOARD_URL =
@@ -34,12 +38,8 @@ const UP_BOARD_URL =
 const SCHEDULE_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110021";
 
-const notices = [
-  "[공지] 방송 일정은 캘린더 참고 부탁드려요",
-  "[공지] 방송국 규칙을 확인해주세요",
-  "[공지] 이벤트 참여 방법 안내",
-  "[공지] 배너 및 팬아트 제보 환영 ♡",
-];
+const WAKI_BOARD_URL =
+  "https://www.sooplive.com/station/mobaxia/board/124449583";
 
 export default function Home() {
   const [status, setStatus] = useState<LiveStatus>({
@@ -55,6 +55,12 @@ export default function Home() {
   useState<SoopPost[]>([]);
 
   const [scheduleError, setScheduleError] =
+  useState<string | null>(null);
+
+  const [wakiPosts, setWakiPosts] =
+  useState<SoopPost[]>([]);
+
+  const [wakiError, setWakiError] =
   useState<string | null>(null);
 
   async function refreshMobaxia() {
@@ -91,6 +97,35 @@ export default function Home() {
         setPostsError(null);
       }
       /* =========================
+   와키 배포
+========================== */
+
+if (
+  Array.isArray(
+    data.wakiPosts
+  )
+) {
+  setWakiPosts(
+    data.wakiPosts.slice(
+      0,
+      4
+    )
+  );
+} else {
+  setWakiPosts([]);
+}
+
+if (
+  data.wakiPostsError
+) {
+  setWakiError(
+    data.wakiPostsMessage ||
+      "와키 게시글을 불러오지 못했어요"
+  );
+} else {
+  setWakiError(null);
+}
+      /* =========================
           일정 안내
          ========================== */
 
@@ -118,7 +153,9 @@ if (
       setLoading(false);
       setPostsLoading(false);
     }
+    
   }
+  
   
 
   useEffect(() => {
@@ -325,7 +362,7 @@ if (
         {/* UP해줘 */}
         <article className="contentCard">
           <div className="cardTitle">
-            <h3>𓍢ִ໋ 🌿바샤업UP..</h3>
+            <h3>𓍢ִ໋바샤업UP</h3>
             <span>BASHA UP</span>
           </div>
 
@@ -361,7 +398,7 @@ if (
               window.open(UP_BOARD_URL, "_blank", "noopener,noreferrer");
             }}
           >
-            𓍢ִ໋ 🌿바샤업UP.. 전체보기
+            𓍢바샤업UP 전체보기
           </button>
         </article>
 
@@ -459,29 +496,99 @@ if (
 
 </article>
 
-        {/* 배너 */}
-        <article className="contentCard">
-          <div className="cardTitle">
-            <h3>배너</h3>
-            <span>Banner</span>
-          </div>
+{/* =========================
+    와키 배포
+========================== */}
+
+<article className="contentCard">
+
+  <div className="cardTitle">
+
+    <h3>
+      와키 배포
+    </h3>
+
+    <span>
+      WAKI
+    </span>
+
+  </div>
+
+
+  <div className="postList">
+
+    {postsLoading ? (
+
+      <div className="postItem">
+
+        최신 와키를 불러오는 중이에요 ♡
+
+      </div>
+
+    ) : wakiError ? (
+
+      <div
+        className="postItem"
+        title={wakiError}
+      >
+
+        와키 게시글을 불러오지 못했어요
+
+      </div>
+
+    ) : wakiPosts.length > 0 ? (
+
+      wakiPosts.map(
+        (post) => (
 
           <a
-            href="https://www.sooplive.com/station/mobaxia"
+            href={post.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="mainBanner"
+            className="postItem"
+            key={post.id}
+            title={post.title}
           >
-            <span className="bannerSmall">MOBAXIA</span>
-            <strong>모바샤 방송국</strong>
-            <p>방송 보러가기 · 소식 확인하기</p>
-            <span className="bannerHeart">♡</span>
+
+            {post.title}
+
           </a>
 
-          <a href="#" className="subBanner">
-            팬카페 / BNB / 일정표 배너 영역
-          </a>
-        </article>
+        )
+      )
+
+    ) : (
+
+      <div className="postItem">
+
+        아직 등록된 글이 없어요 ♡
+
+      </div>
+
+    )}
+
+  </div>
+
+
+  <button
+    type="button"
+    className="cardButton"
+    onClick={() => {
+
+      window.open(
+        WAKI_BOARD_URL,
+        "_blank",
+        "noopener,noreferrer"
+      );
+
+    }}
+  >
+
+    와키 배포 전체보기
+
+  </button>
+
+</article>
       </section>
 
       {/* =========================

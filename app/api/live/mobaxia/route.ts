@@ -3,28 +3,30 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-/* =========================================
-   게시판 설정
-========================================= */
-
-const UP_BOARD_NO = "124110231";
-
-const UP_BOARD_URL =
-  "https://www.sooplive.com/station/mobaxia/board/124110231";
-
-const SCHEDULE_BOARD_NO = "124110021";
-
-const SCHEDULE_BOARD_URL =
-  "https://www.sooplive.com/station/mobaxia/board/124110021";
+type AnyRecord = Record<string, any>;
 
 const MAX_POSTS = 4;
 const POSTS_PER_PAGE = 50;
 const MAX_PAGES = 10;
 
-type AnyRecord = Record<string, any>;
+/* =========================================
+   게시판 설정
+========================================= */
+
+const UP_BOARD_NO = "124110231";
+const UP_BOARD_URL =
+  "https://www.sooplive.com/station/mobaxia/board/124110231";
+
+const SCHEDULE_BOARD_NO = "124110021";
+const SCHEDULE_BOARD_URL =
+  "https://www.sooplive.com/station/mobaxia/board/124110021";
+
+const WAKI_BOARD_NO = "124449583";
+const WAKI_BOARD_URL =
+  "https://www.sooplive.com/station/mobaxia/board/124449583";
 
 /* =========================================
-   공통 JSON 응답
+   JSON 응답
 ========================================= */
 
 function jsonResponse(data: AnyRecord) {
@@ -36,10 +38,6 @@ function jsonResponse(data: AnyRecord) {
     },
   });
 }
-
-/* =========================================
-   JSON 안전 변환
-========================================= */
 
 function safeJson(text: string): AnyRecord | null {
   try {
@@ -54,7 +52,7 @@ function safeJson(text: string): AnyRecord | null {
 ========================================= */
 
 async function getLiveStatus(streamerId: string) {
-  const urls = [
+  const endpoints = [
     "https://live.sooplive.com/afreeca/player_live_api.php",
     "https://live.sooplive.co.kr/afreeca/player_live_api.php",
   ];
@@ -62,7 +60,7 @@ async function getLiveStatus(streamerId: string) {
   let lastStatus = 0;
   let lastMessage = "";
 
-  for (const url of urls) {
+  for (const endpoint of endpoints) {
     try {
       const body = new URLSearchParams({
         bid: streamerId,
@@ -77,7 +75,7 @@ async function getLiveStatus(streamerId: string) {
         is_revive: "false",
       });
 
-      const response = await fetch(url, {
+      const response = await fetch(endpoint, {
         method: "POST",
 
         headers: {
@@ -106,14 +104,12 @@ async function getLiveStatus(streamerId: string) {
       if (!response.ok) {
         lastMessage =
           `LIVE API HTTP ${response.status}`;
-
         continue;
       }
 
       if (!text.trim()) {
         lastMessage =
           "LIVE API 응답이 비어 있습니다.";
-
         continue;
       }
 
@@ -122,7 +118,6 @@ async function getLiveStatus(streamerId: string) {
       if (!data) {
         lastMessage =
           "LIVE API JSON 변환 실패";
-
         continue;
       }
 
@@ -146,7 +141,7 @@ async function getLiveStatus(streamerId: string) {
           broadNo != null
             ? String(broadNo)
             : "",
-        source: url,
+        source: endpoint,
       };
     } catch (error) {
       lastMessage =
@@ -193,7 +188,7 @@ function looksLikePost(value: unknown) {
 }
 
 /* =========================================
-   응답에서 게시글 배열 찾기
+   응답 내부 게시글 배열 탐색
 ========================================= */
 
 function findPostArray(
@@ -215,38 +210,35 @@ function findPostArray(
     }
 
     for (const child of value) {
-      const result =
+      const found =
         findPostArray(
           child,
           depth + 1
         );
 
-      if (result.length > 0) {
-        return result;
+      if (found.length > 0) {
+        return found;
       }
     }
 
     return [];
   }
 
-  if (
-    typeof value ===
-    "object"
-  ) {
+  if (typeof value === "object") {
     for (
       const child
       of Object.values(
         value as AnyRecord
       )
     ) {
-      const result =
+      const found =
         findPostArray(
           child,
           depth + 1
         );
 
-      if (result.length > 0) {
-        return result;
+      if (found.length > 0) {
+        return found;
       }
     }
   }
@@ -255,7 +247,150 @@ function findPostArray(
 }
 
 /* =========================================
-   게시판 한 페이지 조회
+   게시글 정보
+========================================= */
+
+function getBoardNo(
+  post: AnyRecord
+) {
+  return String(
+    post?.bbs_no ??
+      post?.bbsNo ??
+      post?.board_no ??
+      post?.boardNo ??
+      ""
+  );
+}
+
+function getPostNo(
+  post: AnyRecord
+) {
+  const value =
+    post?.title_no ??
+    post?.titleNo ??
+    post?.post_no ??
+    post?.postNo ??
+    post?.id;
+
+  return value == null
+    ? ""
+    : String(value);
+}
+
+function getPostTitle(
+  post: AnyRecord
+) {
+  return String(
+    post?.title ??
+      post?.title_name ??
+      post?.subject ??
+      "제목 없는 글"
+  ).trim();
+}
+
+function getPostDate(
+  post: AnyRecord
+) {
+  return String(
+    post?.reg_date ??
+      post?.regDate ??
+      post?.created_at ??
+      post?.createdAt ??
+      ""
+  );
+}
+
+/* =========================================
+   게시글 변환
+========================================= */
+
+function normalizePosts(
+  posts: AnyRecord[],
+  streamerId: string,
+  boardUrl: string
+) {
+  const seen =
+    new Set<string>();
+
+  return posts
+    .map(
+      (
+        post,
+        index
+      ) => {
+        const postNo =
+          getPostNo(post);
+
+        const title =
+          getPostTitle(post);
+
+        const regDate =
+          getPostDate(post);
+
+        const id =
+          postNo ||
+          `${title}-${regDate}-${index}`;
+
+        return {
+          id,
+          title,
+          regDate,
+
+          url:
+            postNo
+              ? `https://www.sooplive.com/station/${encodeURIComponent(
+                  streamerId
+                )}/post/${encodeURIComponent(
+                  postNo
+                )}`
+              : boardUrl,
+        };
+      }
+    )
+
+    .filter(
+      (post) => {
+        if (
+          seen.has(post.id)
+        ) {
+          return false;
+        }
+
+        seen.add(post.id);
+
+        return true;
+      }
+    )
+
+    .sort(
+      (a, b) => {
+        const aTime =
+          new Date(
+            a.regDate
+          ).getTime();
+
+        const bTime =
+          new Date(
+            b.regDate
+          ).getTime();
+
+        if (
+          Number.isNaN(aTime) ||
+          Number.isNaN(bTime)
+        ) {
+          return 0;
+        }
+
+        return (
+          bTime -
+          aTime
+        );
+      }
+    );
+}
+
+/* =========================================
+   SOOP 게시판 API
 ========================================= */
 
 async function getPostsPage(
@@ -325,28 +460,27 @@ async function getPostsPage(
     );
 
     try {
-      const response =
-        await fetch(
-          url.toString(),
-          {
-            headers: {
-              Accept:
-                "application/json, text/plain, */*",
+      const response = await fetch(
+        url.toString(),
+        {
+          headers: {
+            Accept:
+              "application/json, text/plain, */*",
 
-              "User-Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152.0.0.0 Safari/537.36",
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152.0.0.0 Safari/537.36",
 
-              Referer:
-                boardUrl,
+            Referer:
+              boardUrl,
 
-              Origin:
-                "https://www.sooplive.com",
-            },
+            Origin:
+              "https://www.sooplive.com",
+          },
 
-            cache:
-              "no-store",
-          }
-        );
+          cache:
+            "no-store",
+        }
+      );
 
       lastStatus =
         response.status;
@@ -382,14 +516,12 @@ async function getPostsPage(
         continue;
       }
 
-      const posts =
-        findPostArray(data);
-
       return {
         ok: true,
         status:
           response.status,
-        posts,
+        posts:
+          findPostArray(data),
         source:
           url.toString(),
       };
@@ -413,153 +545,7 @@ async function getPostsPage(
 }
 
 /* =========================================
-   게시글 정보 추출
-========================================= */
-
-function getBoardNo(
-  post: AnyRecord
-) {
-  return String(
-    post?.bbs_no ??
-      post?.bbsNo ??
-      post?.board_no ??
-      post?.boardNo ??
-      ""
-  );
-}
-
-function getPostNo(
-  post: AnyRecord
-) {
-  const value =
-    post?.title_no ??
-    post?.titleNo ??
-    post?.post_no ??
-    post?.postNo ??
-    post?.id;
-
-  return value == null
-    ? ""
-    : String(value);
-}
-
-function getPostTitle(
-  post: AnyRecord
-) {
-  return String(
-    post?.title ??
-      post?.title_name ??
-      post?.subject ??
-      "제목 없는 글"
-  ).trim();
-}
-
-function getPostDate(
-  post: AnyRecord
-) {
-  return String(
-    post?.reg_date ??
-      post?.regDate ??
-      post?.created_at ??
-      post?.createdAt ??
-      ""
-  );
-}
-
-/* =========================================
-   게시글 변환
-========================================= */
-
-function normalizePosts(
-  posts: AnyRecord[],
-  streamerId: string,
-  boardUrl: string
-) {
-  const seen =
-    new Set<string>();
-
-  return posts
-
-    .map(
-      (
-        post,
-        index
-      ) => {
-        const postNo =
-          getPostNo(post);
-
-        const title =
-          getPostTitle(post);
-
-        const regDate =
-          getPostDate(post);
-
-        const id =
-          postNo ||
-          `${title}-${regDate}-${index}`;
-
-        return {
-          id,
-
-          title,
-
-          regDate,
-
-          url:
-            postNo
-              ? `https://www.sooplive.com/station/${encodeURIComponent(
-                  streamerId
-                )}/post/${encodeURIComponent(
-                  postNo
-                )}`
-              : boardUrl,
-        };
-      }
-    )
-
-    .filter(
-      (post) => {
-        if (
-          seen.has(post.id)
-        ) {
-          return false;
-        }
-
-        seen.add(post.id);
-
-        return true;
-      }
-    )
-
-    .sort(
-      (a, b) => {
-        const aTime =
-          new Date(
-            a.regDate
-          ).getTime();
-
-        const bTime =
-          new Date(
-            b.regDate
-          ).getTime();
-
-        if (
-          Number.isNaN(aTime) ||
-          Number.isNaN(bTime)
-        ) {
-          return 0;
-        }
-
-        return (
-          bTime -
-          aTime
-        );
-      }
-    );
-}
-
-/* =========================================
-   특정 게시판 게시글 조회
+   특정 게시판 최신글
 ========================================= */
 
 async function getBoardPosts(
@@ -567,9 +553,7 @@ async function getBoardPosts(
   boardNo: string,
   boardUrl: string
 ) {
-  /* =========================
-     1차 - 게시판 직접 조회
-  ========================== */
+  /* 1차 - 게시판 번호 직접 조회 */
 
   const direct =
     await getPostsPage(
@@ -612,7 +596,8 @@ async function getBoardPosts(
             MAX_POSTS
           ),
 
-        error: false,
+        error:
+          false,
 
         source:
           direct.source,
@@ -620,9 +605,7 @@ async function getBoardPosts(
     }
   }
 
-  /* =========================
-     2차 - 전체 글에서 찾기
-  ========================== */
+  /* 2차 - 전체 게시글에서 해당 게시판 검색 */
 
   const matched:
     AnyRecord[] = [];
@@ -713,7 +696,8 @@ async function getBoardPosts(
         MAX_POSTS
       ),
 
-    error: false,
+    error:
+      false,
 
     source,
   };
@@ -757,20 +741,20 @@ export async function GET(
       schedulePosts: [],
       schedulePostsError: true,
 
-      message:
-        "스트리머 ID가 없습니다.",
+      wakiPosts: [],
+      wakiPostsError: true,
     });
   }
 
   /* =====================================
-     LIVE + UP해줘 + 일정 안내
-     동시에 요청
+     네 가지 데이터를 동시에 조회
   ===================================== */
 
   const [
     liveResult,
     upResult,
     scheduleResult,
+    wakiResult,
   ] =
     await Promise.all([
       getLiveStatus(
@@ -788,6 +772,12 @@ export async function GET(
         SCHEDULE_BOARD_NO,
         SCHEDULE_BOARD_URL
       ),
+
+      getBoardPosts(
+        streamerId,
+        WAKI_BOARD_NO,
+        WAKI_BOARD_URL
+      ),
     ]);
 
   const response:
@@ -795,9 +785,7 @@ export async function GET(
     id:
       streamerId,
 
-    /* =========================
-       LIVE
-    ========================== */
+    /* LIVE */
 
     live:
       liveResult.live,
@@ -809,9 +797,7 @@ export async function GET(
       liveResult.message ??
       "",
 
-    /* =========================
-       UP해줘
-    ========================== */
+    /* 바샤업up */
 
     boardNo:
       UP_BOARD_NO,
@@ -829,9 +815,7 @@ export async function GET(
       upResult.message ??
       "",
 
-    /* =========================
-       일정 안내
-    ========================== */
+    /* 일정 안내 */
 
     scheduleBoardNo:
       SCHEDULE_BOARD_NO,
@@ -848,11 +832,25 @@ export async function GET(
     schedulePostsMessage:
       scheduleResult.message ??
       "",
-  };
 
-  /* =========================
-     DEBUG
-  ========================== */
+    /* 와키 배포 */
+
+    wakiBoardNo:
+      WAKI_BOARD_NO,
+
+    wakiBoardUrl:
+      WAKI_BOARD_URL,
+
+    wakiPosts:
+      wakiResult.posts,
+
+    wakiPostsError:
+      wakiResult.error,
+
+    wakiPostsMessage:
+      wakiResult.message ??
+      "",
+  };
 
   if (debug) {
     response.debug = {
@@ -872,10 +870,6 @@ export async function GET(
         source:
           upResult.source ??
           "",
-
-        message:
-          upResult.message ??
-          "",
       },
 
       scheduleBoard: {
@@ -891,9 +885,20 @@ export async function GET(
         source:
           scheduleResult.source ??
           "",
+      },
 
-        message:
-          scheduleResult.message ??
+      wakiBoard: {
+        boardNo:
+          WAKI_BOARD_NO,
+
+        error:
+          wakiResult.error,
+
+        count:
+          wakiResult.posts.length,
+
+        source:
+          wakiResult.source ??
           "",
       },
     };
