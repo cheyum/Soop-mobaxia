@@ -3,16 +3,29 @@ import { NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-const BOARD_NO = "124110231";
+/* =========================================
+   게시판 설정
+========================================= */
 
-const BOARD_URL =
+const UP_BOARD_NO = "124110231";
+
+const UP_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110231";
+
+const SCHEDULE_BOARD_NO = "124110021";
+
+const SCHEDULE_BOARD_URL =
+  "https://www.sooplive.com/station/mobaxia/board/124110021";
 
 const MAX_POSTS = 4;
 const POSTS_PER_PAGE = 50;
 const MAX_PAGES = 10;
 
 type AnyRecord = Record<string, any>;
+
+/* =========================================
+   공통 JSON 응답
+========================================= */
 
 function jsonResponse(data: AnyRecord) {
   return NextResponse.json(data, {
@@ -23,6 +36,10 @@ function jsonResponse(data: AnyRecord) {
     },
   });
 }
+
+/* =========================================
+   JSON 안전 변환
+========================================= */
 
 function safeJson(text: string): AnyRecord | null {
   try {
@@ -150,7 +167,7 @@ async function getLiveStatus(streamerId: string) {
 }
 
 /* =========================================
-   게시글 배열 찾기
+   게시글 판별
 ========================================= */
 
 function looksLikePost(value: unknown) {
@@ -174,6 +191,10 @@ function looksLikePost(value: unknown) {
       post?.subject
   );
 }
+
+/* =========================================
+   응답에서 게시글 배열 찾기
+========================================= */
 
 function findPostArray(
   value: unknown,
@@ -234,13 +255,14 @@ function findPostArray(
 }
 
 /* =========================================
-   게시판 게시글 한 페이지 조회
+   게시판 한 페이지 조회
 ========================================= */
 
 async function getPostsPage(
   streamerId: string,
   page: number,
-  boardNumber: string
+  boardNumber: string,
+  boardUrl: string
 ) {
   const bases = [
     "https://chapi.sooplive.co.kr/api",
@@ -315,7 +337,7 @@ async function getPostsPage(
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152.0.0.0 Safari/537.36",
 
               Referer:
-                `https://www.sooplive.com/station/${streamerId}`,
+                boardUrl,
 
               Origin:
                 "https://www.sooplive.com",
@@ -445,170 +467,13 @@ function getPostDate(
 }
 
 /* =========================================
-   UP해줘 게시글 조회
-========================================= */
-
-async function getBoardPosts(
-  streamerId: string
-) {
-  /*
-    1차:
-    board_number에 정확한 게시판 번호 입력
-  */
-
-  const direct =
-    await getPostsPage(
-      streamerId,
-      1,
-      BOARD_NO
-    );
-
-  if (
-    direct.ok &&
-    direct.posts.length > 0
-  ) {
-    const hasBoardNo =
-      direct.posts.some(
-        (post) =>
-          getBoardNo(post) !== ""
-      );
-
-    const filtered =
-      hasBoardNo
-        ? direct.posts.filter(
-            (post) =>
-              getBoardNo(post) ===
-              BOARD_NO
-          )
-        : direct.posts;
-
-    if (
-      filtered.length > 0
-    ) {
-      return {
-        posts:
-          normalizePosts(
-            filtered,
-            streamerId
-          ).slice(
-            0,
-            MAX_POSTS
-          ),
-
-        error: false,
-
-        source:
-          direct.source,
-      };
-    }
-  }
-
-  /*
-    2차:
-    전체 게시글을 불러온 뒤
-    bbs_no === 124110231 필터
-  */
-
-  const matched:
-    AnyRecord[] = [];
-
-  let lastStatus = 0;
-  let lastMessage = "";
-  let source = "";
-
-  for (
-    let page = 1;
-    page <= MAX_PAGES;
-    page += 1
-  ) {
-    const result =
-      await getPostsPage(
-        streamerId,
-        page,
-        ""
-      );
-
-    lastStatus =
-      result.status;
-
-    if (!result.ok) {
-      lastMessage =
-        result.message ||
-        "게시글 API 연결 실패";
-
-      break;
-    }
-
-    source =
-      result.source ||
-      source;
-
-    if (
-      result.posts.length === 0
-    ) {
-      break;
-    }
-
-    matched.push(
-      ...result.posts.filter(
-        (post) =>
-          getBoardNo(post) ===
-          BOARD_NO
-      )
-    );
-
-    if (
-      matched.length >=
-      MAX_POSTS
-    ) {
-      break;
-    }
-
-    if (
-      result.posts.length <
-      POSTS_PER_PAGE
-    ) {
-      break;
-    }
-  }
-
-  if (
-    matched.length === 0 &&
-    lastMessage
-  ) {
-    return {
-      posts: [],
-      error: true,
-      status:
-        lastStatus,
-      message:
-        lastMessage,
-    };
-  }
-
-  return {
-    posts:
-      normalizePosts(
-        matched,
-        streamerId
-      ).slice(
-        0,
-        MAX_POSTS
-      ),
-
-    error: false,
-
-    source,
-  };
-}
-
-/* =========================================
    게시글 변환
 ========================================= */
 
 function normalizePosts(
   posts: AnyRecord[],
-  streamerId: string
+  streamerId: string,
+  boardUrl: string
 ) {
   const seen =
     new Set<string>();
@@ -647,7 +512,7 @@ function normalizePosts(
                 )}/post/${encodeURIComponent(
                   postNo
                 )}`
-              : BOARD_URL,
+              : boardUrl,
         };
       }
     )
@@ -694,6 +559,167 @@ function normalizePosts(
 }
 
 /* =========================================
+   특정 게시판 게시글 조회
+========================================= */
+
+async function getBoardPosts(
+  streamerId: string,
+  boardNo: string,
+  boardUrl: string
+) {
+  /* =========================
+     1차 - 게시판 직접 조회
+  ========================== */
+
+  const direct =
+    await getPostsPage(
+      streamerId,
+      1,
+      boardNo,
+      boardUrl
+    );
+
+  if (
+    direct.ok &&
+    direct.posts.length > 0
+  ) {
+    const hasBoardNo =
+      direct.posts.some(
+        (post) =>
+          getBoardNo(post) !== ""
+      );
+
+    const filtered =
+      hasBoardNo
+        ? direct.posts.filter(
+            (post) =>
+              getBoardNo(post) ===
+              boardNo
+          )
+        : direct.posts;
+
+    if (
+      filtered.length > 0
+    ) {
+      return {
+        posts:
+          normalizePosts(
+            filtered,
+            streamerId,
+            boardUrl
+          ).slice(
+            0,
+            MAX_POSTS
+          ),
+
+        error: false,
+
+        source:
+          direct.source,
+      };
+    }
+  }
+
+  /* =========================
+     2차 - 전체 글에서 찾기
+  ========================== */
+
+  const matched:
+    AnyRecord[] = [];
+
+  let lastStatus = 0;
+  let lastMessage = "";
+  let source = "";
+
+  for (
+    let page = 1;
+    page <= MAX_PAGES;
+    page += 1
+  ) {
+    const result =
+      await getPostsPage(
+        streamerId,
+        page,
+        "",
+        boardUrl
+      );
+
+    lastStatus =
+      result.status;
+
+    if (!result.ok) {
+      lastMessage =
+        result.message ||
+        "게시글 API 연결 실패";
+
+      break;
+    }
+
+    source =
+      result.source ||
+      source;
+
+    if (
+      result.posts.length === 0
+    ) {
+      break;
+    }
+
+    matched.push(
+      ...result.posts.filter(
+        (post) =>
+          getBoardNo(post) ===
+          boardNo
+      )
+    );
+
+    if (
+      matched.length >=
+      MAX_POSTS
+    ) {
+      break;
+    }
+
+    if (
+      result.posts.length <
+      POSTS_PER_PAGE
+    ) {
+      break;
+    }
+  }
+
+  if (
+    matched.length === 0 &&
+    lastMessage
+  ) {
+    return {
+      posts: [],
+      error: true,
+      status:
+        lastStatus,
+      message:
+        lastMessage,
+    };
+  }
+
+  return {
+    posts:
+      normalizePosts(
+        matched,
+        streamerId,
+        boardUrl
+      ).slice(
+        0,
+        MAX_POSTS
+      ),
+
+    error: false,
+
+    source,
+  };
+}
+
+/* =========================================
    API
 ========================================= */
 
@@ -728,14 +754,23 @@ export async function GET(
       posts: [],
       postsError: true,
 
+      schedulePosts: [],
+      schedulePostsError: true,
+
       message:
         "스트리머 ID가 없습니다.",
     });
   }
 
+  /* =====================================
+     LIVE + UP해줘 + 일정 안내
+     동시에 요청
+  ===================================== */
+
   const [
     liveResult,
-    postsResult,
+    upResult,
+    scheduleResult,
   ] =
     await Promise.all([
       getLiveStatus(
@@ -743,7 +778,15 @@ export async function GET(
       ),
 
       getBoardPosts(
-        streamerId
+        streamerId,
+        UP_BOARD_NO,
+        UP_BOARD_URL
+      ),
+
+      getBoardPosts(
+        streamerId,
+        SCHEDULE_BOARD_NO,
+        SCHEDULE_BOARD_URL
       ),
     ]);
 
@@ -752,11 +795,9 @@ export async function GET(
     id:
       streamerId,
 
-    boardNo:
-      BOARD_NO,
-
-    boardUrl:
-      BOARD_URL,
+    /* =========================
+       LIVE
+    ========================== */
 
     live:
       liveResult.live,
@@ -768,39 +809,91 @@ export async function GET(
       liveResult.message ??
       "",
 
+    /* =========================
+       UP해줘
+    ========================== */
+
+    boardNo:
+      UP_BOARD_NO,
+
+    boardUrl:
+      UP_BOARD_URL,
+
     posts:
-      postsResult.posts,
+      upResult.posts,
 
     postsError:
-      postsResult.error,
+      upResult.error,
 
     postsMessage:
-      postsResult.message ??
+      upResult.message ??
+      "",
+
+    /* =========================
+       일정 안내
+    ========================== */
+
+    scheduleBoardNo:
+      SCHEDULE_BOARD_NO,
+
+    scheduleBoardUrl:
+      SCHEDULE_BOARD_URL,
+
+    schedulePosts:
+      scheduleResult.posts,
+
+    schedulePostsError:
+      scheduleResult.error,
+
+    schedulePostsMessage:
+      scheduleResult.message ??
       "",
   };
+
+  /* =========================
+     DEBUG
+  ========================== */
 
   if (debug) {
     response.debug = {
       live:
         liveResult,
 
-      posts: {
+      upBoard: {
+        boardNo:
+          UP_BOARD_NO,
+
         error:
-          postsResult.error,
-
-        status:
-          postsResult.status ??
-          200,
-
-        message:
-          postsResult.message ??
-          "",
+          upResult.error,
 
         count:
-          postsResult.posts.length,
+          upResult.posts.length,
 
         source:
-          postsResult.source ??
+          upResult.source ??
+          "",
+
+        message:
+          upResult.message ??
+          "",
+      },
+
+      scheduleBoard: {
+        boardNo:
+          SCHEDULE_BOARD_NO,
+
+        error:
+          scheduleResult.error,
+
+        count:
+          scheduleResult.posts.length,
+
+        source:
+          scheduleResult.source ??
+          "",
+
+        message:
+          scheduleResult.message ??
           "",
       },
     };

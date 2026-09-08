@@ -18,13 +18,21 @@ type MobaxiaApiResponse = {
   live?: boolean;
   liveError?: boolean;
   liveMessage?: string;
+
   posts?: SoopPost[];
   postsError?: boolean;
   postsMessage?: string;
+
+  schedulePosts?: SoopPost[];
+  schedulePostsError?: boolean;
+  schedulePostsMessage?: string;
 };
 
 const UP_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110231";
+
+const SCHEDULE_BOARD_URL =
+  "https://www.sooplive.com/station/mobaxia/board/124110021";
 
 const notices = [
   "[공지] 방송 일정은 캘린더 참고 부탁드려요",
@@ -43,6 +51,11 @@ export default function Home() {
   const [upPosts, setUpPosts] = useState<SoopPost[]>([]);
   const [postsLoading, setPostsLoading] = useState(true);
   const [postsError, setPostsError] = useState<string | null>(null);
+  const [schedulePosts, setSchedulePosts] =
+  useState<SoopPost[]>([]);
+
+  const [scheduleError, setScheduleError] =
+  useState<string | null>(null);
 
   async function refreshMobaxia() {
     try {
@@ -77,6 +90,25 @@ export default function Home() {
       } else {
         setPostsError(null);
       }
+      /* =========================
+          일정 안내
+         ========================== */
+
+      if (Array.isArray(data.schedulePosts)) {
+        setSchedulePosts(data.schedulePosts.slice(0,4));} else {
+        setSchedulePosts([]);
+}
+
+if (
+  data.schedulePostsError
+) {
+  setScheduleError(
+    data.schedulePostsMessage ||
+      "일정을 불러오지 못했어요"
+  );
+} else {
+  setScheduleError(null);
+}
     } catch (error) {
       console.error("MOBAXIA 정보 조회 실패:", error);
       setStatus({ live: false, error: true });
@@ -87,6 +119,7 @@ export default function Home() {
       setPostsLoading(false);
     }
   }
+  
 
   useEffect(() => {
     refreshMobaxia();
@@ -332,29 +365,99 @@ export default function Home() {
           </button>
         </article>
 
-        {/* 공지사항 */}
-        <article className="contentCard">
-          <div className="cardTitle">
-            <h3>공지사항</h3>
-            <span>Notice</span>
-          </div>
+        {/* =========================
+            일정 안내
+            ========================== */}
 
-          <div className="postList">
-            {notices.map((notice, index) => (
-              <a
-                href="#"
-                className="postItem noticeItem"
-                key={`notice-${index}`}
-              >
-                {notice}
-              </a>
-            ))}
-          </div>
+<article className="contentCard">
 
-          <button type="button" className="cardButton">
-            공지 전체보기
-          </button>
-        </article>
+  <div className="cardTitle">
+
+    <h3>
+      일정 안내
+    </h3>
+
+    <span>
+      Schedule
+    </span>
+
+  </div>
+
+
+  <div className="postList">
+
+    {postsLoading ? (
+
+      <div className="postItem">
+
+        최신 일정을 불러오는 중이에요 ♡
+
+      </div>
+
+    ) : scheduleError ? (
+
+      <div
+        className="postItem"
+        title={scheduleError}
+      >
+
+        일정을 불러오지 못했어요
+
+      </div>
+
+    ) : schedulePosts.length > 0 ? (
+
+      schedulePosts.map(
+        (post) => (
+
+          <a
+            href={post.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="postItem noticeItem"
+            key={post.id}
+            title={post.title}
+          >
+
+            {post.title}
+
+          </a>
+
+        )
+      )
+
+    ) : (
+
+      <div className="postItem">
+
+        아직 등록된 일정이 없어요 ♡
+
+      </div>
+
+    )}
+
+  </div>
+
+
+  <button
+    type="button"
+    className="cardButton"
+    onClick={() => {
+
+      window.open(
+        SCHEDULE_BOARD_URL,
+        "_blank",
+        "noopener,noreferrer"
+      );
+
+    }}
+  >
+
+    일정 전체보기
+
+  </button>
+
+</article>
 
         {/* 배너 */}
         <article className="contentCard">
