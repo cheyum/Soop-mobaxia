@@ -13,25 +13,39 @@ const MAX_PAGES = 10;
    게시판 설정
 ========================================= */
 
+// 바샤업up
 const UP_BOARD_NO = "124110231";
+
 const UP_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110231";
 
+// 일정 안내
 const SCHEDULE_BOARD_NO = "124110021";
+
 const SCHEDULE_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110021";
 
+// 와키 배포
 const WAKI_BOARD_NO = "124449583";
+
 const WAKI_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124449583";
 
+// 와키는 오래된 기존 글까지 조회
+const WAKI_START_DATE =
+  "2000-01-01 00:00:00";
+
+// 와키 fallback 검색 페이지 수
+const WAKI_MAX_PAGES = 30;
+
 /* =========================================
-   JSON 응답
+   공통 JSON 응답
 ========================================= */
 
 function jsonResponse(data: AnyRecord) {
   return NextResponse.json(data, {
     status: 200,
+
     headers: {
       "Cache-Control":
         "no-store, no-cache, must-revalidate",
@@ -39,7 +53,13 @@ function jsonResponse(data: AnyRecord) {
   });
 }
 
-function safeJson(text: string): AnyRecord | null {
+/* =========================================
+   JSON 안전 변환
+========================================= */
+
+function safeJson(
+  text: string
+): AnyRecord | null {
   try {
     return JSON.parse(text);
   } catch {
@@ -51,7 +71,9 @@ function safeJson(text: string): AnyRecord | null {
    LIVE 상태 조회
 ========================================= */
 
-async function getLiveStatus(streamerId: string) {
+async function getLiveStatus(
+  streamerId: string
+) {
   const endpoints = [
     "https://live.sooplive.com/afreeca/player_live_api.php",
     "https://live.sooplive.co.kr/afreeca/player_live_api.php",
@@ -75,49 +97,57 @@ async function getLiveStatus(streamerId: string) {
         is_revive: "false",
       });
 
-      const response = await fetch(endpoint, {
-        method: "POST",
+      const response = await fetch(
+        endpoint,
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type":
-            "application/x-www-form-urlencoded",
+          headers: {
+            "Content-Type":
+              "application/x-www-form-urlencoded",
 
-          Accept:
-            "application/json, text/plain, */*",
+            Accept:
+              "application/json, text/plain, */*",
 
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152.0.0.0 Safari/537.36",
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152.0.0.0 Safari/537.36",
 
-          Referer:
-            `https://play.sooplive.com/${streamerId}`,
-        },
+            Referer:
+              `https://play.sooplive.com/${streamerId}`,
+          },
 
-        body: body.toString(),
+          body: body.toString(),
 
-        cache: "no-store",
-      });
+          cache: "no-store",
+        }
+      );
 
       lastStatus = response.status;
 
-      const text = await response.text();
+      const text =
+        await response.text();
 
       if (!response.ok) {
         lastMessage =
           `LIVE API HTTP ${response.status}`;
+
         continue;
       }
 
       if (!text.trim()) {
         lastMessage =
           "LIVE API 응답이 비어 있습니다.";
+
         continue;
       }
 
-      const data = safeJson(text);
+      const data =
+        safeJson(text);
 
       if (!data) {
         lastMessage =
           "LIVE API JSON 변환 실패";
+
         continue;
       }
 
@@ -137,10 +167,12 @@ async function getLiveStatus(streamerId: string) {
         live,
         error: false,
         status: response.status,
+
         broadNo:
           broadNo != null
             ? String(broadNo)
             : "",
+
         source: endpoint,
       };
     } catch (error) {
@@ -155,6 +187,7 @@ async function getLiveStatus(streamerId: string) {
     live: false,
     error: true,
     status: lastStatus,
+
     message:
       lastMessage ||
       "방송 상태를 확인하지 못했습니다.",
@@ -165,7 +198,9 @@ async function getLiveStatus(streamerId: string) {
    게시글 판별
 ========================================= */
 
-function looksLikePost(value: unknown) {
+function looksLikePost(
+  value: unknown
+) {
   if (
     !value ||
     typeof value !== "object" ||
@@ -203,20 +238,29 @@ function findPostArray(
   }
 
   if (Array.isArray(value)) {
-    if (value.some(looksLikePost)) {
+    if (
+      value.some(
+        looksLikePost
+      )
+    ) {
       return value.filter(
         looksLikePost
       ) as AnyRecord[];
     }
 
-    for (const child of value) {
+    for (
+      const child
+      of value
+    ) {
       const found =
         findPostArray(
           child,
           depth + 1
         );
 
-      if (found.length > 0) {
+      if (
+        found.length > 0
+      ) {
         return found;
       }
     }
@@ -224,7 +268,10 @@ function findPostArray(
     return [];
   }
 
-  if (typeof value === "object") {
+  if (
+    typeof value ===
+    "object"
+  ) {
     for (
       const child
       of Object.values(
@@ -237,7 +284,9 @@ function findPostArray(
           depth + 1
         );
 
-      if (found.length > 0) {
+      if (
+        found.length > 0
+      ) {
         return found;
       }
     }
@@ -247,7 +296,7 @@ function findPostArray(
 }
 
 /* =========================================
-   게시글 정보
+   게시글 정보 추출
 ========================================= */
 
 function getBoardNo(
@@ -313,6 +362,7 @@ function normalizePosts(
     new Set<string>();
 
   return posts
+
     .map(
       (
         post,
@@ -344,9 +394,14 @@ function normalizePosts(
                   postNo
                 )}`
               : boardUrl,
+
+          originalIndex:
+            index,
         };
       }
     )
+
+    /* 중복 제거 */
 
     .filter(
       (post) => {
@@ -362,30 +417,54 @@ function normalizePosts(
       }
     )
 
+    /* 최신순 정렬 */
+
     .sort(
       (a, b) => {
         const aTime =
           new Date(
-            a.regDate
+            a.regDate || ""
           ).getTime();
 
         const bTime =
           new Date(
-            b.regDate
+            b.regDate || ""
           ).getTime();
 
+        const aValid =
+          Number.isFinite(
+            aTime
+          );
+
+        const bValid =
+          Number.isFinite(
+            bTime
+          );
+
         if (
-          Number.isNaN(aTime) ||
-          Number.isNaN(bTime)
+          aValid &&
+          bValid
         ) {
-          return 0;
+          return (
+            bTime -
+            aTime
+          );
         }
 
         return (
-          bTime -
-          aTime
+          a.originalIndex -
+          b.originalIndex
         );
       }
+    )
+
+    /* 내부용 index 제거 */
+
+    .map(
+      ({
+        originalIndex,
+        ...post
+      }) => post
     );
 }
 
@@ -397,7 +476,8 @@ async function getPostsPage(
   streamerId: string,
   page: number,
   boardNumber: string,
-  boardUrl: string
+  boardUrl: string,
+  startDate = ""
 ) {
   const bases = [
     "https://chapi.sooplive.co.kr/api",
@@ -407,21 +487,27 @@ async function getPostsPage(
   let lastStatus = 0;
   let lastMessage = "";
 
-  for (const base of bases) {
-    const url = new URL(
-      `${base}/${encodeURIComponent(
-        streamerId
-      )}/board/`
-    );
+  for (
+    const base
+    of bases
+  ) {
+    const url =
+      new URL(
+        `${base}/${encodeURIComponent(
+          streamerId
+        )}/board/`
+      );
 
     url.searchParams.set(
       "per_page",
-      String(POSTS_PER_PAGE)
+      String(
+        POSTS_PER_PAGE
+      )
     );
 
     url.searchParams.set(
       "start_date",
-      ""
+      startDate
     );
 
     url.searchParams.set(
@@ -460,27 +546,31 @@ async function getPostsPage(
     );
 
     try {
-      const response = await fetch(
-        url.toString(),
-        {
-          headers: {
-            Accept:
-              "application/json, text/plain, */*",
+      const response =
+        await fetch(
+          url.toString(),
+          {
+            method:
+              "GET",
 
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152.0.0.0 Safari/537.36",
+            headers: {
+              Accept:
+                "application/json, text/plain, */*",
 
-            Referer:
-              boardUrl,
+              "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/152.0.0.0 Safari/537.36",
 
-            Origin:
-              "https://www.sooplive.com",
-          },
+              Referer:
+                boardUrl,
 
-          cache:
-            "no-store",
-        }
-      );
+              Origin:
+                "https://www.sooplive.com",
+            },
+
+            cache:
+              "no-store",
+          }
+        );
 
       lastStatus =
         response.status;
@@ -488,19 +578,27 @@ async function getPostsPage(
       const text =
         await response.text();
 
-      if (!response.ok) {
+      if (
+        !response.ok
+      ) {
         lastMessage =
           `게시글 API HTTP ${response.status}`;
 
         continue;
       }
 
-      if (!text.trim()) {
+      if (
+        !text.trim()
+      ) {
         return {
           ok: true,
+
           status:
             response.status,
-          posts: [] as AnyRecord[],
+
+          posts:
+            [] as AnyRecord[],
+
           source:
             url.toString(),
         };
@@ -518,10 +616,15 @@ async function getPostsPage(
 
       return {
         ok: true,
+
         status:
           response.status,
+
         posts:
-          findPostArray(data),
+          findPostArray(
+            data
+          ),
+
         source:
           url.toString(),
       };
@@ -535,9 +638,13 @@ async function getPostsPage(
 
   return {
     ok: false,
+
     status:
       lastStatus,
-    posts: [] as AnyRecord[],
+
+    posts:
+      [] as AnyRecord[],
+
     message:
       lastMessage ||
       "게시글 API 연결 실패",
@@ -545,39 +652,63 @@ async function getPostsPage(
 }
 
 /* =========================================
-   특정 게시판 최신글
+   특정 게시판 최신글 조회
 ========================================= */
 
 async function getBoardPosts(
   streamerId: string,
   boardNo: string,
-  boardUrl: string
+  boardUrl: string,
+  options?: {
+    startDate?: string;
+    maxPages?: number;
+  }
 ) {
-  /* 1차 - 게시판 번호 직접 조회 */
+  const startDate =
+    options?.startDate ?? "";
+
+  const maxPages =
+    options?.maxPages ??
+    MAX_PAGES;
+
+  /* =====================================
+     1차
+     board_number로 게시판 직접 조회
+  ===================================== */
 
   const direct =
     await getPostsPage(
       streamerId,
       1,
       boardNo,
-      boardUrl
+      boardUrl,
+      startDate
     );
 
   if (
     direct.ok &&
     direct.posts.length > 0
   ) {
+    /*
+      일부 SOOP 응답은 게시판 번호가
+      포함될 수도 있고 없을 수도 있음
+    */
+
     const hasBoardNo =
       direct.posts.some(
         (post) =>
-          getBoardNo(post) !== ""
+          getBoardNo(
+            post
+          ) !== ""
       );
 
     const filtered =
       hasBoardNo
         ? direct.posts.filter(
             (post) =>
-              getBoardNo(post) ===
+              getBoardNo(
+                post
+              ) ===
               boardNo
           )
         : direct.posts;
@@ -599,13 +730,19 @@ async function getBoardPosts(
         error:
           false,
 
+        status:
+          direct.status,
+
         source:
           direct.source,
       };
     }
   }
 
-  /* 2차 - 전체 게시글에서 해당 게시판 검색 */
+  /* =====================================
+     2차 fallback
+     전체 게시글에서 게시판 번호로 검색
+  ===================================== */
 
   const matched:
     AnyRecord[] = [];
@@ -616,7 +753,7 @@ async function getBoardPosts(
 
   for (
     let page = 1;
-    page <= MAX_PAGES;
+    page <= maxPages;
     page += 1
   ) {
     const result =
@@ -624,13 +761,16 @@ async function getBoardPosts(
         streamerId,
         page,
         "",
-        boardUrl
+        boardUrl,
+        startDate
       );
 
     lastStatus =
       result.status;
 
-    if (!result.ok) {
+    if (
+      !result.ok
+    ) {
       lastMessage =
         result.message ||
         "게시글 API 연결 실패";
@@ -643,18 +783,28 @@ async function getBoardPosts(
       source;
 
     if (
-      result.posts.length === 0
+      result.posts.length ===
+      0
     ) {
       break;
     }
 
-    matched.push(
-      ...result.posts.filter(
+    const pageMatches =
+      result.posts.filter(
         (post) =>
-          getBoardNo(post) ===
+          getBoardNo(
+            post
+          ) ===
           boardNo
-      )
+      );
+
+    matched.push(
+      ...pageMatches
     );
+
+    /*
+      보여줄 글 4개를 확보하면 종료
+    */
 
     if (
       matched.length >=
@@ -662,6 +812,11 @@ async function getBoardPosts(
     ) {
       break;
     }
+
+    /*
+      한 페이지가 50개보다 적다면
+      마지막 페이지로 판단
+    */
 
     if (
       result.posts.length <
@@ -677,11 +832,17 @@ async function getBoardPosts(
   ) {
     return {
       posts: [],
-      error: true,
+
+      error:
+        true,
+
       status:
         lastStatus,
+
       message:
         lastMessage,
+
+      source,
     };
   }
 
@@ -699,6 +860,9 @@ async function getBoardPosts(
     error:
       false,
 
+    status:
+      lastStatus,
+
     source,
   };
 }
@@ -711,7 +875,9 @@ export async function GET(
   request: Request
 ) {
   const url =
-    new URL(request.url);
+    new URL(
+      request.url
+    );
 
   const parts =
     url.pathname
@@ -730,7 +896,9 @@ export async function GET(
       "debug"
     ) === "1";
 
-  if (!streamerId) {
+  if (
+    !streamerId
+  ) {
     return jsonResponse({
       live: false,
       liveError: true,
@@ -743,11 +911,19 @@ export async function GET(
 
       wakiPosts: [],
       wakiPostsError: true,
+
+      message:
+        "스트리머 ID가 없습니다.",
     });
   }
 
   /* =====================================
-     네 가지 데이터를 동시에 조회
+     LIVE
+     바샤업up
+     일정 안내
+     와키 배포
+
+     동시에 조회
   ===================================== */
 
   const [
@@ -757,9 +933,13 @@ export async function GET(
     wakiResult,
   ] =
     await Promise.all([
+      /* LIVE */
+
       getLiveStatus(
         streamerId
       ),
+
+      /* 바샤업up */
 
       getBoardPosts(
         streamerId,
@@ -767,16 +947,28 @@ export async function GET(
         UP_BOARD_URL
       ),
 
+      /* 일정 안내 */
+
       getBoardPosts(
         streamerId,
         SCHEDULE_BOARD_NO,
         SCHEDULE_BOARD_URL
       ),
 
+      /* 와키 배포
+         오래된 게시글까지 조회 */
+
       getBoardPosts(
         streamerId,
         WAKI_BOARD_NO,
-        WAKI_BOARD_URL
+        WAKI_BOARD_URL,
+        {
+          startDate:
+            WAKI_START_DATE,
+
+          maxPages:
+            WAKI_MAX_PAGES,
+        }
       ),
     ]);
 
@@ -785,7 +977,9 @@ export async function GET(
     id:
       streamerId,
 
-    /* LIVE */
+    /* =================================
+       LIVE
+    ================================= */
 
     live:
       liveResult.live,
@@ -797,7 +991,9 @@ export async function GET(
       liveResult.message ??
       "",
 
-    /* 바샤업up */
+    /* =================================
+       바샤업up
+    ================================= */
 
     boardNo:
       UP_BOARD_NO,
@@ -815,7 +1011,9 @@ export async function GET(
       upResult.message ??
       "",
 
-    /* 일정 안내 */
+    /* =================================
+       일정 안내
+    ================================= */
 
     scheduleBoardNo:
       SCHEDULE_BOARD_NO,
@@ -833,7 +1031,9 @@ export async function GET(
       scheduleResult.message ??
       "",
 
-    /* 와키 배포 */
+    /* =================================
+       와키 배포
+    ================================= */
 
     wakiBoardNo:
       WAKI_BOARD_NO,
@@ -852,10 +1052,20 @@ export async function GET(
       "",
   };
 
-  if (debug) {
+  /* =====================================
+     DEBUG
+  ===================================== */
+
+  if (
+    debug
+  ) {
     response.debug = {
+      /* LIVE */
+
       live:
         liveResult,
+
+      /* 바샤업up */
 
       upBoard: {
         boardNo:
@@ -864,13 +1074,23 @@ export async function GET(
         error:
           upResult.error,
 
+        status:
+          upResult.status ??
+          200,
+
         count:
           upResult.posts.length,
 
         source:
           upResult.source ??
           "",
+
+        message:
+          upResult.message ??
+          "",
       },
+
+      /* 일정 안내 */
 
       scheduleBoard: {
         boardNo:
@@ -879,26 +1099,50 @@ export async function GET(
         error:
           scheduleResult.error,
 
+        status:
+          scheduleResult.status ??
+          200,
+
         count:
           scheduleResult.posts.length,
 
         source:
           scheduleResult.source ??
           "",
+
+        message:
+          scheduleResult.message ??
+          "",
       },
+
+      /* 와키 배포 */
 
       wakiBoard: {
         boardNo:
           WAKI_BOARD_NO,
 
+        startDate:
+          WAKI_START_DATE,
+
+        maxPages:
+          WAKI_MAX_PAGES,
+
         error:
           wakiResult.error,
+
+        status:
+          wakiResult.status ??
+          200,
 
         count:
           wakiResult.posts.length,
 
         source:
           wakiResult.source ??
+          "",
+
+        message:
+          wakiResult.message ??
           "",
       },
     };
