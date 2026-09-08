@@ -1438,3 +1438,142 @@ input {
   background: #ffc0d7;
   transform: none;
 }
+/* =========================================
+   업보현황
+========================================= */
+
+.upboList {
+  display: grid;
+  gap: 10px;
+}
+
+.upboRow {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid rgba(241, 154, 190, 0.35);
+  border-radius: 14px;
+  background: rgba(255, 246, 250, 0.9);
+  box-sizing: border-box;
+}
+
+.upboLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 15px;
+  color: #7a3f59;
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+.upboLink:hover {
+  transform: translateY(-1px);
+  background: #fff0f6;
+}
+
+.upboLink strong {
+  font-size: 14px;
+}
+
+.upboLink span {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.upboSearchRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px;
+}
+
+.upboSearchInput {
+  min-width: 0;
+  flex: 1;
+  height: 34px;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  padding: 0 11px;
+  background: #ffffff;
+  color: #6f4055;
+  font: inherit;
+  font-size: 13px;
+}
+
+.upboSearchInput::placeholder {
+  color: #c79aac;
+}
+
+.upboSearchButton {
+  flex: 0 0 auto;
+  height: 34px;
+  padding: 0 13px;
+  border: none;
+  border-radius: 10px;
+  background: #f4a7c5;
+  color: white;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.upboSearchButton:hover {
+  filter: brightness(0.97);
+}
+
+.upboResultRow {
+  min-height: 58px;
+  padding: 11px 14px;
+  color: #755066;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.upboEmpty {
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+}
+
+.upboResultList {
+  width: 100%;
+}
+
+.upboResultLine {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upboResultLine + .upboResultLine {
+  margin-top: 5px;
+}
+
+.upboResultLine strong {
+  color: #a84e73;
+}
+
+.upboMoreResult {
+  margin-top: 7px;
+  color: #b67d96;
+  font-size: 11px;
+}
+
+@media (max-width: 768px) {
+  .upboRow {
+    min-height: 46px;
+  }
+
+  .upboSearchInput {
+    font-size: 12px;
+  }
+
+  .upboSearchButton {
+    padding: 0 11px;
+  }
+}
