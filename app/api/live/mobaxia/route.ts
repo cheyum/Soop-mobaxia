@@ -953,12 +953,17 @@ async function getBoardPosts(
    3. 180일 단위로 과거 검색
 ========================================= */
 
+// app/api/live/[id]/route.ts
+// 기존 getWakiPosts() 전체를 이 함수로 교체
+
 async function getWakiPosts(
   streamerId: string
 ) {
   /* =====================================
      1차
-     날짜 제한 없이 최신 와키 확인
+     와키 게시판 최신글 직접 확인
+
+     새 글이 올라오면 빠르게 반영
   ===================================== */
 
   const direct =
@@ -966,36 +971,32 @@ async function getWakiPosts(
       streamerId,
       1,
       WAKI_BOARD_NO,
-      WAKI_BOARD_URL
+      WAKI_BOARD_URL,
+      "",
+      ""
     );
 
   if (
     direct.ok &&
-    direct.posts.length >
-      0
+    direct.posts.length > 0
   ) {
     const hasBoardNo =
       direct.posts.some(
         (post) =>
-          getBoardNo(
-            post
-          ) !== ""
+          getBoardNo(post) !== ""
       );
 
     const filtered =
       hasBoardNo
         ? direct.posts.filter(
             (post) =>
-              getBoardNo(
-                post
-              ) ===
+              getBoardNo(post) ===
               WAKI_BOARD_NO
           )
         : direct.posts;
 
     if (
-      filtered.length >
-      0
+      filtered.length > 0
     ) {
       const posts =
         normalizePosts(
@@ -1018,8 +1019,7 @@ async function getWakiPosts(
       return {
         posts,
 
-        error:
-          false,
+        error: false,
 
         status:
           direct.status,
@@ -1032,30 +1032,30 @@ async function getWakiPosts(
 
         windowsChecked:
           0,
+
+        pagesChecked:
+          1,
       };
     }
   }
 
-  /* =====================================
-     캐시 확인
 
-     Vercel 서버 인스턴스가 유지되는 동안만
-     메모리 캐시가 유지됨
+  /* =====================================
+     2차
+     캐시 확인
   ===================================== */
 
   if (
     wakiCache &&
     wakiCache.expiresAt >
       Date.now() &&
-    wakiCache.posts.length >
-      0
+    wakiCache.posts.length > 0
   ) {
     return {
       posts:
         wakiCache.posts,
 
-      error:
-        false,
+      error: false,
 
       status:
         200,
@@ -1068,41 +1068,210 @@ async function getWakiPosts(
 
       windowsChecked:
         0,
+
+      pagesChecked:
+        0,
     };
   }
 
+
   /* =====================================
-     2차
-     현재부터 180일 단위로 과거 검색
+     3차
+     전체 게시판 최신글에서 검색
+
+     중요:
+     board_number를 빈 값으로 요청한 뒤
+     실제 게시글의 bbs_no를 비교한다.
+  ===================================== */
+
+  const recentMatched:
+    AnyRecord[] = [];
+
+  let recentSource = "";
+  let recentStatus = 0;
+
+  const RECENT_ALL_BOARD_PAGES =
+    20;
+
+  let recentPagesChecked =
+    0;
+
+
+  for (
+    let page = 1;
+    page <= RECENT_ALL_BOARD_PAGES;
+    page += 1
+  ) {
+    const result =
+      await getPostsPage(
+        streamerId,
+
+        page,
+
+        "", // ★ 매우 중요
+
+        WAKI_BOARD_URL,
+
+        "",
+
+        ""
+      );
+
+
+    recentPagesChecked += 1;
+
+    recentStatus =
+      result.status;
+
+    recentSource =
+      result.source ??
+      recentSource;
+
+
+    if (
+      !result.ok
+    ) {
+      break;
+    }
+
+
+    if (
+      result.posts.length === 0
+    ) {
+      break;
+    }
+
+
+    const matches =
+      result.posts.filter(
+        (post) =>
+          getBoardNo(post) ===
+          WAKI_BOARD_NO
+      );
+
+
+    recentMatched.push(
+      ...matches
+    );
+
+
+    if (
+      recentMatched.length >=
+      MAX_POSTS
+    ) {
+      break;
+    }
+
+
+    if (
+      result.posts.length <
+      POSTS_PER_PAGE
+    ) {
+      break;
+    }
+  }
+
+
+  if (
+    recentMatched.length > 0
+  ) {
+    const posts =
+      normalizePosts(
+        recentMatched,
+        streamerId,
+        WAKI_BOARD_URL
+      ).slice(
+        0,
+        MAX_POSTS
+      );
+
+
+    wakiCache = {
+      expiresAt:
+        Date.now() +
+        WAKI_CACHE_MS,
+
+      posts,
+    };
+
+
+    return {
+      posts,
+
+      error: false,
+
+      status:
+        recentStatus,
+
+      source:
+        recentSource,
+
+      mode:
+        "all-board-pagination",
+
+      windowsChecked:
+        0,
+
+      pagesChecked:
+        recentPagesChecked,
+    };
+  }
+
+
+  /* =====================================
+     4차
+     오래된 전체 게시글 검색
+
+     현재부터 과거 방향으로
+     180일씩 기간을 나눠 검색
+
+     이때도 board_number는 빈 값.
+
+     받은 게시글의 bbs_no를 보고
+     와키 게시판 글만 골라낸다.
   ===================================== */
 
   const found:
     AnyRecord[] = [];
 
+
   const now =
     new Date();
 
+
   const oldest =
     new Date(now);
+
 
   oldest.setUTCFullYear(
     oldest.getUTCFullYear() -
       WAKI_LOOKBACK_YEARS
   );
 
+
   let windowEnd =
     new Date(now);
 
+
   let lastStatus =
-    direct.status ?? 0;
+    recentStatus;
+
 
   let lastSource =
-    direct.source ?? "";
+    recentSource;
 
-  let lastMessage = "";
+
+  let lastMessage =
+    "";
+
 
   let windowsChecked =
     0;
+
+
+  let pagesChecked =
+    recentPagesChecked;
+
 
   while (
     windowEnd.getTime() >
@@ -1111,6 +1280,7 @@ async function getWakiPosts(
       MAX_POSTS
   ) {
     windowsChecked += 1;
+
 
     let windowStart =
       new Date(
@@ -1122,6 +1292,7 @@ async function getWakiPosts(
             1000
       );
 
+
     if (
       windowStart.getTime() <
       oldest.getTime()
@@ -1132,18 +1303,21 @@ async function getWakiPosts(
         );
     }
 
+
     const startDate =
       formatSoopDate(
         windowStart
       );
+
 
     const endDate =
       formatSoopDate(
         windowEnd
       );
 
+
     /* =================================
-       해당 180일 구간 페이지 조회
+       해당 기간의 전체 게시글 조회
     ================================= */
 
     for (
@@ -1152,22 +1326,46 @@ async function getWakiPosts(
         WAKI_WINDOW_MAX_PAGES;
       page += 1
     ) {
+      /*
+        핵심 변경사항
+
+        이전:
+        board_number=124449583
+
+        현재:
+        board_number=""
+
+        → 전체 글 조회
+        → bbs_no로 와키 게시판 필터링
+      */
+
       const result =
         await getPostsPage(
           streamerId,
+
           page,
-          WAKI_BOARD_NO,
+
+          "", // ★ 핵심
+
           WAKI_BOARD_URL,
+
           startDate,
+
           endDate
         );
+
+
+      pagesChecked += 1;
+
 
       lastStatus =
         result.status;
 
+
       lastSource =
         result.source ??
         lastSource;
+
 
       if (
         !result.ok
@@ -1179,43 +1377,34 @@ async function getWakiPosts(
         break;
       }
 
+
       if (
-        result.posts.length ===
-        0
+        result.posts.length === 0
       ) {
         break;
       }
 
-      /*
-        SOOP 응답에 bbs_no가 있으면
-        게시판 번호를 다시 검증
 
-        없다면 board_number로
-        이미 필터링된 것으로 판단
+      /*
+        전체 게시글 중
+
+        bbs_no === 124449583
+
+        인 글만 가져온다.
       */
 
-      const hasBoardNo =
-        result.posts.some(
+      const matches =
+        result.posts.filter(
           (post) =>
-            getBoardNo(
-              post
-            ) !== ""
+            getBoardNo(post) ===
+            WAKI_BOARD_NO
         );
 
-      const matches =
-        hasBoardNo
-          ? result.posts.filter(
-              (post) =>
-                getBoardNo(
-                  post
-                ) ===
-                WAKI_BOARD_NO
-            )
-          : result.posts;
 
       found.push(
         ...matches
       );
+
 
       if (
         found.length >=
@@ -1224,6 +1413,7 @@ async function getWakiPosts(
         break;
       }
 
+
       if (
         result.posts.length <
         POSTS_PER_PAGE
@@ -1231,6 +1421,23 @@ async function getWakiPosts(
         break;
       }
     }
+
+
+    /*
+      와키 글을 찾았다면
+      더 과거로 갈 필요 없음.
+
+      현재 → 과거 순으로 검색하기 때문에
+      지금 찾은 글들이 가장 최신 와키 글이다.
+    */
+
+    if (
+      found.length >=
+      MAX_POSTS
+    ) {
+      break;
+    }
+
 
     /*
       다음 180일 구간으로 이동
@@ -1243,6 +1450,7 @@ async function getWakiPosts(
       );
   }
 
+
   const posts =
     normalizePosts(
       found,
@@ -1253,13 +1461,13 @@ async function getWakiPosts(
       MAX_POSTS
     );
 
+
   /* =====================================
-     찾은 와키 글 캐시
+     결과 캐시
   ===================================== */
 
   if (
-    posts.length >
-    0
+    posts.length > 0
   ) {
     wakiCache = {
       expiresAt:
@@ -1269,6 +1477,7 @@ async function getWakiPosts(
       posts,
     };
   }
+
 
   return {
     posts,
@@ -1281,15 +1490,17 @@ async function getWakiPosts(
 
     source:
       lastSource ||
-      "waki-date-window-search",
+      "all-board-date-window-search",
 
     message:
       lastMessage,
 
     mode:
-      "date-window-search",
+      "all-board-date-window-search",
 
     windowsChecked,
+
+    pagesChecked,
   };
 }
 
@@ -1482,6 +1693,10 @@ export async function GET(
     wakiPostsMessage:
       wakiResult.message ??
       "",
+      
+      pagesChecked:
+  wakiResult.pagesChecked ??
+  0,
   };
 
   /* =====================================
