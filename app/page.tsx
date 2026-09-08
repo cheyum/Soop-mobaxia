@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import * as XLSX from "xlsx";
 
 type LiveStatus = {
   live: boolean;
@@ -29,15 +28,6 @@ type MobaxiaApiResponse = {
   schedulePostsMessage?: string;
 };
 
-type RouletteRow = {
-  날짜?: string | number;
-  시간?: string | number;
-  후원자?: string;
-  후원금액?: string | number;
-  "룰렛 결과"?: string;
-  메모?: string;
-};
-
 /* =========================================
    게시판 링크
 ========================================= */
@@ -49,18 +39,15 @@ const SCHEDULE_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110021";
 
 /* =========================================
-   업보현황 링크
+   업보현황
 ========================================= */
 
 const ROULETTE_URL =
   "https://weflab.com/user/lOPU2suSk2lqZW0";
 
-const ROULETTE_EXCEL_URL =
-  "/MOBAXIA_업보현황.xlsx";
-
 export default function Home() {
   /* =========================================
-     LIVE
+     LIVE 상태
   ========================================= */
 
   const [status, setStatus] =
@@ -102,36 +89,7 @@ export default function Home() {
   ] = useState(true);
 
   /* =========================================
-     업보현황 Excel
-  ========================================= */
-
-  const [
-    rouletteRows,
-    setRouletteRows,
-  ] = useState<RouletteRow[]>([]);
-
-  const [
-    rouletteSearch,
-    setRouletteSearch,
-  ] = useState("");
-
-  const [
-    rouletteResults,
-    setRouletteResults,
-  ] = useState<RouletteRow[]>([]);
-
-  const [
-    rouletteSearched,
-    setRouletteSearched,
-  ] = useState(false);
-
-  const [
-    rouletteLoadError,
-    setRouletteLoadError,
-  ] = useState(false);
-
-  /* =========================================
-     SOOP 새로고침
+     SOOP 데이터 새로고침
   ========================================= */
 
   async function refreshMobaxia() {
@@ -175,11 +133,15 @@ export default function Home() {
           text
         ) as MobaxiaApiResponse;
 
-      /* LIVE */
+      /* =========================
+         LIVE
+      ========================== */
 
       setStatus({
         live:
-          Boolean(data.live),
+          Boolean(
+            data.live
+          ),
 
         error:
           Boolean(
@@ -187,7 +149,9 @@ export default function Home() {
           ),
       });
 
-      /* 바샤업up */
+      /* =========================
+         바샤업up
+      ========================== */
 
       if (
         Array.isArray(
@@ -215,7 +179,9 @@ export default function Home() {
         setPostsError(null);
       }
 
-      /* 일정 안내 */
+      /* =========================
+         일정 안내
+      ========================== */
 
       if (
         Array.isArray(
@@ -270,216 +236,15 @@ export default function Home() {
   }
 
   /* =========================================
-     업보현황 Excel 읽기
-  ========================================= */
-
-  async function loadRouletteExcel() {
-    try {
-      /*
-        캐시 방지를 위해 현재 시간을 붙임.
-        Excel 파일이 교체되었을 때
-        최신 파일을 다시 읽기 위함.
-      */
-
-      const response =
-        await fetch(
-          `${ROULETTE_EXCEL_URL}?t=${Date.now()}`,
-          {
-            cache: "no-store",
-          }
-        );
-
-      if (!response.ok) {
-        throw new Error(
-          "Excel 파일을 불러오지 못했습니다."
-        );
-      }
-
-      const buffer =
-        await response.arrayBuffer();
-
-      const workbook =
-        XLSX.read(
-          buffer,
-          {
-            type: "array",
-          }
-        );
-
-      /*
-        첫 번째 시트 = 룰렛결과
-      */
-
-      const sheetName =
-        workbook.SheetNames[0];
-
-      if (!sheetName) {
-        throw new Error(
-          "Excel 시트가 없습니다."
-        );
-      }
-
-      const worksheet =
-        workbook.Sheets[
-          sheetName
-        ];
-
-      const rows =
-        XLSX.utils.sheet_to_json<RouletteRow>(
-          worksheet,
-          {
-            defval: "",
-          }
-        );
-
-      /*
-        완전히 빈 행 제거
-      */
-
-      const validRows =
-        rows.filter(
-          (row) =>
-            Object.values(
-              row
-            ).some(
-              (value) =>
-                String(
-                  value
-                ).trim() !== ""
-            )
-        );
-
-      setRouletteRows(
-        validRows
-      );
-
-      setRouletteLoadError(
-        false
-      );
-    } catch (error) {
-      console.error(
-        "룰렛 Excel 조회 실패:",
-        error
-      );
-
-      setRouletteRows([]);
-
-      setRouletteLoadError(
-        true
-      );
-    }
-  }
-
-  /* =========================================
-     Excel 검색
-  ========================================= */
-
-  function searchRoulette() {
-    const keyword =
-      rouletteSearch
-        .trim()
-        .toLowerCase();
-
-    setRouletteSearched(
-      true
-    );
-
-    if (!keyword) {
-      setRouletteResults(
-        []
-      );
-
-      return;
-    }
-
-    const results =
-      rouletteRows.filter(
-        (row) => {
-          const searchText = [
-            row.날짜,
-            row.시간,
-            row.후원자,
-            row.후원금액,
-            row["룰렛 결과"],
-            row.메모,
-          ]
-            .map(
-              (value) =>
-                String(
-                  value ?? ""
-                )
-                  .trim()
-                  .toLowerCase()
-            )
-            .join(" ");
-
-          return searchText.includes(
-            keyword
-          );
-        }
-      );
-
-    setRouletteResults(
-      results
-    );
-  }
-
-  /* =========================================
-     후원금액 표시
-  ========================================= */
-
-  function formatAmount(
-    value:
-      | string
-      | number
-      | undefined
-  ) {
-    if (
-      value === undefined ||
-      value === null ||
-      String(value).trim() === ""
-    ) {
-      return "";
-    }
-
-    const numeric =
-      Number(
-        String(value).replace(
-          /[^\d.-]/g,
-          ""
-        )
-      );
-
-    if (
-      Number.isFinite(
-        numeric
-      )
-    ) {
-      return `${numeric.toLocaleString(
-        "ko-KR"
-      )}원`;
-    }
-
-    return String(value);
-  }
-
-  /* =========================================
      30초 자동 갱신
   ========================================= */
 
   useEffect(() => {
     refreshMobaxia();
-    loadRouletteExcel();
 
     const timer =
       setInterval(() => {
         refreshMobaxia();
-
-        /*
-          Excel 파일도 재확인
-        */
-
-        loadRouletteExcel();
       }, 30000);
 
     return () =>
@@ -567,11 +332,13 @@ export default function Home() {
       </header>
 
       {/* =================================
-          메인 프로필 카드
+          메인 프로필
       ================================= */}
 
       <section className="profileCard">
-        {/* 방송화면 */}
+        {/* =================================
+            왼쪽 방송화면
+        ================================= */}
 
         <div className="profileMain">
           <div className="welcomeTag">
@@ -637,7 +404,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 오른쪽 정보 */}
+        {/* =================================
+            오른쪽 정보
+        ================================= */}
 
         <div className="profileDetails">
           <div className="identityRow">
@@ -684,7 +453,9 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 스케줄 */}
+          {/* =================================
+              상시 스케줄
+          ================================= */}
 
           <div className="scheduleBox">
             <strong>
@@ -712,7 +483,9 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 링크 */}
+          {/* =================================
+              링크 버튼
+          ================================= */}
 
           <div className="linkButtonRow">
             <a
@@ -758,7 +531,7 @@ export default function Home() {
       </section>
 
       {/* =================================
-          하단
+          하단 콘텐츠
       ================================= */}
 
       <section className="contentGrid">
@@ -906,7 +679,10 @@ export default function Home() {
           </div>
 
           <div className="upboList">
-            {/* 1줄 - 룰렛 확률 */}
+            {/* =========================
+                1줄
+                룰렛확률
+            ========================== */}
 
             <a
               href={ROULETTE_URL}
@@ -923,152 +699,67 @@ export default function Home() {
               </span>
             </a>
 
-            {/* 2줄 - Excel */}
+            {/* =========================
+                2줄
+                엑셀표 - 추후 연결
+            ========================== */}
 
-            <a
-              href={ROULETTE_EXCEL_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="upboRow upboLink"
+            <div
+              className="
+                upboRow
+                upboLink
+                upboDisabled
+              "
             >
               <strong>
                 룰렛 결과 엑셀표
               </strong>
 
               <span>
-                열기 ›
+                준비중
               </span>
-            </a>
+            </div>
 
-            {/* 3줄 - 검색 */}
+            {/* =========================
+                3줄
+                검색 - 추후 활성화
+            ========================== */}
 
             <div className="upboRow upboSearchRow">
               <input
                 type="text"
-                value={rouletteSearch}
-                onChange={(event) => {
-                  setRouletteSearch(
-                    event.target.value
-                  );
-                }}
-                onKeyDown={(event) => {
-                  if (
-                    event.key ===
-                    "Enter"
-                  ) {
-                    searchRoulette();
-                  }
-                }}
                 className="upboSearchInput"
-                placeholder="후원자 / 룰렛 결과 검색"
+                placeholder="엑셀 연결 후 검색 가능"
                 aria-label="업보현황 검색"
+                disabled
               />
 
               <button
                 type="button"
                 className="upboSearchButton"
-                onClick={
-                  searchRoulette
-                }
+                disabled
               >
                 검색
               </button>
             </div>
 
-            {/* 4줄 - 결과 */}
+            {/* =========================
+                4줄
+                검색 결과
+            ========================== */}
 
             <div className="upboRow upboResultRow">
-              {rouletteLoadError ? (
-                <span className="upboEmpty">
-                  엑셀 데이터를 불러오지 못했어요
-                </span>
-              ) : !rouletteSearched ? (
-                <span className="upboEmpty">
-                  검색 결과가 여기에 표시됩니다 ♡
-                </span>
-              ) : !rouletteSearch.trim() ? (
-                <span className="upboEmpty">
-                  검색어를 입력해주세요 ♡
-                </span>
-              ) : rouletteResults.length ===
-                0 ? (
-                <span className="upboEmpty">
-                  검색 결과가 없습니다.
-                </span>
-              ) : (
-                <div className="upboResultList">
-                  {rouletteResults
-                    .slice(
-                      0,
-                      4
-                    )
-                    .map(
-                      (
-                        row,
-                        index
-                      ) => (
-                        <div
-                          className="upboResultLine"
-                          key={`${String(
-                            row.날짜 ?? ""
-                          )}-${String(
-                            row.시간 ?? ""
-                          )}-${String(
-                            row.후원자 ?? ""
-                          )}-${index}`}
-                        >
-                          <strong>
-                            {row.후원자 ||
-                              "후원자 미입력"}
-                          </strong>
-
-                          {row.후원금액 !==
-                            undefined &&
-                            String(
-                              row.후원금액
-                            ).trim() !==
-                              "" && (
-                              <span>
-                                {" · "}
-                                {formatAmount(
-                                  row.후원금액
-                                )}
-                              </span>
-                            )}
-
-                          {row[
-                            "룰렛 결과"
-                          ] && (
-                            <span>
-                              {" · "}
-                              {
-                                row[
-                                  "룰렛 결과"
-                                ]
-                              }
-                            </span>
-                          )}
-                        </div>
-                      )
-                    )}
-
-                  {rouletteResults.length >
-                    4 && (
-                    <div className="upboMoreResult">
-                      외{" "}
-                      {rouletteResults.length -
-                        4}
-                      건의 결과가 더 있습니다.
-                    </div>
-                  )}
-                </div>
-              )}
+              <span className="upboEmpty">
+                엑셀 연결 후 검색 결과가 표시됩니다 ♡
+              </span>
             </div>
           </div>
         </article>
       </section>
 
-      {/* FOOTER */}
+      {/* =================================
+          FOOTER
+      ================================= */}
 
       <footer className="footer">
         ♡ &nbsp; MOBAXIA FAN PAGE &nbsp; ♡
@@ -1100,10 +791,16 @@ function ProfileImage() {
     `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/${streamerId}.webp`,
   ];
 
-  const [index, setIndex] =
+  const [
+    index,
+    setIndex,
+  ] =
     useState(0);
 
-  const [failed, setFailed] =
+  const [
+    failed,
+    setFailed,
+  ] =
     useState(false);
 
   function handleError() {
