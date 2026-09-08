@@ -26,11 +26,11 @@ type MobaxiaApiResponse = {
   schedulePosts?: SoopPost[];
   schedulePostsError?: boolean;
   schedulePostsMessage?: string;
-  
-  wakiPosts?: SoopPost[];
-  wakiPostsError?: boolean;
-  wakiPostsMessage?: string;
 };
+
+/* =========================================
+   게시판 링크
+========================================= */
 
 const UP_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110231";
@@ -38,190 +38,310 @@ const UP_BOARD_URL =
 const SCHEDULE_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110021";
 
-const WAKI_BOARD_URL =
-  "https://www.sooplive.com/station/mobaxia/board/124449583";
-
 export default function Home() {
-  const [status, setStatus] = useState<LiveStatus>({
-    live: false,
-    error: false,
-  });
+  /* =========================================
+     LIVE 상태
+  ========================================= */
 
-  const [loading, setLoading] = useState(true);
-  const [upPosts, setUpPosts] = useState<SoopPost[]>([]);
-  const [postsLoading, setPostsLoading] = useState(true);
-  const [postsError, setPostsError] = useState<string | null>(null);
-  const [schedulePosts, setSchedulePosts] =
-  useState<SoopPost[]>([]);
+  const [status, setStatus] =
+    useState<LiveStatus>({
+      live: false,
+      error: false,
+    });
 
-  const [scheduleError, setScheduleError] =
-  useState<string | null>(null);
+  const [loading, setLoading] =
+    useState(true);
 
-  const [wakiPosts, setWakiPosts] =
-  useState<SoopPost[]>([]);
+  /* =========================================
+     바샤업up
+  ========================================= */
 
-  const [wakiError, setWakiError] =
-  useState<string | null>(null);
+  const [upPosts, setUpPosts] =
+    useState<SoopPost[]>([]);
+
+  const [postsError, setPostsError] =
+    useState<string | null>(null);
+
+  /* =========================================
+     일정 안내
+  ========================================= */
+
+  const [
+    schedulePosts,
+    setSchedulePosts,
+  ] =
+    useState<SoopPost[]>([]);
+
+  const [
+    scheduleError,
+    setScheduleError,
+  ] =
+    useState<string | null>(null);
+
+  /* =========================================
+     게시판 로딩
+  ========================================= */
+
+  const [
+    postsLoading,
+    setPostsLoading,
+  ] =
+    useState(true);
+
+  /* =========================================
+     SOOP 데이터 새로고침
+  ========================================= */
 
   async function refreshMobaxia() {
     try {
-      const response = await fetch("/api/live/mobaxia", {
-        cache: "no-store",
-      });
+      const response =
+        await fetch(
+          "/api/live/mobaxia",
+          {
+            cache: "no-store",
+          }
+        );
 
-      const text = await response.text();
+      const text =
+        await response.text();
 
-      if (!response.ok || !text.trim()) {
-        setStatus({ live: false, error: true });
+      if (
+        !response.ok ||
+        !text.trim()
+      ) {
+        setStatus({
+          live: false,
+          error: true,
+        });
+
         setUpPosts([]);
-        setPostsError("게시글을 불러오지 못했어요");
+        setSchedulePosts([]);
+
+        setPostsError(
+          "게시글을 불러오지 못했어요"
+        );
+
+        setScheduleError(
+          "일정을 불러오지 못했어요"
+        );
+
         return;
       }
 
-      const data = JSON.parse(text) as MobaxiaApiResponse;
+      const data =
+        JSON.parse(
+          text
+        ) as MobaxiaApiResponse;
+
+      /* =========================
+         LIVE
+      ========================== */
 
       setStatus({
-        live: Boolean(data.live),
-        error: Boolean(data.liveError),
+        live:
+          Boolean(
+            data.live
+          ),
+
+        error:
+          Boolean(
+            data.liveError
+          ),
       });
 
-      if (Array.isArray(data.posts)) {
-        setUpPosts(data.posts.slice(0, 4));
+      /* =========================
+         바샤업up
+      ========================== */
+
+      if (
+        Array.isArray(
+          data.posts
+        )
+      ) {
+        setUpPosts(
+          data.posts.slice(
+            0,
+            4
+          )
+        );
       } else {
         setUpPosts([]);
       }
 
-      if (data.postsError) {
-        setPostsError(data.postsMessage || "게시글을 불러오지 못했어요");
+      if (
+        data.postsError
+      ) {
+        setPostsError(
+          data.postsMessage ||
+            "게시글을 불러오지 못했어요"
+        );
       } else {
         setPostsError(null);
       }
+
       /* =========================
-   와키 배포
-========================== */
+         일정 안내
+      ========================== */
 
-if (
-  Array.isArray(
-    data.wakiPosts
-  )
-) {
-  setWakiPosts(
-    data.wakiPosts.slice(
-      0,
-      4
-    )
-  );
-} else {
-  setWakiPosts([]);
-}
-
-if (
-  data.wakiPostsError
-) {
-  setWakiError(
-    data.wakiPostsMessage ||
-      "와키 게시글을 불러오지 못했어요"
-  );
-} else {
-  setWakiError(null);
-}
-      /* =========================
-          일정 안내
-         ========================== */
-
-      if (Array.isArray(data.schedulePosts)) {
-        setSchedulePosts(data.schedulePosts.slice(0,4));} else {
+      if (
+        Array.isArray(
+          data.schedulePosts
+        )
+      ) {
+        setSchedulePosts(
+          data.schedulePosts.slice(
+            0,
+            4
+          )
+        );
+      } else {
         setSchedulePosts([]);
-}
+      }
 
-if (
-  data.schedulePostsError
-) {
-  setScheduleError(
-    data.schedulePostsMessage ||
-      "일정을 불러오지 못했어요"
-  );
-} else {
-  setScheduleError(null);
-}
+      if (
+        data.schedulePostsError
+      ) {
+        setScheduleError(
+          data.schedulePostsMessage ||
+            "일정을 불러오지 못했어요"
+        );
+      } else {
+        setScheduleError(null);
+      }
     } catch (error) {
-      console.error("MOBAXIA 정보 조회 실패:", error);
-      setStatus({ live: false, error: true });
+      console.error(
+        "MOBAXIA 정보 조회 실패:",
+        error
+      );
+
+      setStatus({
+        live: false,
+        error: true,
+      });
+
       setUpPosts([]);
-      setPostsError("게시글을 불러오지 못했어요");
+      setSchedulePosts([]);
+
+      setPostsError(
+        "게시글을 불러오지 못했어요"
+      );
+
+      setScheduleError(
+        "일정을 불러오지 못했어요"
+      );
     } finally {
       setLoading(false);
       setPostsLoading(false);
     }
-    
   }
-  
-  
+
+  /* =========================================
+     30초 자동 갱신
+  ========================================= */
 
   useEffect(() => {
     refreshMobaxia();
 
-    // 방송 상태 + UP해줘 게시글을 30초마다 갱신
-    const timer = setInterval(() => {
-      refreshMobaxia();
-    }, 30000);
+    const timer =
+      setInterval(() => {
+        refreshMobaxia();
+      }, 30000);
 
-    return () => clearInterval(timer);
+    return () =>
+      clearInterval(
+        timer
+      );
   }, []);
 
   return (
     <main className="page">
       {/* 배경 장식 */}
-      <div className="bgHeart bgHeart1">♡</div>
-      <div className="bgHeart bgHeart2">♡</div>
-      <div className="bgStar bgStar1">✦</div>
-      <div className="bgStar bgStar2">✦</div>
 
-      {/* =========================
+      <div className="bgHeart bgHeart1">
+        ♡
+      </div>
+
+      <div className="bgHeart bgHeart2">
+        ♡
+      </div>
+
+      <div className="bgStar bgStar1">
+        ✦
+      </div>
+
+      <div className="bgStar bgStar2">
+        ✦
+      </div>
+
+      {/* =================================
           HEADER
-      ========================== */}
+      ================================= */}
+
       <header className="header">
         <div className="brand">
-          <div className="brandIcon">♥</div>
+          <div className="brandIcon">
+            ♥
+          </div>
 
           <div>
-            <h1>MOBAXIA</h1>
-            <p>SOOP VIRTUAL STREAMER</p>
+            <h1>
+              MOBAXIA
+            </h1>
+
+            <p>
+              SOOP VIRTUAL STREAMER
+            </p>
           </div>
         </div>
+
+        {/* 방송 상태 */}
 
         <div className="topStatus">
           {loading ? (
             <>
-              <span className="statusDot loadingDot" />
+              <span
+                className="statusDot loadingDot"
+              />
+
               방송 상태 확인 중
             </>
           ) : status.error ? (
             <>
-              <span className="statusDot errorDot" />
+              <span
+                className="statusDot errorDot"
+              />
+
               상태 확인 중
             </>
           ) : status.live ? (
             <>
-              <span className="statusDot liveDot" />
+              <span
+                className="statusDot liveDot"
+              />
+
               바샤좀 놀아줘!
             </>
           ) : (
             <>
-              <span className="statusDot offlineDot" />
+              <span
+                className="statusDot offlineDot"
+              />
+
               바샤는 쉬는중
             </>
           )}
         </div>
       </header>
 
-      {/* =========================
-          메인 프로필 카드
-      ========================== */}
+      {/* =================================
+          메인 프로필
+      ================================= */}
+
       <section className="profileCard">
-        {/* =========================
-            왼쪽 - 방송화면
-        ========================== */}
+        {/* =================================
+            왼쪽 방송화면
+        ================================= */}
+
         <div className="profileMain">
           <div className="welcomeTag">
             ♡ S급 서민영애 청설모 모씨 모바샤🐿️ ♡
@@ -229,48 +349,96 @@ if (
 
           <div
             className={`streamScreen ${
-              status.live ? "streamOnline" : "streamOffline"
+              status.live
+                ? "streamOnline"
+                : "streamOffline"
             }`}
           >
+            {/* 상태 확인 */}
+
             {loading ? (
               <div className="streamPlaceholder">
                 <span className="loadingStreamDot" />
-                <strong>CHECKING</strong>
-                <p>방송 상태를 확인하고 있어요</p>
+
+                <strong>
+                  CHECKING
+                </strong>
+
+                <p>
+                  방송 상태를 확인하고 있어요
+                </p>
               </div>
             ) : status.error ? (
-              <div className="streamPlaceholder offlineScreen">
-                <span className="offlineHeart">♡</span>
-                <strong>CHECKING</strong>
-                <p>방송 상태를 확인하고 있어요</p>
+              <div
+                className="
+                  streamPlaceholder
+                  offlineScreen
+                "
+              >
+                <span className="offlineHeart">
+                  ♡
+                </span>
+
+                <strong>
+                  CHECKING
+                </strong>
+
+                <p>
+                  방송 상태를 확인하고 있어요
+                </p>
               </div>
             ) : status.live ? (
+              /* LIVE 방송 */
+
               <iframe
                 src="https://play.sooplive.com/mobaxia/embed"
                 title="모바샤 SOOP LIVE"
                 className="soopPlayer"
-                allow="autoplay; fullscreen; picture-in-picture"
+                allow="
+                  autoplay;
+                  fullscreen;
+                  picture-in-picture
+                "
                 allowFullScreen
               />
             ) : (
-              <div className="streamPlaceholder offlineScreen">
-                <span className="offlineHeart">♡</span>
-                <strong>OFFLINE</strong>
-                <p>지금은 방송을 쉬고 있어요</p>
+              /* OFFLINE */
+
+              <div
+                className="
+                  streamPlaceholder
+                  offlineScreen
+                "
+              >
+                <span className="offlineHeart">
+                  ♡
+                </span>
+
+                <strong>
+                  OFFLINE
+                </strong>
+
+                <p>
+                  지금은 방송을 쉬고 있어요
+                </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* =========================
-            오른쪽 - 일정 및 링크
-        ========================== */}
+        {/* =================================
+            오른쪽 정보
+        ================================= */}
+
         <div className="profileDetails">
           {/* 프로필 + 닉네임 */}
+
           <div className="identityRow">
             <div
               className={`smallProfileRing ${
-                status.live ? "smallProfileLive" : ""
+                status.live
+                  ? "smallProfileLive"
+                  : ""
               }`}
             >
               <ProfileImage />
@@ -278,33 +446,59 @@ if (
 
             <div className="identityText">
               <div className="identityName">
-                <h2>모바샤</h2>
+                <h2>
+                  모바샤
+                </h2>
 
-                {status.live && !loading && !status.error && (
-                  <span className="identityLiveBadge">LIVE</span>
-                )}
+                {status.live &&
+                  !loading &&
+                  !status.error && (
+                    <span className="identityLiveBadge">
+                      LIVE
+                    </span>
+                  )}
               </div>
 
               <div className="basicInfo">
                 생일 · 8월25일
-                <span>/</span>
+
+                <span>
+                  /
+                </span>
+
                 언제나 24살
-                <span>/</span>
+
+                <span>
+                  /
+                </span>
+
                 감성파 ESTJ
               </div>
             </div>
           </div>
 
-          {/* 상시 스케줄 */}
+          {/* =================================
+              상시 스케줄
+          ================================= */}
+
           <div className="scheduleBox">
-            <strong>🌸 상시 스케줄은 캘린더 참고 🌸</strong>
+            <strong>
+              🌸 상시 스케줄은 캘린더 참고 🌸
+            </strong>
 
             <p>
               매주 월~금 오후 6시
+
               <br className="mobileBreak" />
-              <span className="pcDivider"> · </span>
+
+              <span className="pcDivider">
+                {" "}·{" "}
+              </span>
+
               토~일 오후 11시
+
               <br />
+
               (주1회 휴방) 바샤 등장(˶ᵔ ᵕ ᵔ˶)♥
             </p>
 
@@ -313,13 +507,21 @@ if (
             </div>
           </div>
 
-          {/* 링크 버튼 4개 */}
+          {/* =================================
+              링크 버튼
+          ================================= */}
+
           <div className="linkButtonRow">
+            {/* SOOP 방송국 */}
+
             <a
               href="https://www.sooplive.com/station/mobaxia"
               target="_blank"
               rel="noopener noreferrer"
-              className="squareLinkButton homeButton"
+              className="
+                squareLinkButton
+                homeButton
+              "
               aria-label="모바샤 방송국"
               title="모바샤 방송국"
             >
@@ -329,7 +531,24 @@ if (
                 aria-hidden="true"
               >
                 <path
-                  d="M3 10.8 12 3l9 7.8v9.7a.5.5 0 0 1-.5.5H15v-6H9v6H3.5a.5.5 0 0 1-.5-.5v-9.7Z"
+                  d="
+                    M3 10.8
+                    12 3
+                    l9 7.8
+                    v9.7
+                    a.5.5
+                    0 0 1
+                    -.5.5
+                    H15
+                    v-6
+                    H9
+                    v6
+                    H3.5
+                    a.5.5
+                    0 0 1
+                    -.5-.5
+                    v-9.7Z
+                  "
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.8"
@@ -339,55 +558,86 @@ if (
               </svg>
             </a>
 
+            {/* 추후 링크 */}
+
             <div
-              className="squareLinkButton emptyLinkButton"
+              className="
+                squareLinkButton
+                emptyLinkButton
+              "
               title="링크 추가 예정"
             />
+
             <div
-              className="squareLinkButton emptyLinkButton"
+              className="
+                squareLinkButton
+                emptyLinkButton
+              "
               title="링크 추가 예정"
             />
+
             <div
-              className="squareLinkButton emptyLinkButton"
+              className="
+                squareLinkButton
+                emptyLinkButton
+              "
               title="링크 추가 예정"
             />
           </div>
         </div>
       </section>
 
-      {/* =========================
+      {/* =================================
           하단 콘텐츠
-      ========================== */}
+      ================================= */}
+
       <section className="contentGrid">
-        {/* UP해줘 */}
+        {/* =================================
+            바샤업up
+        ================================= */}
+
         <article className="contentCard">
           <div className="cardTitle">
-            <h3>𓍢ִ໋바샤업UP</h3>
-            <span>BASHA UP</span>
+            <h3>
+              바샤업up
+            </h3>
+
+            <span>
+              BASHA UP
+            </span>
           </div>
 
           <div className="postList">
             {postsLoading ? (
-              <div className="postItem">최신 글을 불러오는 중이에요 ♡</div>
+              <div className="postItem">
+                최신 글을 불러오는 중이에요 ♡
+              </div>
             ) : postsError ? (
-              <div className="postItem" title={postsError}>
+              <div
+                className="postItem"
+                title={postsError}
+              >
                 게시글을 불러오지 못했어요
               </div>
             ) : upPosts.length > 0 ? (
-              upPosts.map((post) => (
-                <a
-                  href={post.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="postItem"
-                  key={post.id}
-                  title={post.title}
-                >
-                  {post.title}
-                </a>
-              ))
+              upPosts.map(
+                (post) => (
+                  <a
+                    href={post.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="postItem"
+                    key={post.id}
+                    title={post.title}
+                  >
+                    {post.title}
+                  </a>
+                )
+              )
             ) : (
-              <div className="postItem">아직 등록된 글이 없어요 ♡</div>
+              <div className="postItem">
+                아직 등록된 글이 없어요 ♡
+              </div>
             )}
           </div>
 
@@ -395,205 +645,111 @@ if (
             type="button"
             className="cardButton"
             onClick={() => {
-              window.open(UP_BOARD_URL, "_blank", "noopener,noreferrer");
+              window.open(
+                UP_BOARD_URL,
+                "_blank",
+                "noopener,noreferrer"
+              );
             }}
           >
-            𓍢바샤업UP 전체보기
+            바샤업up 전체보기
           </button>
         </article>
 
-        {/* =========================
+        {/* =================================
             일정 안내
-            ========================== */}
+        ================================= */}
 
-<article className="contentCard">
+        <article className="contentCard">
+          <div className="cardTitle">
+            <h3>
+              일정 안내
+            </h3>
 
-  <div className="cardTitle">
+            <span>
+              Schedule
+            </span>
+          </div>
 
-    <h3>
-      일정 안내
-    </h3>
+          <div className="postList">
+            {postsLoading ? (
+              <div className="postItem">
+                최신 일정을 불러오는 중이에요 ♡
+              </div>
+            ) : scheduleError ? (
+              <div
+                className="postItem"
+                title={scheduleError}
+              >
+                일정을 불러오지 못했어요
+              </div>
+            ) : schedulePosts.length > 0 ? (
+              schedulePosts.map(
+                (post) => (
+                  <a
+                    href={post.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="
+                      postItem
+                      noticeItem
+                    "
+                    key={post.id}
+                    title={post.title}
+                  >
+                    {post.title}
+                  </a>
+                )
+              )
+            ) : (
+              <div className="postItem">
+                아직 등록된 일정이 없어요 ♡
+              </div>
+            )}
+          </div>
 
-    <span>
-      Schedule
-    </span>
-
-  </div>
-
-
-  <div className="postList">
-
-    {postsLoading ? (
-
-      <div className="postItem">
-
-        최신 일정을 불러오는 중이에요 ♡
-
-      </div>
-
-    ) : scheduleError ? (
-
-      <div
-        className="postItem"
-        title={scheduleError}
-      >
-
-        일정을 불러오지 못했어요
-
-      </div>
-
-    ) : schedulePosts.length > 0 ? (
-
-      schedulePosts.map(
-        (post) => (
-
-          <a
-            href={post.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="postItem noticeItem"
-            key={post.id}
-            title={post.title}
+          <button
+            type="button"
+            className="cardButton"
+            onClick={() => {
+              window.open(
+                SCHEDULE_BOARD_URL,
+                "_blank",
+                "noopener,noreferrer"
+              );
+            }}
           >
+            일정 전체보기
+          </button>
+        </article>
 
-            {post.title}
+        {/* =================================
+            업보현황
+        ================================= */}
 
-          </a>
+        <article className="contentCard">
+          <div className="cardTitle">
+            <h3>
+              업보현황
+            </h3>
 
-        )
-      )
+            <span>
+              Roulette
+            </span>
+          </div>
 
-    ) : (
-
-      <div className="postItem">
-
-        아직 등록된 일정이 없어요 ♡
-
-      </div>
-
-    )}
-
-  </div>
-
-
-  <button
-    type="button"
-    className="cardButton"
-    onClick={() => {
-
-      window.open(
-        SCHEDULE_BOARD_URL,
-        "_blank",
-        "noopener,noreferrer"
-      );
-
-    }}
-  >
-
-    일정 전체보기
-
-  </button>
-
-</article>
-
-{/* =========================
-    와키 배포
-========================== */}
-
-<article className="contentCard">
-
-  <div className="cardTitle">
-
-    <h3>
-      와키 배포
-    </h3>
-
-    <span>
-      WAKI
-    </span>
-
-  </div>
-
-
-  <div className="postList">
-
-    {postsLoading ? (
-
-      <div className="postItem">
-
-        최신 와키를 불러오는 중이에요 ♡
-
-      </div>
-
-    ) : wakiError ? (
-
-      <div
-        className="postItem"
-        title={wakiError}
-      >
-
-        와키 게시글을 불러오지 못했어요
-
-      </div>
-
-    ) : wakiPosts.length > 0 ? (
-
-      wakiPosts.map(
-        (post) => (
-
-          <a
-            href={post.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="postItem"
-            key={post.id}
-            title={post.title}
-          >
-
-            {post.title}
-
-          </a>
-
-        )
-      )
-
-    ) : (
-
-      <div className="postItem">
-
-        아직 등록된 글이 없어요 ♡
-
-      </div>
-
-    )}
-
-  </div>
-
-
-  <button
-    type="button"
-    className="cardButton"
-    onClick={() => {
-
-      window.open(
-        WAKI_BOARD_URL,
-        "_blank",
-        "noopener,noreferrer"
-      );
-
-    }}
-  >
-
-    와키 배포 전체보기
-
-  </button>
-
-</article>
+          <div className="postList">
+            <div className="postItem">
+              룰렛 기록이 여기에 표시됩니다 ♡
+            </div>
+          </div>
+        </article>
       </section>
 
-      {/* =========================
+      {/* =================================
           FOOTER
-      ========================== */}
+      ================================= */}
+
       <footer className="footer">
         ♡ &nbsp; MOBAXIA FAN PAGE &nbsp; ♡
       </footer>
@@ -601,33 +757,60 @@ if (
   );
 }
 
-/* =================================
+/* =========================================
    SOOP 프로필 이미지 자동 연동
-================================= */
+========================================= */
+
 function ProfileImage() {
-  const streamerId = "mobaxia";
-  const prefix = streamerId.slice(0, 2).toLowerCase();
+  const streamerId =
+    "mobaxia";
+
+  const prefix =
+    streamerId
+      .slice(0, 2)
+      .toLowerCase();
 
   const sources = [
     `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/m/${streamerId}.webp`,
+
     `https://profile.img.sooplive.com/LOGO/${prefix}/${streamerId}/m/${streamerId}.jpg`,
+
     `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/${streamerId}.jpg`,
+
     `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/${streamerId}.webp`,
   ];
 
-  const [index, setIndex] = useState(0);
-  const [failed, setFailed] = useState(false);
+  const [
+    index,
+    setIndex,
+  ] =
+    useState(0);
+
+  const [
+    failed,
+    setFailed,
+  ] =
+    useState(false);
 
   function handleError() {
-    if (index + 1 < sources.length) {
-      setIndex(index + 1);
+    if (
+      index + 1 <
+      sources.length
+    ) {
+      setIndex(
+        index + 1
+      );
     } else {
       setFailed(true);
     }
   }
 
   if (failed) {
-    return <div className="profileFallback">모</div>;
+    return (
+      <div className="profileFallback">
+        모
+      </div>
+    );
   }
 
   return (

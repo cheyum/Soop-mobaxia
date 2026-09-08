@@ -1,70 +1,45 @@
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const dynamic =
+  "force-dynamic";
 
-type AnyRecord = Record<string, any>;
+export const revalidate =
+  0;
 
-const MAX_POSTS = 4;
-const POSTS_PER_PAGE = 50;
-const MAX_PAGES = 10;
+type AnyRecord =
+  Record<string, any>;
+
+const MAX_POSTS =
+  4;
+
+const POSTS_PER_PAGE =
+  50;
+
+const MAX_PAGES =
+  10;
 
 /* =========================================
    게시판 설정
 ========================================= */
 
 // 바샤업up
-const UP_BOARD_NO = "124110231";
+
+const UP_BOARD_NO =
+  "124110231";
 
 const UP_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110231";
 
 // 일정 안내
-const SCHEDULE_BOARD_NO = "124110021";
+
+const SCHEDULE_BOARD_NO =
+  "124110021";
 
 const SCHEDULE_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110021";
 
-// 와키 배포
-const WAKI_BOARD_NO = "124449583";
-
-const WAKI_BOARD_URL =
-  "https://www.sooplive.com/station/mobaxia/board/124449583";
-
 /* =========================================
-   와키 오래된 글 검색 설정
-========================================= */
-
-// 최대 8년 전까지 검색
-const WAKI_LOOKBACK_YEARS = 8;
-
-// 한 번에 180일씩 검색
-const WAKI_WINDOW_DAYS = 180;
-
-// 각 180일 구간당 최대 3페이지
-const WAKI_WINDOW_MAX_PAGES = 3;
-
-// 오래된 와키 글을 찾은 경우
-// 10분 동안 메모리 캐시 사용
-const WAKI_CACHE_MS =
-  10 * 60 * 1000;
-
-type WakiPost = {
-  id: string;
-  title: string;
-  regDate: string;
-  url: string;
-};
-
-let wakiCache:
-  | {
-      expiresAt: number;
-      posts: WakiPost[];
-    }
-  | null = null;
-
-/* =========================================
-   공통 JSON 응답
+   JSON 응답
 ========================================= */
 
 function jsonResponse(
@@ -91,7 +66,9 @@ function safeJson(
   text: string
 ): AnyRecord | null {
   try {
-    return JSON.parse(text);
+    return JSON.parse(
+      text
+    );
   } catch {
     return null;
   }
@@ -106,11 +83,15 @@ async function getLiveStatus(
 ) {
   const endpoints = [
     "https://live.sooplive.com/afreeca/player_live_api.php",
+
     "https://live.sooplive.co.kr/afreeca/player_live_api.php",
   ];
 
-  let lastStatus = 0;
-  let lastMessage = "";
+  let lastStatus =
+    0;
+
+  let lastMessage =
+    "";
 
   for (
     const endpoint
@@ -119,23 +100,43 @@ async function getLiveStatus(
     try {
       const body =
         new URLSearchParams({
-          bid: streamerId,
-          bno: "null",
-          type: "live",
-          pwd: "",
-          player_type: "html5",
-          stream_type: "common",
-          quality: "HD",
-          mode: "landing",
-          from_api: "0",
-          is_revive: "false",
+          bid:
+            streamerId,
+
+          bno:
+            "null",
+
+          type:
+            "live",
+
+          pwd:
+            "",
+
+          player_type:
+            "html5",
+
+          stream_type:
+            "common",
+
+          quality:
+            "HD",
+
+          mode:
+            "landing",
+
+          from_api:
+            "0",
+
+          is_revive:
+            "false",
         });
 
       const response =
         await fetch(
           endpoint,
           {
-            method: "POST",
+            method:
+              "POST",
 
             headers: {
               "Content-Type":
@@ -184,7 +185,9 @@ async function getLiveStatus(
       }
 
       const data =
-        safeJson(text);
+        safeJson(
+          text
+        );
 
       if (!data) {
         lastMessage =
@@ -201,10 +204,16 @@ async function getLiveStatus(
         channel?.BNO;
 
       const live =
-        broadNo !== undefined &&
-        broadNo !== null &&
-        String(broadNo) !== "" &&
-        String(broadNo) !== "0";
+        broadNo !==
+          undefined &&
+        broadNo !==
+          null &&
+        String(
+          broadNo
+        ) !== "" &&
+        String(
+          broadNo
+        ) !== "0";
 
       return {
         live,
@@ -217,13 +226,17 @@ async function getLiveStatus(
 
         broadNo:
           broadNo != null
-            ? String(broadNo)
+            ? String(
+                broadNo
+              )
             : "",
 
         source:
           endpoint,
       };
-    } catch (error) {
+    } catch (
+      error
+    ) {
       lastMessage =
         error instanceof Error
           ? error.message
@@ -248,7 +261,7 @@ async function getLiveStatus(
 }
 
 /* =========================================
-   게시글인지 판별
+   게시글 판별
 ========================================= */
 
 function looksLikePost(
@@ -256,8 +269,11 @@ function looksLikePost(
 ) {
   if (
     !value ||
-    typeof value !== "object" ||
-    Array.isArray(value)
+    typeof value !==
+      "object" ||
+    Array.isArray(
+      value
+    )
   ) {
     return false;
   }
@@ -276,7 +292,7 @@ function looksLikePost(
 }
 
 /* =========================================
-   응답 내부에서 게시글 배열 탐색
+   게시글 배열 탐색
 ========================================= */
 
 function findPostArray(
@@ -291,7 +307,9 @@ function findPostArray(
   }
 
   if (
-    Array.isArray(value)
+    Array.isArray(
+      value
+    )
   ) {
     if (
       value.some(
@@ -314,7 +332,8 @@ function findPostArray(
         );
 
       if (
-        found.length > 0
+        found.length >
+        0
       ) {
         return found;
       }
@@ -340,7 +359,8 @@ function findPostArray(
         );
 
       if (
-        found.length > 0
+        found.length >
+        0
       ) {
         return found;
       }
@@ -351,7 +371,7 @@ function findPostArray(
 }
 
 /* =========================================
-   게시판 번호 추출
+   게시판 번호
 ========================================= */
 
 function getBoardNo(
@@ -367,7 +387,7 @@ function getBoardNo(
 }
 
 /* =========================================
-   게시글 번호 추출
+   게시글 번호
 ========================================= */
 
 function getPostNo(
@@ -380,9 +400,12 @@ function getPostNo(
     post?.postNo ??
     post?.id;
 
-  return value == null
+  return value ==
+      null
     ? ""
-    : String(value);
+    : String(
+        value
+      );
 }
 
 /* =========================================
@@ -401,7 +424,7 @@ function getPostTitle(
 }
 
 /* =========================================
-   게시글 작성일
+   게시글 날짜
 ========================================= */
 
 function getPostDate(
@@ -417,7 +440,7 @@ function getPostDate(
 }
 
 /* =========================================
-   게시글 정리 + 최신순 정렬
+   게시글 정리
 ========================================= */
 
 function normalizePosts(
@@ -429,20 +452,25 @@ function normalizePosts(
     new Set<string>();
 
   return posts
-
     .map(
       (
         post,
         index
       ) => {
         const postNo =
-          getPostNo(post);
+          getPostNo(
+            post
+          );
 
         const title =
-          getPostTitle(post);
+          getPostTitle(
+            post
+          );
 
         const regDate =
-          getPostDate(post);
+          getPostDate(
+            post
+          );
 
         const id =
           postNo ||
@@ -490,7 +518,7 @@ function normalizePosts(
       }
     )
 
-    /* 최신순 정렬 */
+    /* 최신순 */
 
     .sort(
       (
@@ -542,48 +570,32 @@ function normalizePosts(
       ({
         originalIndex,
         ...post
-      }) => post
+      }) =>
+        post
     );
 }
 
 /* =========================================
-   날짜 형식 변환
-========================================= */
-
-function formatSoopDate(
-  date: Date
-) {
-  return date
-    .toISOString()
-    .slice(
-      0,
-      19
-    )
-    .replace(
-      "T",
-      " "
-    );
-}
-
-/* =========================================
-   SOOP 게시판 한 페이지 조회
+   SOOP 게시판 API
 ========================================= */
 
 async function getPostsPage(
   streamerId: string,
   page: number,
   boardNumber: string,
-  boardUrl: string,
-  startDate = "",
-  endDate = ""
+  boardUrl: string
 ) {
   const bases = [
     "https://chapi.sooplive.co.kr/api",
+
     "https://chapi.sooplive.com/api",
   ];
 
-  let lastStatus = 0;
-  let lastMessage = "";
+  let lastStatus =
+    0;
+
+  let lastMessage =
+    "";
 
   for (
     const base
@@ -605,12 +617,12 @@ async function getPostsPage(
 
     url.searchParams.set(
       "start_date",
-      startDate
+      ""
     );
 
     url.searchParams.set(
       "end_date",
-      endDate
+      ""
     );
 
     url.searchParams.set(
@@ -640,7 +652,9 @@ async function getPostsPage(
 
     url.searchParams.set(
       "page",
-      String(page)
+      String(
+        page
+      )
     );
 
     try {
@@ -704,7 +718,9 @@ async function getPostsPage(
       }
 
       const data =
-        safeJson(text);
+        safeJson(
+          text
+        );
 
       if (!data) {
         lastMessage =
@@ -728,7 +744,9 @@ async function getPostsPage(
         source:
           url.toString(),
       };
-    } catch (error) {
+    } catch (
+      error
+    ) {
       lastMessage =
         error instanceof Error
           ? error.message
@@ -753,10 +771,7 @@ async function getPostsPage(
 }
 
 /* =========================================
-   일반 게시판 최신글 조회
-
-   바샤업up
-   일정 안내
+   특정 게시판 최신글
 ========================================= */
 
 async function getBoardPosts(
@@ -766,7 +781,7 @@ async function getBoardPosts(
 ) {
   /* =====================================
      1차
-     board_number 직접 조회
+     해당 게시판 직접 조회
   ===================================== */
 
   const direct =
@@ -830,15 +845,21 @@ async function getBoardPosts(
 
   /* =====================================
      2차
-     전체 게시글에서 게시판 번호 검색
+     전체 게시글에서 검색
   ===================================== */
 
   const matched:
-    AnyRecord[] = [];
+    AnyRecord[] =
+    [];
 
-  let lastStatus = 0;
-  let lastMessage = "";
-  let source = "";
+  let lastStatus =
+    0;
+
+  let lastMessage =
+    "";
+
+  let source =
+    "";
 
   for (
     let page = 1;
@@ -904,7 +925,8 @@ async function getBoardPosts(
   }
 
   if (
-    matched.length === 0 &&
+    matched.length ===
+      0 &&
     lastMessage
   ) {
     return {
@@ -946,565 +968,6 @@ async function getBoardPosts(
 }
 
 /* =========================================
-   와키 배포 전용 조회
-
-   1. 최신글 직접 확인
-   2. 기존 캐시 확인
-   3. 180일 단위로 과거 검색
-========================================= */
-
-// app/api/live/[id]/route.ts
-// 기존 getWakiPosts() 전체를 이 함수로 교체
-
-async function getWakiPosts(
-  streamerId: string
-) {
-  /* =====================================
-     1차
-     와키 게시판 최신글 직접 확인
-
-     새 글이 올라오면 빠르게 반영
-  ===================================== */
-
-  const direct =
-    await getPostsPage(
-      streamerId,
-      1,
-      WAKI_BOARD_NO,
-      WAKI_BOARD_URL,
-      "",
-      ""
-    );
-
-  if (
-    direct.ok &&
-    direct.posts.length > 0
-  ) {
-    const hasBoardNo =
-      direct.posts.some(
-        (post) =>
-          getBoardNo(post) !== ""
-      );
-
-    const filtered =
-      hasBoardNo
-        ? direct.posts.filter(
-            (post) =>
-              getBoardNo(post) ===
-              WAKI_BOARD_NO
-          )
-        : direct.posts;
-
-    if (
-      filtered.length > 0
-    ) {
-      const posts =
-        normalizePosts(
-          filtered,
-          streamerId,
-          WAKI_BOARD_URL
-        ).slice(
-          0,
-          MAX_POSTS
-        );
-
-      wakiCache = {
-        expiresAt:
-          Date.now() +
-          WAKI_CACHE_MS,
-
-        posts,
-      };
-
-      return {
-        posts,
-
-        error: false,
-
-        status:
-          direct.status,
-
-        source:
-          direct.source,
-
-        mode:
-          "latest-direct",
-
-        windowsChecked:
-          0,
-
-        pagesChecked:
-          1,
-      };
-    }
-  }
-
-
-  /* =====================================
-     2차
-     캐시 확인
-  ===================================== */
-
-  if (
-    wakiCache &&
-    wakiCache.expiresAt >
-      Date.now() &&
-    wakiCache.posts.length > 0
-  ) {
-    return {
-      posts:
-        wakiCache.posts,
-
-      error: false,
-
-      status:
-        200,
-
-      source:
-        "waki-memory-cache",
-
-      mode:
-        "cache",
-
-      windowsChecked:
-        0,
-
-      pagesChecked:
-        0,
-    };
-  }
-
-
-  /* =====================================
-     3차
-     전체 게시판 최신글에서 검색
-
-     중요:
-     board_number를 빈 값으로 요청한 뒤
-     실제 게시글의 bbs_no를 비교한다.
-  ===================================== */
-
-  const recentMatched:
-    AnyRecord[] = [];
-
-  let recentSource = "";
-  let recentStatus = 0;
-
-  const RECENT_ALL_BOARD_PAGES =
-    20;
-
-  let recentPagesChecked =
-    0;
-
-
-  for (
-    let page = 1;
-    page <= RECENT_ALL_BOARD_PAGES;
-    page += 1
-  ) {
-    const result =
-      await getPostsPage(
-        streamerId,
-
-        page,
-
-        "", // ★ 매우 중요
-
-        WAKI_BOARD_URL,
-
-        "",
-
-        ""
-      );
-
-
-    recentPagesChecked += 1;
-
-    recentStatus =
-      result.status;
-
-    recentSource =
-      result.source ??
-      recentSource;
-
-
-    if (
-      !result.ok
-    ) {
-      break;
-    }
-
-
-    if (
-      result.posts.length === 0
-    ) {
-      break;
-    }
-
-
-    const matches =
-      result.posts.filter(
-        (post) =>
-          getBoardNo(post) ===
-          WAKI_BOARD_NO
-      );
-
-
-    recentMatched.push(
-      ...matches
-    );
-
-
-    if (
-      recentMatched.length >=
-      MAX_POSTS
-    ) {
-      break;
-    }
-
-
-    if (
-      result.posts.length <
-      POSTS_PER_PAGE
-    ) {
-      break;
-    }
-  }
-
-
-  if (
-    recentMatched.length > 0
-  ) {
-    const posts =
-      normalizePosts(
-        recentMatched,
-        streamerId,
-        WAKI_BOARD_URL
-      ).slice(
-        0,
-        MAX_POSTS
-      );
-
-
-    wakiCache = {
-      expiresAt:
-        Date.now() +
-        WAKI_CACHE_MS,
-
-      posts,
-    };
-
-
-    return {
-      posts,
-
-      error: false,
-
-      status:
-        recentStatus,
-
-      source:
-        recentSource,
-
-      mode:
-        "all-board-pagination",
-
-      windowsChecked:
-        0,
-
-      pagesChecked:
-        recentPagesChecked,
-    };
-  }
-
-
-  /* =====================================
-     4차
-     오래된 전체 게시글 검색
-
-     현재부터 과거 방향으로
-     180일씩 기간을 나눠 검색
-
-     이때도 board_number는 빈 값.
-
-     받은 게시글의 bbs_no를 보고
-     와키 게시판 글만 골라낸다.
-  ===================================== */
-
-  const found:
-    AnyRecord[] = [];
-
-
-  const now =
-    new Date();
-
-
-  const oldest =
-    new Date(now);
-
-
-  oldest.setUTCFullYear(
-    oldest.getUTCFullYear() -
-      WAKI_LOOKBACK_YEARS
-  );
-
-
-  let windowEnd =
-    new Date(now);
-
-
-  let lastStatus =
-    recentStatus;
-
-
-  let lastSource =
-    recentSource;
-
-
-  let lastMessage =
-    "";
-
-
-  let windowsChecked =
-    0;
-
-
-  let pagesChecked =
-    recentPagesChecked;
-
-
-  while (
-    windowEnd.getTime() >
-      oldest.getTime() &&
-    found.length <
-      MAX_POSTS
-  ) {
-    windowsChecked += 1;
-
-
-    let windowStart =
-      new Date(
-        windowEnd.getTime() -
-          WAKI_WINDOW_DAYS *
-            24 *
-            60 *
-            60 *
-            1000
-      );
-
-
-    if (
-      windowStart.getTime() <
-      oldest.getTime()
-    ) {
-      windowStart =
-        new Date(
-          oldest
-        );
-    }
-
-
-    const startDate =
-      formatSoopDate(
-        windowStart
-      );
-
-
-    const endDate =
-      formatSoopDate(
-        windowEnd
-      );
-
-
-    /* =================================
-       해당 기간의 전체 게시글 조회
-    ================================= */
-
-    for (
-      let page = 1;
-      page <=
-        WAKI_WINDOW_MAX_PAGES;
-      page += 1
-    ) {
-      /*
-        핵심 변경사항
-
-        이전:
-        board_number=124449583
-
-        현재:
-        board_number=""
-
-        → 전체 글 조회
-        → bbs_no로 와키 게시판 필터링
-      */
-
-      const result =
-        await getPostsPage(
-          streamerId,
-
-          page,
-
-          "", // ★ 핵심
-
-          WAKI_BOARD_URL,
-
-          startDate,
-
-          endDate
-        );
-
-
-      pagesChecked += 1;
-
-
-      lastStatus =
-        result.status;
-
-
-      lastSource =
-        result.source ??
-        lastSource;
-
-
-      if (
-        !result.ok
-      ) {
-        lastMessage =
-          result.message ||
-          "와키 게시글 API 연결 실패";
-
-        break;
-      }
-
-
-      if (
-        result.posts.length === 0
-      ) {
-        break;
-      }
-
-
-      /*
-        전체 게시글 중
-
-        bbs_no === 124449583
-
-        인 글만 가져온다.
-      */
-
-      const matches =
-        result.posts.filter(
-          (post) =>
-            getBoardNo(post) ===
-            WAKI_BOARD_NO
-        );
-
-
-      found.push(
-        ...matches
-      );
-
-
-      if (
-        found.length >=
-        MAX_POSTS
-      ) {
-        break;
-      }
-
-
-      if (
-        result.posts.length <
-        POSTS_PER_PAGE
-      ) {
-        break;
-      }
-    }
-
-
-    /*
-      와키 글을 찾았다면
-      더 과거로 갈 필요 없음.
-
-      현재 → 과거 순으로 검색하기 때문에
-      지금 찾은 글들이 가장 최신 와키 글이다.
-    */
-
-    if (
-      found.length >=
-      MAX_POSTS
-    ) {
-      break;
-    }
-
-
-    /*
-      다음 180일 구간으로 이동
-    */
-
-    windowEnd =
-      new Date(
-        windowStart.getTime() -
-          1000
-      );
-  }
-
-
-  const posts =
-    normalizePosts(
-      found,
-      streamerId,
-      WAKI_BOARD_URL
-    ).slice(
-      0,
-      MAX_POSTS
-    );
-
-
-  /* =====================================
-     결과 캐시
-  ===================================== */
-
-  if (
-    posts.length > 0
-  ) {
-    wakiCache = {
-      expiresAt:
-        Date.now() +
-        WAKI_CACHE_MS,
-
-      posts,
-    };
-  }
-
-
-  return {
-    posts,
-
-    error:
-      false,
-
-    status:
-      lastStatus,
-
-    source:
-      lastSource ||
-      "all-board-date-window-search",
-
-    message:
-      lastMessage,
-
-    mode:
-      "all-board-date-window-search",
-
-    windowsChecked,
-
-    pagesChecked,
-  };
-}
-
-/* =========================================
    API
 ========================================= */
 
@@ -1519,7 +982,9 @@ export async function GET(
   const parts =
     url.pathname
       .split("/")
-      .filter(Boolean);
+      .filter(
+        Boolean
+      );
 
   const streamerId =
     decodeURIComponent(
@@ -1531,7 +996,8 @@ export async function GET(
   const debug =
     url.searchParams.get(
       "debug"
-    ) === "1";
+    ) ===
+    "1";
 
   if (
     !streamerId
@@ -1555,12 +1021,6 @@ export async function GET(
       schedulePostsError:
         true,
 
-      wakiPosts:
-        [],
-
-      wakiPostsError:
-        true,
-
       message:
         "스트리머 ID가 없습니다.",
     });
@@ -1570,7 +1030,6 @@ export async function GET(
      LIVE
      바샤업up
      일정 안내
-     와키 배포
 
      동시에 조회
   ===================================== */
@@ -1579,7 +1038,6 @@ export async function GET(
     liveResult,
     upResult,
     scheduleResult,
-    wakiResult,
   ] =
     await Promise.all([
       /* LIVE */
@@ -1603,26 +1061,16 @@ export async function GET(
         SCHEDULE_BOARD_NO,
         SCHEDULE_BOARD_URL
       ),
-
-      /* 와키 배포 */
-
-      getWakiPosts(
-        streamerId
-      ),
     ]);
-
-  /* =====================================
-     기본 API 응답
-  ===================================== */
 
   const response:
     AnyRecord = {
     id:
       streamerId,
 
-    /* =============================
+    /* =================================
        LIVE
-    ============================= */
+    ================================= */
 
     live:
       liveResult.live,
@@ -1634,9 +1082,9 @@ export async function GET(
       liveResult.message ??
       "",
 
-    /* =============================
+    /* =================================
        바샤업up
-    ============================= */
+    ================================= */
 
     boardNo:
       UP_BOARD_NO,
@@ -1654,9 +1102,9 @@ export async function GET(
       upResult.message ??
       "",
 
-    /* =============================
+    /* =================================
        일정 안내
-    ============================= */
+    ================================= */
 
     scheduleBoardNo:
       SCHEDULE_BOARD_NO,
@@ -1673,30 +1121,6 @@ export async function GET(
     schedulePostsMessage:
       scheduleResult.message ??
       "",
-
-    /* =============================
-       와키 배포
-    ============================= */
-
-    wakiBoardNo:
-      WAKI_BOARD_NO,
-
-    wakiBoardUrl:
-      WAKI_BOARD_URL,
-
-    wakiPosts:
-      wakiResult.posts,
-
-    wakiPostsError:
-      wakiResult.error,
-
-    wakiPostsMessage:
-      wakiResult.message ??
-      "",
-      
-      pagesChecked:
-  wakiResult.pagesChecked ??
-  0,
   };
 
   /* =====================================
@@ -1759,45 +1183,6 @@ export async function GET(
 
         message:
           scheduleResult.message ??
-          "",
-      },
-
-      /* 와키 배포 */
-
-      wakiBoard: {
-        boardNo:
-          WAKI_BOARD_NO,
-
-        error:
-          wakiResult.error,
-
-        status:
-          wakiResult.status ??
-          200,
-
-        count:
-          wakiResult.posts.length,
-
-        mode:
-          wakiResult.mode ??
-          "",
-
-        windowsChecked:
-          wakiResult.windowsChecked ??
-          0,
-
-        lookbackYears:
-          WAKI_LOOKBACK_YEARS,
-
-        windowDays:
-          WAKI_WINDOW_DAYS,
-
-        source:
-          wakiResult.source ??
-          "",
-
-        message:
-          wakiResult.message ??
           "",
       },
     };
