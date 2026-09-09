@@ -2610,3 +2610,306 @@ a.upboLink:hover {
     right: 6px !important;
   }
 }
+/* =========================================================
+   MOBAXIA CHARACTER POSITION V2
+   "칸" = 흰색 카드와 분홍 격자 배경의 외곽 경계
+   반드시 globals.css 가장 마지막에 추가
+========================================================= */
+
+
+/* =========================================================
+   character1
+   일정 안내 카드의 "윗 경계선"에 붙이기
+
+   - 내부 제목 옆이 아니라 카드 전체 상단 경계
+   - 프로필 큰 카드까지 침범하지 않도록 작게
+   - 누워있는 캐릭터가 카드 윗선을 타고 있는 느낌
+========================================================= */
+
+.contentCard.scheduleCard {
+  position: relative !important;
+  overflow: visible !important;
+
+  /* 캐릭터 때문에 카드 내부 높이는 늘리지 않음 */
+  padding-top: 25px !important;
+}
+
+.contentCard.scheduleCard
+> .cardCharacter.characterTwo {
+  position: absolute !important;
+
+  width: 102px !important;
+
+  /*
+    흰색 카드 상단 경계선에 걸치기
+  */
+  top: -22px !important;
+
+  /*
+    카드 왼쪽에서 약간 안쪽
+  */
+  left: 24px !important;
+
+  right: auto !important;
+  bottom: auto !important;
+
+  transform: rotate(-2deg) !important;
+
+  z-index: 30 !important;
+
+  pointer-events: none !important;
+}
+
+
+/* =========================================================
+   character2
+   바샤업up 카드의 "왼쪽 외곽 경계선"에 붙이기
+
+   - 게시글 첫 번째 칸 옆이 아님
+   - 흰색 카드 전체의 왼쪽 테두리 중앙
+   - 몸 일부는 격자 배경으로 나오게
+========================================================= */
+
+.contentCard.upCard {
+  position: relative !important;
+  overflow: visible !important;
+
+  padding-top: 25px !important;
+}
+
+.contentCard.upCard
+> .cardCharacter.characterOne {
+  position: absolute !important;
+
+  width: 98px !important;
+
+  /*
+    카드 왼쪽 테두리에서 반쯤 바깥으로
+  */
+  left: -45px !important;
+
+  /*
+    카드 전체 높이 중앙에 위치
+  */
+  top: 50% !important;
+
+  right: auto !important;
+  bottom: auto !important;
+
+  transform:
+    translateY(-50%)
+    rotate(-3deg) !important;
+
+  z-index: 30 !important;
+
+  pointer-events: none !important;
+}
+
+
+/* =========================================================
+   character3
+   상단 프로필 큰 카드의 "오른쪽 위 외곽 경계선"
+
+   - 프로필 내부 닉네임 옆이 아님
+   - 큰 흰색 프로필 카드 자체의 오른쪽 경계
+   - 카드 위쪽보다 캐릭터가 높게 올라가지 않음
+   - 일부는 오른쪽 격자 배경으로 나가도 됨
+========================================================= */
+
+.profileCard {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.profileCard
+> .mainCharacter.mainCharacterHang {
+  position: absolute !important;
+
+  width: 108px !important;
+
+  /*
+    프로필 카드보다 위로 올라가지 않음
+  */
+  top: 12px !important;
+
+  /*
+    큰 흰색 카드 오른쪽 경계에 걸치기
+  */
+  right: -34px !important;
+
+  left: auto !important;
+  bottom: auto !important;
+
+  transform: rotate(3deg) !important;
+
+  z-index: 30 !important;
+
+  pointer-events: none !important;
+}
+
+
+/* =========================================================
+   캐릭터 이미지 공통
+========================================================= */
+
+.cardCharacter img,
+.mainCharacter img {
+  display: block !important;
+
+  width: 100% !important;
+  height: auto !important;
+
+  object-fit: contain !important;
+
+  filter:
+    drop-shadow(
+      0 8px 12px
+      rgba(86, 52, 67, 0.16)
+    ) !important;
+}
+
+
+/* =========================================================
+   내용은 캐릭터보다 아래쪽에서 정상 표시
+========================================================= */
+
+.scheduleCard .cardTitle,
+.scheduleCard .postList,
+.scheduleCard .cardButton,
+
+.upCard .cardTitle,
+.upCard .postList,
+.upCard .cardButton {
+  position: relative !important;
+
+  z-index: 10 !important;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  /* character1 - 일정 위 */
+
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 88px !important;
+
+    top: -19px !important;
+    left: 20px !important;
+  }
+
+
+  /* character2 - 바샤업 왼쪽 */
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 85px !important;
+
+    left: -37px !important;
+
+    top: 50% !important;
+
+    transform:
+      translateY(-50%)
+      rotate(-3deg) !important;
+  }
+
+
+  /* character3 - 프로필 오른쪽 위 */
+
+  .profileCard
+  > .mainCharacter.mainCharacterHang {
+    width: 92px !important;
+
+    top: 11px !important;
+    right: -27px !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  /*
+    모바일은 카드가 1열이므로
+    바깥으로 너무 많이 나가지 않도록 축소
+  */
+
+
+  /* character1 */
+
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 72px !important;
+
+    top: -16px !important;
+    left: 16px !important;
+  }
+
+
+  /* character2 */
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 70px !important;
+
+    left: -25px !important;
+
+    top: 50% !important;
+
+    transform:
+      translateY(-50%)
+      rotate(-3deg) !important;
+  }
+
+
+  /* character3 */
+
+  .profileCard
+  > .mainCharacter.mainCharacterHang {
+    width: 68px !important;
+
+    top: 10px !important;
+    right: -14px !important;
+
+    left: auto !important;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 64px !important;
+
+    top: -14px !important;
+    left: 13px !important;
+  }
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 62px !important;
+
+    left: -20px !important;
+  }
+
+  .profileCard
+  > .mainCharacter.mainCharacterHang {
+    width: 60px !important;
+
+    top: 9px !important;
+    right: -10px !important;
+  }
+}
