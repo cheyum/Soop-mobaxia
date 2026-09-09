@@ -81,7 +81,7 @@ input {
 
 
 /* ==========================================
-   배경장식
+   배경 장식
 ========================================== */
 
 .bgHeart,
@@ -202,7 +202,10 @@ input {
 }
 
 .brand p {
-  margin: 4px 0 0;
+  margin:
+    4px
+    0
+    0;
 
   color: #c18a9f;
 
@@ -238,11 +241,17 @@ input {
   color: #a06a80;
 
   font-size: 12px;
+
+  box-shadow:
+    0 8px 24px
+    rgba(222, 143, 177, 0.08);
 }
 
 .statusDot {
   width: 7px;
   height: 7px;
+
+  flex-shrink: 0;
 
   border-radius: 50%;
 }
@@ -361,6 +370,7 @@ input {
 
 /* ==========================================
    CHARACTER 4
+   메인 카드 왼쪽에 매달리기
 ========================================== */
 
 .mainCharacter {
@@ -378,6 +388,8 @@ input {
   width: 100%;
   height: auto;
 
+  object-fit: contain;
+
   filter:
     drop-shadow(
       0 10px 16px
@@ -386,10 +398,41 @@ input {
 }
 
 .mainCharacterHang {
-  width: 145px;
+  width: 132px;
 
-  left: -72px;
-  top: 115px;
+  left: -58px;
+  top: 96px;
+
+  transform: rotate(-6deg);
+
+  transform-origin: center;
+}
+
+
+/* 메인 카드에 마우스 올리면 살짝 움직임 */
+
+.profileCard:hover
+.mainCharacterHang {
+  animation:
+    mainCharacterSwing
+    1.5s
+    ease-in-out
+    infinite;
+}
+
+@keyframes mainCharacterSwing {
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(-6deg);
+  }
+
+  50% {
+    transform:
+      translateY(4px)
+      rotate(-3deg);
+  }
 }
 
 
@@ -422,6 +465,10 @@ input {
   font-size: 11px;
 
   white-space: nowrap;
+
+  box-shadow:
+    0 6px 18px
+    rgba(225, 147, 181, 0.1);
 }
 
 .streamScreen {
@@ -449,6 +496,10 @@ input {
 
 .streamOnline {
   border-color: #ff8fba;
+
+  box-shadow:
+    0 15px 40px
+    rgba(255, 102, 165, 0.16);
 }
 
 .streamOffline {
@@ -488,6 +539,8 @@ input {
 }
 
 .streamPlaceholder strong {
+  color: #9a6c7f;
+
   font-size: 25px;
   font-weight: 800;
 
@@ -574,6 +627,10 @@ input {
       #ffffff,
       #ff93bb
     );
+
+  box-shadow:
+    0 8px 20px
+    rgba(225, 123, 165, 0.14);
 }
 
 .profileImage {
@@ -656,6 +713,8 @@ input {
   color: #c17f9a;
 
   font-size: 10px;
+
+  line-height: 1.6;
 }
 
 .basicInfo span {
@@ -731,7 +790,7 @@ input {
 
 
 /* ==========================================
-   LINKS
+   링크 버튼
 ========================================== */
 
 .linkButtonRow {
@@ -758,8 +817,12 @@ input {
 
   border-radius: 18px;
 
+  text-decoration: none;
+
   transition:
-    0.2s;
+    transform 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
 }
 
 .homeButton {
@@ -772,6 +835,10 @@ input {
     );
 
   color: white;
+
+  box-shadow:
+    0 10px 24px
+    rgba(230, 119, 165, 0.18);
 }
 
 .homeButton:hover {
@@ -793,9 +860,16 @@ input {
     rgba(255, 250, 252, 0.75);
 }
 
+.emptyLinkButton:hover {
+  background: #fff3f7;
+
+  transform:
+    translateY(-2px);
+}
+
 
 /* ==========================================
-   CONTENT
+   하단 콘텐츠
 ========================================== */
 
 .contentGrid {
@@ -867,11 +941,13 @@ input {
     );
 
   pointer-events: none;
+
+  z-index: 0;
 }
 
 
 /* ==========================================
-   CHARACTER COMMON
+   캐릭터 공통
 ========================================== */
 
 .characterCard {
@@ -895,6 +971,8 @@ input {
   width: 100%;
   height: auto;
 
+  object-fit: contain;
+
   filter:
     drop-shadow(
       0 10px 15px
@@ -905,30 +983,81 @@ input {
 
 /* ==========================================
    CHARACTER 1
-   바샤업up 위
+   바샤업up 위에 누워있는 모습
 ========================================== */
 
-.characterOne {
-  width: 165px;
+.upCard {
+  padding-top: 52px;
+}
 
-  top: -78px;
-  left: 15px;
+.characterOne {
+  width: 148px;
+
+  top: -46px;
+  left: 18px;
+
+  transform: rotate(-2deg);
+
+  transform-origin: center bottom;
+}
+
+.upCard:hover
+.characterOne {
+  animation:
+    characterOneBounce
+    1.4s
+    ease-in-out
+    infinite;
+}
+
+@keyframes characterOneBounce {
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(-2deg);
+  }
+
+  50% {
+    transform:
+      translateY(-3px)
+      rotate(-2deg);
+  }
 }
 
 
 /* ==========================================
    CHARACTER 2
-   일정 옆에서 빼꼼
+   일정 안내 오른쪽에서 빼꼼
 ========================================== */
 
-.characterTwo {
-  width: 120px;
+.scheduleCard {
+  position: relative;
+}
 
-  top: 58px;
-  right: -55px;
+.characterTwo {
+  width: 104px;
+
+  top: 66px;
+  right: -28px;
 
   z-index: 2;
+
+  transform: rotate(3deg);
+
+  transition:
+    transform 0.25s ease;
 }
+
+.scheduleCard:hover
+.characterTwo {
+  transform:
+    translateX(-7px)
+    rotate(3deg);
+}
+
+
+/* 일정 내용은 캐릭터 앞으로 */
 
 .scheduleCard .cardTitle,
 .scheduleCard .postList,
@@ -941,19 +1070,62 @@ input {
 
 /* ==========================================
    CHARACTER 3
-   업보현황 위
+   업보현황 카드 위
 ========================================== */
 
-.characterThree {
-  width: 135px;
+.upboCard {
+  padding-top: 52px;
+}
 
-  top: -78px;
-  right: 13px;
+.characterThree {
+  width: 118px;
+
+  top: -40px;
+  right: 18px;
+
+  transform: rotate(4deg);
+
+  transform-origin: center bottom;
+}
+
+.upboCard:hover
+.characterThree {
+  animation:
+    characterThreeWiggle
+    0.7s
+    ease-in-out;
+}
+
+@keyframes characterThreeWiggle {
+  0% {
+    transform:
+      rotate(4deg);
+  }
+
+  25% {
+    transform:
+      rotate(0deg);
+  }
+
+  50% {
+    transform:
+      rotate(7deg);
+  }
+
+  75% {
+    transform:
+      rotate(2deg);
+  }
+
+  100% {
+    transform:
+      rotate(4deg);
+  }
 }
 
 
 /* ==========================================
-   CARD TITLE
+   카드 제목
 ========================================== */
 
 .cardTitle {
@@ -972,6 +1144,7 @@ input {
   color: #5c414c;
 
   font-size: 19px;
+  font-weight: 800;
 }
 
 .cardTitle h3::after {
@@ -1006,11 +1179,13 @@ input {
   color: #cc91aa;
 
   font-size: 9px;
+
+  letter-spacing: 0.4px;
 }
 
 
 /* ==========================================
-   POSTS
+   게시글
 ========================================== */
 
 .postList {
@@ -1045,7 +1220,8 @@ input {
 
   border-radius: 14px;
 
-  background: #fff9fb;
+  background:
+    #fff9fb;
 
   color: #865f6e;
 
@@ -1056,10 +1232,18 @@ input {
   white-space: nowrap;
 
   text-overflow: ellipsis;
+
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 a.postItem:hover {
-  background: #fff0f6;
+  background:
+    #fff0f6;
+
+  transform:
+    translateX(3px);
 }
 
 .noticeItem {
@@ -1081,14 +1265,17 @@ a.postItem:hover {
   display: grid;
 
   grid-template-rows:
-    repeat(3, 48px);
+    repeat(
+      3,
+      48px
+    );
 
   gap: 10px;
 }
 
 
 /* ==========================================
-   BUTTON
+   전체보기 버튼
 ========================================== */
 
 .cardButton {
@@ -1100,6 +1287,10 @@ a.postItem:hover {
   height: 48px;
 
   margin-top: 10px;
+
+  padding:
+    0
+    15px;
 
   border: 0;
 
@@ -1119,16 +1310,23 @@ a.postItem:hover {
   font-weight: 800;
 
   cursor: pointer;
+
+  transition:
+    transform 0.2s,
+    filter 0.2s;
 }
 
 .cardButton:hover {
   transform:
     translateY(-2px);
+
+  filter:
+    brightness(0.98);
 }
 
 
 /* ==========================================
-   UPBO
+   업보현황
 ========================================== */
 
 .upboList {
@@ -1145,6 +1343,7 @@ a.postItem:hover {
   width: 100%;
 
   height: 48px;
+  min-height: 48px;
 
   border:
     1px solid
@@ -1152,13 +1351,16 @@ a.postItem:hover {
 
   border-radius: 14px;
 
-  background: #fff9fb;
+  background:
+    #fff9fb;
 }
 
 .upboLink {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  gap: 12px;
 
   padding:
     0
@@ -1167,6 +1369,19 @@ a.postItem:hover {
   color: #7a3f59;
 
   text-decoration: none;
+}
+
+a.upboLink {
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+
+a.upboLink:hover {
+  background: #fff0f6;
+
+  transform:
+    translateY(-1px);
 }
 
 .upboLink strong {
@@ -1182,6 +1397,11 @@ a.postItem:hover {
 .upboDisabled {
   opacity: 0.7;
 }
+
+
+/* ==========================================
+   업보 검색
+========================================== */
 
 .upboSearchRow {
   display: flex;
@@ -1209,12 +1429,20 @@ a.postItem:hover {
 
   background: white;
 
+  color: #6f4055;
+
   outline: none;
 
   font-size: 13px;
 }
 
+.upboSearchInput::placeholder {
+  color: #c79aac;
+}
+
 .upboSearchButton {
+  flex: 0 0 auto;
+
   height: 32px;
 
   padding:
@@ -1234,6 +1462,7 @@ a.postItem:hover {
 
   color: white;
 
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -1255,6 +1484,12 @@ a.postItem:hover {
   color: #755066;
 
   font-size: 12px;
+
+  line-height: 1.5;
+}
+
+.upboEmpty {
+  width: 100%;
 }
 
 
@@ -1295,30 +1530,53 @@ a.postItem:hover {
     padding: 35px;
   }
 
-  .mainCharacterHang {
-    width: 115px;
+  .contentGrid {
+    gap: 16px;
+  }
 
-    left: -55px;
+  /* character4 */
+
+  .mainCharacterHang {
+    width: 108px;
+
+    left: -44px;
+    top: 92px;
+  }
+
+  /* character1 */
+
+  .upCard {
+    padding-top: 46px;
   }
 
   .characterOne {
-    width: 135px;
+    width: 126px;
 
-    top: -63px;
+    top: -40px;
+    left: 13px;
   }
 
-  .characterTwo {
-    width: 100px;
+  /* character2 */
 
-    right: -40px;
+  .characterTwo {
+    width: 92px;
+
+    top: 63px;
+    right: -23px;
+  }
+
+  /* character3 */
+
+  .upboCard {
+    padding-top: 46px;
   }
 
   .characterThree {
-    width: 108px;
+    width: 103px;
 
-    top: -60px;
+    top: -35px;
+    right: 13px;
   }
-
 }
 
 
@@ -1335,8 +1593,17 @@ a.postItem:hover {
       40px;
   }
 
+
+  /* HEADER */
+
   .header {
     margin-bottom: 20px;
+
+    gap: 10px;
+  }
+
+  .brand {
+    gap: 8px;
   }
 
   .brandIcon {
@@ -1344,6 +1611,8 @@ a.postItem:hover {
     height: 36px;
 
     border-radius: 12px;
+
+    font-size: 13px;
   }
 
   .brand h1 {
@@ -1351,7 +1620,11 @@ a.postItem:hover {
   }
 
   .brand p {
+    margin-top: 2px;
+
     font-size: 6px;
+
+    letter-spacing: 1px;
   }
 
   .topStatus {
@@ -1361,6 +1634,9 @@ a.postItem:hover {
 
     font-size: 8px;
   }
+
+
+  /* 메인 */
 
   .profileCard {
     width: 100%;
@@ -1378,25 +1654,83 @@ a.postItem:hover {
     border-radius: 29px;
   }
 
-  .mainCharacterHang {
-    width: 80px;
+  .profileCard::after {
+    inset: 7px;
 
-    left: -22px;
-    top: 75px;
+    border-radius: 22px;
+  }
+
+
+  /* character4 */
+
+  .mainCharacterHang {
+    width: 76px;
+
+    left: -18px;
+    top: 66px;
+
+    transform:
+      rotate(-6deg);
+  }
+
+
+  /* 방송 */
+
+  .profileMain {
+    width: 100%;
   }
 
   .welcomeTag {
     max-width: 100%;
 
-    font-size: 8px;
+    margin-bottom: 15px;
+
+    padding:
+      7px
+      11px;
 
     overflow: hidden;
+
+    font-size: 8px;
 
     text-overflow: ellipsis;
   }
 
+  .streamScreen {
+    border-radius: 17px;
+  }
+
+  .streamPlaceholder strong {
+    font-size: 18px;
+
+    letter-spacing: 3px;
+  }
+
+  .streamPlaceholder p {
+    margin-top: 6px;
+
+    font-size: 8px;
+  }
+
+  .offlineHeart {
+    font-size: 18px;
+  }
+
+
+  /* 프로필 */
+
+  .profileDetails {
+    width: 100%;
+
+    gap: 14px;
+  }
+
   .identityRow {
     gap: 11px;
+
+    padding:
+      0
+      2px;
   }
 
   .smallProfileRing {
@@ -1407,28 +1741,61 @@ a.postItem:hover {
       0
       0
       55px;
+
+    padding: 3px;
+  }
+
+  .identityName {
+    gap: 7px;
+
+    margin-bottom: 4px;
   }
 
   .identityName h2 {
     font-size: 21px;
+
+    letter-spacing: 2px;
+  }
+
+  .identityLiveBadge {
+    padding:
+      4px
+      6px;
+
+    font-size: 6px;
   }
 
   .basicInfo {
     font-size: 7px;
   }
 
+  .basicInfo span {
+    margin:
+      0
+      3px;
+  }
+
+
+  /* 스케줄 */
+
   .scheduleBox {
     padding:
       14px
       15px;
+
+    border-radius: 16px;
   }
 
   .scheduleBox strong {
+    margin-bottom: 6px;
+
     font-size: 9px;
   }
 
   .scheduleBox p {
     font-size: 8px;
+
+    line-height: 1.7;
   }
 
   .mobileBreak {
@@ -1440,10 +1807,34 @@ a.postItem:hover {
   }
 
   .scheduleMessage {
+    margin-top: 11px;
+
+    padding-top: 9px;
+
     font-size: 7px;
   }
 
+
+  /* 링크 */
+
+  .linkButtonRow {
+    gap: 8px;
+  }
+
+  .squareLinkButton {
+    border-radius: 12px;
+  }
+
+  .linkIcon {
+    width: 22px;
+    height: 22px;
+  }
+
+
+  /* 하단 */
+
   .contentGrid {
+    width: 100%;
     max-width: 420px;
 
     margin-top: 45px;
@@ -1462,62 +1853,149 @@ a.postItem:hover {
     border-radius: 20px;
   }
 
-  .characterOne {
-    width: 115px;
-
-    top: -53px;
+  .contentCard::before {
+    width: 48px;
+    height: 48px;
   }
 
-  .characterTwo {
-    width: 83px;
 
-    top: 52px;
-    right: -24px;
+  /* CHARACTER 1 */
+
+  .upCard {
+    padding-top: 42px;
+  }
+
+  .characterOne {
+    width: 108px;
+
+    top: -34px;
+    left: 12px;
+
+    transform:
+      rotate(-2deg);
+  }
+
+
+  /* CHARACTER 2 */
+
+  .characterTwo {
+    width: 78px;
+
+    top: 58px;
+    right: -18px;
+
+    transform:
+      rotate(3deg);
+  }
+
+
+  /* CHARACTER 3 */
+
+  .upboCard {
+    padding-top: 42px;
   }
 
   .characterThree {
-    width: 90px;
+    width: 84px;
 
-    top: -48px;
+    top: -30px;
+    right: 12px;
+
+    transform:
+      rotate(4deg);
+  }
+
+
+  /* 카드 제목 */
+
+  .cardTitle {
+    margin-bottom: 13px;
   }
 
   .cardTitle h3 {
     font-size: 15px;
   }
 
+  .cardTitle h3::after {
+    width: 34px;
+
+    height: 4px;
+
+    margin-top: 8px;
+  }
+
   .cardTitle span {
     font-size: 7px;
   }
 
-  .postItem,
-  .cardButton,
-  .upboRow {
+
+  /* 게시글 */
+
+  .postItem {
     height: 46px;
     min-height: 46px;
+
+    padding:
+      0
+      15px;
+
+    font-size: 8px;
   }
 
   .fixedPostList {
     grid-template-rows:
-      repeat(3, 46px);
-  }
-
-  .postItem {
-    font-size: 8px;
+      repeat(
+        3,
+        46px
+      );
   }
 
   .cardButton {
+    height: 46px;
+
     font-size: 8px;
+  }
+
+
+  /* 업보 */
+
+  .upboRow {
+    height: 46px;
+    min-height: 46px;
   }
 
   .upboLink strong {
     font-size: 10px;
   }
 
-  .upboLink span,
+  .upboLink span {
+    font-size: 8px;
+  }
+
+  .upboSearchInput {
+    height: 30px;
+
+    font-size: 9px;
+  }
+
+  .upboSearchButton {
+    height: 30px;
+
+    font-size: 8px;
+  }
+
   .upboResultRow {
     font-size: 8px;
   }
 
+
+  /* FOOTER */
+
+  .footer {
+    margin-top: 20px;
+
+    font-size: 7px;
+  }
 }
 
 
@@ -1527,28 +2005,79 @@ a.postItem:hover {
 
 @media (max-width: 420px) {
 
-  .mainCharacterHang {
-    width: 68px;
-
-    left: -16px;
+  .page {
+    padding-left: 9px;
+    padding-right: 9px;
   }
+
+  .header {
+    align-items: flex-start;
+  }
+
+  .topStatus {
+    white-space: nowrap;
+
+    padding:
+      7px
+      9px;
+  }
+
+  .profileCard {
+    padding:
+      25px
+      17px;
+  }
+
+
+  /* character4 */
+
+  .mainCharacterHang {
+    width: 66px;
+
+    left: -14px;
+    top: 64px;
+  }
+
+
+  /* character1 */
 
   .characterOne {
-    width: 100px;
+    width: 96px;
 
-    top: -46px;
+    top: -30px;
+    left: 10px;
   }
+
+
+  /* character2 */
 
   .characterTwo {
-    width: 72px;
+    width: 68px;
 
-    right: -17px;
+    right: -14px;
+    top: 54px;
   }
+
+
+  /* character3 */
 
   .characterThree {
-    width: 78px;
+    width: 74px;
 
-    top: -41px;
+    top: -26px;
+    right: 10px;
   }
 
+
+  .identityName h2 {
+    font-size: 19px;
+  }
+
+  .linkButtonRow {
+    gap: 6px;
+  }
+
+  .squareLinkButton {
+    border-radius: 10px;
+  }
 }
