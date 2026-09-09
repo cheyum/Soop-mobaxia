@@ -33,7 +33,7 @@ type MobaxiaApiResponse = {
 };
 
 /* =========================================
-   게시판 링크
+   링크
 ========================================= */
 
 const UP_BOARD_URL =
@@ -41,10 +41,6 @@ const UP_BOARD_URL =
 
 const SCHEDULE_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110021";
-
-/* =========================================
-   업보현황
-========================================= */
 
 const ROULETTE_URL =
   "https://weflab.com/user/lOPU2suSk2lqZW0";
@@ -68,9 +64,7 @@ function makePostSlots(
 ========================================= */
 
 export default function Home() {
-  /* =========================================
-     LIVE
-  ========================================= */
+  /* LIVE */
 
   const [status, setStatus] =
     useState<LiveStatus>({
@@ -81,9 +75,7 @@ export default function Home() {
   const [loading, setLoading] =
     useState(true);
 
-  /* =========================================
-     바샤업up
-  ========================================= */
+  /* 바샤업up */
 
   const [upPosts, setUpPosts] =
     useState<SoopPost[]>([]);
@@ -91,9 +83,7 @@ export default function Home() {
   const [postsError, setPostsError] =
     useState<string | null>(null);
 
-  /* =========================================
-     일정 안내
-  ========================================= */
+  /* 일정 안내 */
 
   const [
     schedulePosts,
@@ -111,7 +101,7 @@ export default function Home() {
   ] = useState(true);
 
   /* =========================================
-     데이터 새로고침
+     데이터 갱신
   ========================================= */
 
   async function refreshMobaxia() {
@@ -158,37 +148,23 @@ export default function Home() {
       /* LIVE */
 
       setStatus({
-        live:
-          Boolean(
-            data.live
-          ),
-
-        error:
-          Boolean(
-            data.liveError
-          ),
+        live: Boolean(data.live),
+        error: Boolean(data.liveError),
       });
 
       /* 바샤업up */
 
       if (
-        Array.isArray(
-          data.posts
-        )
+        Array.isArray(data.posts)
       ) {
         setUpPosts(
-          data.posts.slice(
-            0,
-            3
-          )
+          data.posts.slice(0, 3)
         );
       } else {
         setUpPosts([]);
       }
 
-      if (
-        data.postsError
-      ) {
+      if (data.postsError) {
         setPostsError(
           data.postsMessage ||
             "게시글을 불러오지 못했어요"
@@ -252,7 +228,7 @@ export default function Home() {
   }
 
   /* =========================================
-     30초 자동 갱신
+     30초 갱신
   ========================================= */
 
   useEffect(() => {
@@ -264,9 +240,7 @@ export default function Home() {
       }, 30000);
 
     return () =>
-      clearInterval(
-        timer
-      );
+      clearInterval(timer);
   }, []);
 
   return (
@@ -315,34 +289,22 @@ export default function Home() {
         <div className="topStatus">
           {loading ? (
             <>
-              <span
-                className="statusDot loadingDot"
-              />
-
+              <span className="statusDot loadingDot" />
               방송 상태 확인 중
             </>
           ) : status.error ? (
             <>
-              <span
-                className="statusDot errorDot"
-              />
-
+              <span className="statusDot errorDot" />
               상태 확인 중
             </>
           ) : status.live ? (
             <>
-              <span
-                className="statusDot liveDot"
-              />
-
+              <span className="statusDot liveDot" />
               바샤좀 놀아줘!
             </>
           ) : (
             <>
-              <span
-                className="statusDot offlineDot"
-              />
-
+              <span className="statusDot offlineDot" />
               바샤는 쉬는중
             </>
           )}
@@ -355,15 +317,12 @@ export default function Home() {
 
       <section className="profileCard">
         {/* =================================
-            CHARACTER 4
-            메인 카드 왼쪽에 매달린 모습
+            캐릭터 4
+            메인 카드 왼쪽에 매달림
         ================================= */}
 
         <div
-          className="
-            mainCardMascot
-            mainCardMascotHang
-          "
+          className="mainMascot mainMascotHang"
           aria-hidden="true"
         >
           <img
@@ -373,7 +332,7 @@ export default function Home() {
         </div>
 
         {/* =================================
-            방송화면
+            왼쪽 방송화면
         ================================= */}
 
         <div className="profileMain">
@@ -441,7 +400,7 @@ export default function Home() {
         </div>
 
         {/* =================================
-            오른쪽 프로필
+            오른쪽 정보
         ================================= */}
 
         <div className="profileDetails">
@@ -474,24 +433,18 @@ export default function Home() {
               <div className="basicInfo">
                 생일 · 8월25일
 
-                <span>
-                  /
-                </span>
+                <span>/</span>
 
                 언제나 24살
 
-                <span>
-                  /
-                </span>
+                <span>/</span>
 
                 감성파 ESTJ
               </div>
             </div>
           </div>
 
-          {/* =================================
-              상시 스케줄
-          ================================= */}
+          {/* 스케줄 */}
 
           <div className="scheduleBox">
             <strong>
@@ -519,19 +472,14 @@ export default function Home() {
             </div>
           </div>
 
-          {/* =================================
-              링크 버튼
-          ================================= */}
+          {/* 링크 버튼 */}
 
           <div className="linkButtonRow">
             <a
               href="https://www.sooplive.com/station/mobaxia"
               target="_blank"
               rel="noopener noreferrer"
-              className="
-                squareLinkButton
-                homeButton
-              "
+              className="squareLinkButton homeButton"
               aria-label="모바샤 방송국"
               title="모바샤 방송국"
             >
@@ -541,20 +489,7 @@ export default function Home() {
                 aria-hidden="true"
               >
                 <path
-                  d="
-                    M3 10.8
-                    12 3
-                    l9 7.8
-                    v9.7
-                    a.5.5 0 0 1-.5.5
-                    H15
-                    v-6
-                    H9
-                    v6
-                    H3.5
-                    a.5.5 0 0 1-.5-.5
-                    v-9.7Z
-                  "
+                  d="M3 10.8 12 3l9 7.8v9.7a.5.5 0 0 1-.5.5H15v-6H9v6H3.5a.5.5 0 0 1-.5-.5v-9.7Z"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="1.8"
@@ -565,26 +500,17 @@ export default function Home() {
             </a>
 
             <div
-              className="
-                squareLinkButton
-                emptyLinkButton
-              "
+              className="squareLinkButton emptyLinkButton"
               title="링크 추가 예정"
             />
 
             <div
-              className="
-                squareLinkButton
-                emptyLinkButton
-              "
+              className="squareLinkButton emptyLinkButton"
               title="링크 추가 예정"
             />
 
             <div
-              className="
-                squareLinkButton
-                emptyLinkButton
-              "
+              className="squareLinkButton emptyLinkButton"
               title="링크 추가 예정"
             />
           </div>
@@ -598,24 +524,20 @@ export default function Home() {
       <section className="contentGrid">
         {/* =================================
             바샤업up
-
-            CHARACTER 1
-            카드 위에 누워있는 모습
         ================================= */}
 
         <article
           className="
             contentCard
             boardCard
-            mascotBoardCard
-            mascotBoardUp
+            characterCard
+            characterUpCard
           "
         >
+          {/* 캐릭터 1 - 누워있기 */}
+
           <div
-            className="
-              boardMascot
-              boardMascotLie
-            "
+            className="cardCharacter characterLie"
             aria-hidden="true"
           >
             <img
@@ -670,10 +592,7 @@ export default function Home() {
               makePostSlots(
                 upPosts
               ).map(
-                (
-                  post,
-                  index
-                ) =>
+                (post, index) =>
                   post ? (
                     <a
                       href={post.url}
@@ -687,10 +606,7 @@ export default function Home() {
                     </a>
                   ) : (
                     <div
-                      className="
-                        postItem
-                        emptyPostItem
-                      "
+                      className="postItem emptyPostItem"
                       key={`up-empty-${index}`}
                     >
                       &nbsp;
@@ -717,24 +633,20 @@ export default function Home() {
 
         {/* =================================
             일정 안내
-
-            CHARACTER 2
-            카드 오른쪽에서 빼꼼
         ================================= */}
 
         <article
           className="
             contentCard
             boardCard
-            mascotBoardCard
-            mascotBoardSchedule
+            characterCard
+            characterScheduleCard
           "
         >
+          {/* 캐릭터 2 - 빼꼼 */}
+
           <div
-            className="
-              boardMascot
-              boardMascotPeek
-            "
+            className="cardCharacter characterPeek"
             aria-hidden="true"
           >
             <img
@@ -789,19 +701,13 @@ export default function Home() {
               makePostSlots(
                 schedulePosts
               ).map(
-                (
-                  post,
-                  index
-                ) =>
+                (post, index) =>
                   post ? (
                     <a
                       href={post.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="
-                        postItem
-                        noticeItem
-                      "
+                      className="postItem noticeItem"
                       key={post.id}
                       title={post.title}
                     >
@@ -809,10 +715,7 @@ export default function Home() {
                     </a>
                   ) : (
                     <div
-                      className="
-                        postItem
-                        emptyPostItem
-                      "
+                      className="postItem emptyPostItem"
                       key={`schedule-empty-${index}`}
                     >
                       &nbsp;
@@ -839,23 +742,19 @@ export default function Home() {
 
         {/* =================================
             업보현황
-
-            CHARACTER 3
-            업보 팻말을 물고 있는 모습
         ================================= */}
 
         <article
           className="
             contentCard
-            mascotBoardCard
-            mascotBoardUpbo
+            characterCard
+            characterUpboCard
           "
         >
+          {/* 캐릭터 3 - 업보 팻말 */}
+
           <div
-            className="
-              boardMascot
-              boardMascotUpbo
-            "
+            className="cardCharacter characterUpbo"
             aria-hidden="true"
           >
             <img
@@ -875,18 +774,13 @@ export default function Home() {
           </div>
 
           <div className="upboList">
-            {/* =========================
-                1줄 - 룰렛확률
-            ========================== */}
+            {/* 1줄 */}
 
             <a
               href={ROULETTE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="
-                upboRow
-                upboLink
-              "
+              className="upboRow upboLink"
             >
               <strong>
                 룰렛확률
@@ -897,9 +791,7 @@ export default function Home() {
               </span>
             </a>
 
-            {/* =========================
-                2줄 - 엑셀
-            ========================== */}
+            {/* 2줄 */}
 
             <div
               className="
@@ -917,9 +809,7 @@ export default function Home() {
               </span>
             </div>
 
-            {/* =========================
-                3줄 - 검색
-            ========================== */}
+            {/* 3줄 */}
 
             <div
               className="
@@ -944,9 +834,7 @@ export default function Home() {
               </button>
             </div>
 
-            {/* =========================
-                4줄 - 검색 결과
-            ========================== */}
+            {/* 4줄 */}
 
             <div
               className="
@@ -1017,9 +905,7 @@ function ProfileImage() {
         index + 1
       );
     } else {
-      setFailed(
-        true
-      );
+      setFailed(true);
     }
   }
 
