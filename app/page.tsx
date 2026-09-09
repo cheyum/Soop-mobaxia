@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 
+/* =========================================
+   타입
+========================================= */
+
 type LiveStatus = {
   live: boolean;
   error: boolean;
@@ -39,11 +43,15 @@ const SCHEDULE_BOARD_URL =
   "https://www.sooplive.com/station/mobaxia/board/124110021";
 
 /* =========================================
-   업보현황
+   업보현황 링크
 ========================================= */
 
 const ROULETTE_URL =
   "https://weflab.com/user/lOPU2suSk2lqZW0";
+
+/* =========================================
+   게시글 3칸 고정
+========================================= */
 
 function makePostSlots(
   posts: SoopPost[],
@@ -55,9 +63,13 @@ function makePostSlots(
   );
 }
 
-  export default function Home() {
+/* =========================================
+   메인 페이지
+========================================= */
+
+export default function Home() {
   /* =========================================
-     LIVE 상태
+     LIVE
   ========================================= */
 
   const [status, setStatus] =
@@ -86,17 +98,20 @@ function makePostSlots(
   const [
     schedulePosts,
     setSchedulePosts,
-  ] = useState<SoopPost[]>([]);
+  ] =
+    useState<SoopPost[]>([]);
 
   const [
     scheduleError,
     setScheduleError,
-  ] = useState<string | null>(null);
+  ] =
+    useState<string | null>(null);
 
   const [
     postsLoading,
     setPostsLoading,
-  ] = useState(true);
+  ] =
+    useState(true);
 
   /* =========================================
      SOOP 데이터 새로고침
@@ -143,9 +158,7 @@ function makePostSlots(
           text
         ) as MobaxiaApiResponse;
 
-      /* =========================
-         LIVE
-      ========================== */
+      /* LIVE */
 
       setStatus({
         live:
@@ -159,9 +172,7 @@ function makePostSlots(
           ),
       });
 
-      /* =========================
-         바샤업up
-      ========================== */
+      /* 바샤업up */
 
       if (
         Array.isArray(
@@ -189,9 +200,7 @@ function makePostSlots(
         setPostsError(null);
       }
 
-      /* =========================
-         일정 안내
-      ========================== */
+      /* 일정 */
 
       if (
         Array.isArray(
@@ -246,7 +255,7 @@ function makePostSlots(
   }
 
   /* =========================================
-     30초 자동 갱신
+     30초 자동 업데이트
   ========================================= */
 
   useEffect(() => {
@@ -265,7 +274,10 @@ function makePostSlots(
 
   return (
     <main className="page">
-      {/* 배경 장식 */}
+
+      {/* =================================
+          기존 배경 장식
+      ================================= */}
 
       <div className="bgHeart bgHeart1">
         ♡
@@ -282,21 +294,32 @@ function makePostSlots(
       <div className="bgStar bgStar2">
         ✦
       </div>
-      <div className="siteMascot siteMascotLeft" aria-hidden="true">
-  <img
-    src="/mobaxia-character.png"
-    alt=""
-    className="siteMascotImage"
-  />
-</div>
 
-<div className="siteMascot siteMascotRight" aria-hidden="true">
-  <img
-    src="/mobaxia-character.png"
-    alt=""
-    className="siteMascotImage"
-  />
-</div>
+      {/* =================================
+          배경 캐릭터 장식
+      ================================= */}
+
+      <div
+        className="siteMascot siteMascotLeft"
+        aria-hidden="true"
+      >
+        <img
+          src="/mobaxia-character.png"
+          alt=""
+          className="siteMascotImage"
+        />
+      </div>
+
+      <div
+        className="siteMascot siteMascotRight"
+        aria-hidden="true"
+      >
+        <img
+          src="/mobaxia-character.png"
+          alt=""
+          className="siteMascotImage"
+        />
+      </div>
 
       {/* =================================
           HEADER
@@ -304,6 +327,7 @@ function makePostSlots(
 
       <header className="header">
         <div className="brand">
+
           <div className="brandIcon">
             ♥
           </div>
@@ -317,9 +341,13 @@ function makePostSlots(
               SOOP VIRTUAL STREAMER
             </p>
           </div>
+
         </div>
 
+        {/* 방송 상태 */}
+
         <div className="topStatus">
+
           {loading ? (
             <>
               <span
@@ -353,26 +381,35 @@ function makePostSlots(
               바샤는 쉬는중
             </>
           )}
+
         </div>
       </header>
 
       {/* =================================
-          메인 프로필
+          메인 카드
       ================================= */}
 
       <section className="profileCard">
-        <div className="profileCharacterDeco" aria-hidden="true">
-  <img
-    src="/mobaxia-character.png"
-    alt=""
-    className="profileCharacterImage"
-  />
-</div>
+
+        {/* 메인 카드 캐릭터 워터마크 */}
+
+        <div
+          className="profileCharacterDeco"
+          aria-hidden="true"
+        >
+          <img
+            src="/mobaxia-character.png"
+            alt=""
+            className="profileCharacterImage"
+          />
+        </div>
+
         {/* =================================
-            왼쪽 방송화면
+            방송 화면
         ================================= */}
 
         <div className="profileMain">
+
           <div className="welcomeTag">
             ♡ S급 서민영애 청설모 모씨 모바샤🐿️ ♡
           </div>
@@ -384,8 +421,10 @@ function makePostSlots(
                 : "streamOffline"
             }`}
           >
+
             {loading ? (
               <div className="streamPlaceholder">
+
                 <span className="loadingStreamDot" />
 
                 <strong>
@@ -395,9 +434,11 @@ function makePostSlots(
                 <p>
                   방송 상태를 확인하고 있어요
                 </p>
+
               </div>
             ) : status.error ? (
               <div className="streamPlaceholder offlineScreen">
+
                 <span className="offlineHeart">
                   ♡
                 </span>
@@ -409,6 +450,7 @@ function makePostSlots(
                 <p>
                   방송 상태를 확인하고 있어요
                 </p>
+
               </div>
             ) : status.live ? (
               <iframe
@@ -420,6 +462,7 @@ function makePostSlots(
               />
             ) : (
               <div className="streamPlaceholder offlineScreen">
+
                 <span className="offlineHeart">
                   ♡
                 </span>
@@ -431,17 +474,21 @@ function makePostSlots(
                 <p>
                   지금은 방송을 쉬고 있어요
                 </p>
+
               </div>
             )}
+
           </div>
         </div>
 
         {/* =================================
-            오른쪽 정보
+            오른쪽 프로필
         ================================= */}
 
         <div className="profileDetails">
+
           <div className="identityRow">
+
             <div
               className={`smallProfileRing ${
                 status.live
@@ -453,7 +500,9 @@ function makePostSlots(
             </div>
 
             <div className="identityText">
+
               <div className="identityName">
+
                 <h2>
                   모바샤
                 </h2>
@@ -465,9 +514,11 @@ function makePostSlots(
                       LIVE
                     </span>
                   )}
+
               </div>
 
               <div className="basicInfo">
+
                 생일 · 8월25일
 
                 <span>
@@ -481,8 +532,11 @@ function makePostSlots(
                 </span>
 
                 감성파 ESTJ
+
               </div>
+
             </div>
+
           </div>
 
           {/* =================================
@@ -490,6 +544,7 @@ function makePostSlots(
           ================================= */}
 
           <div className="scheduleBox">
+
             <strong>
               🌸 상시 스케줄은 캘린더 참고 🌸
             </strong>
@@ -513,6 +568,7 @@ function makePostSlots(
             <div className="scheduleMessage">
               ✦ 오늘도 모바샤와 함께 행복한 하루 ✦
             </div>
+
           </div>
 
           {/* =================================
@@ -520,6 +576,7 @@ function makePostSlots(
           ================================= */}
 
           <div className="linkButtonRow">
+
             <a
               href="https://www.sooplive.com/station/mobaxia"
               target="_blank"
@@ -528,6 +585,7 @@ function makePostSlots(
               aria-label="모바샤 방송국"
               title="모바샤 방송국"
             >
+
               <svg
                 viewBox="0 0 24 24"
                 className="linkIcon"
@@ -542,6 +600,7 @@ function makePostSlots(
                   strokeLinejoin="round"
                 />
               </svg>
+
             </a>
 
             <div
@@ -558,8 +617,11 @@ function makePostSlots(
               className="squareLinkButton emptyLinkButton"
               title="링크 추가 예정"
             />
+
           </div>
+
         </div>
+
       </section>
 
       {/* =================================
@@ -567,204 +629,281 @@ function makePostSlots(
       ================================= */}
 
       <section className="contentGrid">
-       {/* =================================
-    바샤업up
-================================= */}
-
-<article className="contentCard boardCard">
-  <div className="cardTitle">
-    <h3>
-      바샤업up
-    </h3>
-
-    <span>
-      BASHA UP
-    </span>
-  </div>
-
-  <div className="postList fixedPostList">
-    {postsLoading ? (
-      <>
-        <div className="postItem">
-          최신 글을 불러오는 중이에요 ♡
-        </div>
-
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
-
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
-
-
-      </>
-    ) : postsError ? (
-      <>
-        <div
-          className="postItem"
-          title={postsError}
-        >
-          게시글을 불러오지 못했어요
-        </div>
-
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
-
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
-
-
-      </>
-    ) : (
-      makePostSlots(
-        upPosts
-      ).map(
-        (post, index) =>
-          post ? (
-            <a
-              href={post.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="postItem"
-              key={post.id}
-              title={post.title}
-            >
-              {post.title}
-            </a>
-          ) : (
-            <div
-              className="postItem emptyPostItem"
-              key={`up-empty-${index}`}
-            >
-              &nbsp;
-            </div>
-          )
-      )
-    )}
-  </div>
-
-  <button
-    type="button"
-    className="cardButton"
-    onClick={() => {
-      window.open(
-        UP_BOARD_URL,
-        "_blank",
-        "noopener,noreferrer"
-      );
-    }}
-  >
-    바샤업up 전체보기
-  </button>
-</article>
 
         {/* =================================
-    일정 안내
-================================= */}
+            바샤업up
 
-<article className="contentCard boardCard">
-  <div className="cardTitle">
-    <h3>
-      일정 안내
-    </h3>
+            캐릭터가 카드 위에 누운 느낌
+        ================================= */}
 
-    <span>
-      Schedule
-    </span>
-  </div>
-
-  <div className="postList fixedPostList">
-    {postsLoading ? (
-      <>
-        <div className="postItem">
-          최신 일정을 불러오는 중이에요 ♡
-        </div>
-
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
-
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
-
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
-      </>
-    ) : scheduleError ? (
-      <>
-        <div
-          className="postItem"
-          title={scheduleError}
+        <article
+          className="
+            contentCard
+            boardCard
+            mascotBoardCard
+            mascotBoardUp
+          "
         >
-          일정을 불러오지 못했어요
-        </div>
 
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
+          <div
+            className="
+              cardMascot
+              cardMascotLie
+            "
+            aria-hidden="true"
+          >
+            <img
+              src="/mobaxia-character.png"
+              alt=""
+              className="cardMascotImage"
+            />
+          </div>
 
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
+          <div className="cardTitle">
 
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
-      </>
-    ) : (
-      makePostSlots(
-        schedulePosts
-      ).map(
-        (post, index) =>
-          post ? (
-            <a
-              href={post.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="postItem noticeItem"
-              key={post.id}
-              title={post.title}
-            >
-              {post.title}
-            </a>
-          ) : (
-            <div
-              className="postItem emptyPostItem"
-              key={`schedule-empty-${index}`}
-            >
-              &nbsp;
-            </div>
-          )
-      )
-    )}
-  </div>
+            <h3>
+              바샤업up
+            </h3>
 
-  <button
-    type="button"
-    className="cardButton"
-    onClick={() => {
-      window.open(
-        SCHEDULE_BOARD_URL,
-        "_blank",
-        "noopener,noreferrer"
-      );
-    }}
-  >
-    일정 전체보기
-  </button>
-</article>
+            <span>
+              BASHA UP
+            </span>
+
+          </div>
+
+          <div className="postList fixedPostList">
+
+            {postsLoading ? (
+              <>
+                <div className="postItem">
+                  최신 글을 불러오는 중이에요 ♡
+                </div>
+
+                <div className="postItem emptyPostItem">
+                  &nbsp;
+                </div>
+
+                <div className="postItem emptyPostItem">
+                  &nbsp;
+                </div>
+              </>
+            ) : postsError ? (
+              <>
+                <div
+                  className="postItem"
+                  title={postsError}
+                >
+                  게시글을 불러오지 못했어요
+                </div>
+
+                <div className="postItem emptyPostItem">
+                  &nbsp;
+                </div>
+
+                <div className="postItem emptyPostItem">
+                  &nbsp;
+                </div>
+              </>
+            ) : (
+              makePostSlots(
+                upPosts
+              ).map(
+                (post, index) =>
+                  post ? (
+                    <a
+                      href={post.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="postItem"
+                      key={post.id}
+                      title={post.title}
+                    >
+                      {post.title}
+                    </a>
+                  ) : (
+                    <div
+                      className="postItem emptyPostItem"
+                      key={`up-empty-${index}`}
+                    >
+                      &nbsp;
+                    </div>
+                  )
+              )
+            )}
+
+          </div>
+
+          <button
+            type="button"
+            className="cardButton"
+            onClick={() => {
+              window.open(
+                UP_BOARD_URL,
+                "_blank",
+                "noopener,noreferrer"
+              );
+            }}
+          >
+            바샤업up 전체보기
+          </button>
+
+        </article>
+
+        {/* =================================
+            일정 안내
+
+            캐릭터가 오른쪽에서 빼꼼
+        ================================= */}
+
+        <article
+          className="
+            contentCard
+            boardCard
+            mascotBoardCard
+            mascotBoardSchedule
+          "
+        >
+
+          <div
+            className="
+              cardMascot
+              cardMascotPeek
+            "
+            aria-hidden="true"
+          >
+            <img
+              src="/mobaxia-character.png"
+              alt=""
+              className="cardMascotImage"
+            />
+          </div>
+
+          <div className="cardTitle">
+
+            <h3>
+              일정 안내
+            </h3>
+
+            <span>
+              Schedule
+            </span>
+
+          </div>
+
+          <div className="postList fixedPostList">
+
+            {postsLoading ? (
+              <>
+                <div className="postItem">
+                  최신 일정을 불러오는 중이에요 ♡
+                </div>
+
+                <div className="postItem emptyPostItem">
+                  &nbsp;
+                </div>
+
+                <div className="postItem emptyPostItem">
+                  &nbsp;
+                </div>
+              </>
+            ) : scheduleError ? (
+              <>
+                <div
+                  className="postItem"
+                  title={scheduleError}
+                >
+                  일정을 불러오지 못했어요
+                </div>
+
+                <div className="postItem emptyPostItem">
+                  &nbsp;
+                </div>
+
+                <div className="postItem emptyPostItem">
+                  &nbsp;
+                </div>
+              </>
+            ) : (
+              makePostSlots(
+                schedulePosts
+              ).map(
+                (post, index) =>
+                  post ? (
+                    <a
+                      href={post.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="postItem noticeItem"
+                      key={post.id}
+                      title={post.title}
+                    >
+                      {post.title}
+                    </a>
+                  ) : (
+                    <div
+                      className="postItem emptyPostItem"
+                      key={`schedule-empty-${index}`}
+                    >
+                      &nbsp;
+                    </div>
+                  )
+              )
+            )}
+
+          </div>
+
+          <button
+            type="button"
+            className="cardButton"
+            onClick={() => {
+              window.open(
+                SCHEDULE_BOARD_URL,
+                "_blank",
+                "noopener,noreferrer"
+              );
+            }}
+          >
+            일정 전체보기
+          </button>
+
+        </article>
 
         {/* =================================
             업보현황
+
+            캐릭터 + 업보 팻말
         ================================= */}
 
-        <article className="contentCard">
+        <article
+          className="
+            contentCard
+            mascotBoardCard
+            mascotBoardUpbo
+          "
+        >
+
+          <div
+            className="
+              cardMascot
+              cardMascotBite
+            "
+            aria-hidden="true"
+          >
+
+            <img
+              src="/mobaxia-character.png"
+              alt=""
+              className="cardMascotImage"
+            />
+
+            <span className="mascotMiniSign">
+              업보
+            </span>
+
+          </div>
+
           <div className="cardTitle">
+
             <h3>
               업보현황
             </h3>
@@ -772,13 +911,12 @@ function makePostSlots(
             <span>
               Roulette
             </span>
+
           </div>
 
           <div className="upboList">
-            {/* =========================
-                1줄
-                룰렛확률
-            ========================== */}
+
+            {/* 1줄 */}
 
             <a
               href={ROULETTE_URL}
@@ -786,6 +924,7 @@ function makePostSlots(
               rel="noopener noreferrer"
               className="upboRow upboLink"
             >
+
               <strong>
                 룰렛확률
               </strong>
@@ -793,12 +932,10 @@ function makePostSlots(
               <span>
                 바로가기 ›
               </span>
+
             </a>
 
-            {/* =========================
-                2줄
-                엑셀표 - 추후 연결
-            ========================== */}
+            {/* 2줄 */}
 
             <div
               className="
@@ -807,6 +944,7 @@ function makePostSlots(
                 upboDisabled
               "
             >
+
               <strong>
                 룰렛 결과 엑셀표
               </strong>
@@ -814,14 +952,18 @@ function makePostSlots(
               <span>
                 준비중
               </span>
+
             </div>
 
-            {/* =========================
-                3줄
-                검색 - 추후 활성화
-            ========================== */}
+            {/* 3줄 */}
 
-            <div className="upboRow upboSearchRow">
+            <div
+              className="
+                upboRow
+                upboSearchRow
+              "
+            >
+
               <input
                 type="text"
                 className="upboSearchInput"
@@ -837,20 +979,28 @@ function makePostSlots(
               >
                 검색
               </button>
+
             </div>
 
-            {/* =========================
-                4줄
-                검색 결과
-            ========================== */}
+            {/* 4줄 */}
 
-            <div className="upboRow upboResultRow">
+            <div
+              className="
+                upboRow
+                upboResultRow
+              "
+            >
+
               <span className="upboEmpty">
                 엑셀 연결 후 검색 결과가 표시됩니다 ♡
               </span>
+
             </div>
+
           </div>
+
         </article>
+
       </section>
 
       {/* =================================
@@ -860,12 +1010,13 @@ function makePostSlots(
       <footer className="footer">
         ♡ &nbsp; MOBAXIA FAN PAGE &nbsp; ♡
       </footer>
+
     </main>
   );
 }
 
 /* =========================================
-   SOOP 프로필 이미지 자동 연동
+   SOOP 프로필 이미지
 ========================================= */
 
 function ProfileImage() {
