@@ -3446,7 +3446,7 @@ a.upboLink:hover {
   left: auto !important;
 
   /* 기존: calc(100% - 10px) */
-  right: calc(100% - 18px) !important;
+  right: calc(100% - 20px) !important;
 
   top: 43% !important;
   bottom: auto !important;
