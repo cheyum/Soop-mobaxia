@@ -45,7 +45,17 @@ const SCHEDULE_BOARD_URL =
 const ROULETTE_URL =
   "https://weflab.com/user/lOPU2suSk2lqZW0";
 
-export default function Home() {
+function makePostSlots(
+  posts: SoopPost[],
+  count = 4
+) {
+  return Array.from(
+    { length: count },
+    (_, index) => posts[index] ?? null
+  );
+}
+
+  export default function Home() {
   /* =========================================
      LIVE 상태
   ========================================= */
@@ -535,133 +545,201 @@ export default function Home() {
       ================================= */}
 
       <section className="contentGrid">
+       {/* =================================
+    바샤업up
+================================= */}
+
+<article className="contentCard boardCard">
+  <div className="cardTitle">
+    <h3>
+      바샤업up
+    </h3>
+
+    <span>
+      BASHA UP
+    </span>
+  </div>
+
+  <div className="postList fixedPostList">
+    {postsLoading ? (
+      <>
+        <div className="postItem">
+          최신 글을 불러오는 중이에요 ♡
+        </div>
+
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
+
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
+
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
+      </>
+    ) : postsError ? (
+      <>
+        <div
+          className="postItem"
+          title={postsError}
+        >
+          게시글을 불러오지 못했어요
+        </div>
+
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
+
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
+
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
+      </>
+    ) : (
+      makePostSlots(
+        upPosts
+      ).map(
+        (post, index) =>
+          post ? (
+            <a
+              href={post.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="postItem"
+              key={post.id}
+              title={post.title}
+            >
+              {post.title}
+            </a>
+          ) : (
+            <div
+              className="postItem emptyPostItem"
+              key={`up-empty-${index}`}
+            >
+              &nbsp;
+            </div>
+          )
+      )
+    )}
+  </div>
+
+  <button
+    type="button"
+    className="cardButton"
+    onClick={() => {
+      window.open(
+        UP_BOARD_URL,
+        "_blank",
+        "noopener,noreferrer"
+      );
+    }}
+  >
+    바샤업up 전체보기
+  </button>
+</article>
+
         {/* =================================
-            바샤업up
-        ================================= */}
+    일정 안내
+================================= */}
 
-        <article className="contentCard">
-          <div className="cardTitle">
-            <h3>
-              바샤업up
-            </h3>
+<article className="contentCard boardCard">
+  <div className="cardTitle">
+    <h3>
+      일정 안내
+    </h3>
 
-            <span>
-              BASHA UP
-            </span>
-          </div>
+    <span>
+      Schedule
+    </span>
+  </div>
 
-          <div className="postList">
-            {postsLoading ? (
-              <div className="postItem">
-                최신 글을 불러오는 중이에요 ♡
-              </div>
-            ) : postsError ? (
-              <div
-                className="postItem"
-                title={postsError}
-              >
-                게시글을 불러오지 못했어요
-              </div>
-            ) : upPosts.length > 0 ? (
-              upPosts.map(
-                (post) => (
-                  <a
-                    href={post.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="postItem"
-                    key={post.id}
-                    title={post.title}
-                  >
-                    {post.title}
-                  </a>
-                )
-              )
-            ) : (
-              <div className="postItem">
-                아직 등록된 글이 없어요 ♡
-              </div>
-            )}
-          </div>
+  <div className="postList fixedPostList">
+    {postsLoading ? (
+      <>
+        <div className="postItem">
+          최신 일정을 불러오는 중이에요 ♡
+        </div>
 
-          <button
-            type="button"
-            className="cardButton"
-            onClick={() => {
-              window.open(
-                UP_BOARD_URL,
-                "_blank",
-                "noopener,noreferrer"
-              );
-            }}
-          >
-            바샤업up 전체보기
-          </button>
-        </article>
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
 
-        {/* =================================
-            일정 안내
-        ================================= */}
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
 
-        <article className="contentCard">
-          <div className="cardTitle">
-            <h3>
-              일정 안내
-            </h3>
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
+      </>
+    ) : scheduleError ? (
+      <>
+        <div
+          className="postItem"
+          title={scheduleError}
+        >
+          일정을 불러오지 못했어요
+        </div>
 
-            <span>
-              Schedule
-            </span>
-          </div>
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
 
-          <div className="postList">
-            {postsLoading ? (
-              <div className="postItem">
-                최신 일정을 불러오는 중이에요 ♡
-              </div>
-            ) : scheduleError ? (
-              <div
-                className="postItem"
-                title={scheduleError}
-              >
-                일정을 불러오지 못했어요
-              </div>
-            ) : schedulePosts.length > 0 ? (
-              schedulePosts.map(
-                (post) => (
-                  <a
-                    href={post.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="postItem noticeItem"
-                    key={post.id}
-                    title={post.title}
-                  >
-                    {post.title}
-                  </a>
-                )
-              )
-            ) : (
-              <div className="postItem">
-                아직 등록된 일정이 없어요 ♡
-              </div>
-            )}
-          </div>
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
 
-          <button
-            type="button"
-            className="cardButton"
-            onClick={() => {
-              window.open(
-                SCHEDULE_BOARD_URL,
-                "_blank",
-                "noopener,noreferrer"
-              );
-            }}
-          >
-            일정 전체보기
-          </button>
-        </article>
+        <div className="postItem emptyPostItem">
+          &nbsp;
+        </div>
+      </>
+    ) : (
+      makePostSlots(
+        schedulePosts
+      ).map(
+        (post, index) =>
+          post ? (
+            <a
+              href={post.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="postItem noticeItem"
+              key={post.id}
+              title={post.title}
+            >
+              {post.title}
+            </a>
+          ) : (
+            <div
+              className="postItem emptyPostItem"
+              key={`schedule-empty-${index}`}
+            >
+              &nbsp;
+            </div>
+          )
+      )
+    )}
+  </div>
+
+  <button
+    type="button"
+    className="cardButton"
+    onClick={() => {
+      window.open(
+        SCHEDULE_BOARD_URL,
+        "_blank",
+        "noopener,noreferrer"
+      );
+    }}
+  >
+    일정 전체보기
+  </button>
+</article>
 
         {/* =================================
             업보현황
