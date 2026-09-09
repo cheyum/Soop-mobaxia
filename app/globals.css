@@ -3004,10 +3004,10 @@ a.upboLink:hover {
 
 /* =========================================================
    mobaxia-character3
-   프로필 카드 오른쪽 위 둥근 호를 붙잡는 느낌
+   상단 프로필 카드 "오른쪽" 격자무늬에 위치
+   캐릭터 왼쪽이 프로필 카드 오른쪽 선에 딱 닿음
 ========================================================= */
 
-/* PC */
 .profileCard {
   position: relative !important;
   overflow: visible !important;
@@ -3017,78 +3017,28 @@ a.upboLink:hover {
 > .mainCharacter.mainCharacterHang {
   position: absolute !important;
 
-  width: 96px !important;
+  width: 90px !important;
 
   /*
-    몸은 격자무늬 쪽에 두고,
-    왼손이 카드 오른쪽 위 둥근 호에 닿도록
+    프로필 카드 오른쪽 바깥
+    캐릭터 왼쪽 끝 = 카드 오른쪽 선
   */
-  top: 4px !important;
-  right: -14px !important;
+  left: 100% !important;
+  right: auto !important;
 
-  left: auto !important;
+  /*
+    카드 오른쪽 위쪽에 배치
+    카드 윗선보다 높아지지 않음
+  */
+  top: 20px !important;
+
   bottom: auto !important;
 
-  transform: rotate(2deg) !important;
-  transform-origin: center center !important;
+  transform: rotate(3deg) !important;
 
   z-index: 30 !important;
+
   pointer-events: none !important;
-}
-
-.mainCharacter img {
-  display: block !important;
-  width: 100% !important;
-  height: auto !important;
-  object-fit: contain !important;
-
-  filter:
-    drop-shadow(
-      0 7px 11px
-      rgba(86, 52, 67, 0.16)
-    ) !important;
-}
-
-
-/* TABLET */
-@media (max-width: 1000px) {
-  .profileCard
-  > .mainCharacter.mainCharacterHang {
-    width: 84px !important;
-
-    top: 6px !important;
-    right: -12px !important;
-
-    transform: rotate(2deg) !important;
-  }
-}
-
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .profileCard
-  > .mainCharacter.mainCharacterHang {
-    width: 66px !important;
-
-    top: 6px !important;
-    right: -8px !important;
-
-    transform: rotate(2deg) !important;
-  }
-}
-
-
-/* SMALL MOBILE */
-@media (max-width: 420px) {
-  .profileCard
-  > .mainCharacter.mainCharacterHang {
-    width: 58px !important;
-
-    top: 5px !important;
-    right: -6px !important;
-
-    transform: rotate(2deg) !important;
-  }
 }
 
 
@@ -3573,5 +3523,98 @@ a.upboLink:hover {
 
     /* 기존: calc(100% - 5px) */
     right: calc(100% - 13px) !important;
+  }
+}
+/* =========================================================
+   MOBAXIA CHARACTER3 FINAL OVERRIDE
+   - 그냥 globals.css 맨 아래에 붙여도 됨
+   - 손은 프로필 카드 오른쪽 위 둥근 호에 닿게
+   - 몸은 격자무늬 쪽에 나오게
+========================================================= */
+
+.profileCard {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.profileCard > .mainCharacter.mainCharacterHang {
+  position: absolute !important;
+  z-index: 40 !important;
+
+  /* 크기 */
+  width: 96px !important;
+  height: auto !important;
+
+  /*
+    핵심:
+    left를 100%보다 조금 작게 잡아서
+    캐릭터의 손 부분만 카드 둥근 호에 걸치고,
+    몸통은 대부분 격자무늬 쪽으로 빠지게 함
+  */
+  left: calc(100% - 18px) !important;
+  right: auto !important;
+
+  /*
+    카드 상단 둥근 호 높이에 맞춤
+    캐릭터가 카드보다 너무 위로 올라가지 않게 조정
+  */
+  top: 6px !important;
+  bottom: auto !important;
+
+  /*
+    살짝 기울여서 "호를 붙잡는" 느낌
+  */
+  transform: rotate(2deg) !important;
+  transform-origin: left top !important;
+
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+.profileCard > .mainCharacter.mainCharacterHang img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+
+  filter: drop-shadow(0 8px 12px rgba(86, 52, 67, 0.16)) !important;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+@media (max-width: 1000px) {
+  .profileCard > .mainCharacter.mainCharacterHang {
+    width: 84px !important;
+    left: calc(100% - 15px) !important;
+    top: 7px !important;
+    transform: rotate(2deg) !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+@media (max-width: 768px) {
+  .profileCard > .mainCharacter.mainCharacterHang {
+    width: 66px !important;
+    left: calc(100% - 12px) !important;
+    top: 7px !important;
+    transform: rotate(2deg) !important;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+@media (max-width: 420px) {
+  .profileCard > .mainCharacter.mainCharacterHang {
+    width: 58px !important;
+    left: calc(100% - 10px) !important;
+    top: 6px !important;
+    transform: rotate(2deg) !important;
   }
 }
