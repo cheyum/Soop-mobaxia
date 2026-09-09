@@ -2913,3 +2913,261 @@ a.upboLink:hover {
     right: -10px !important;
   }
 }
+/* =========================================================
+   CHARACTER 1 / 2 / 3
+   흰색 카드 바깥 격자무늬 영역에 배치
+   카드 경계선에 딱 붙도록 설정
+========================================================= */
+
+
+/* =========================================================
+   mobaxia-character1
+   일정 안내 카드 "위쪽" 격자무늬에 위치
+   캐릭터 아래쪽이 카드 윗선에 딱 닿음
+========================================================= */
+
+.contentCard.scheduleCard {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.contentCard.scheduleCard
+> .cardCharacter.characterTwo {
+  position: absolute !important;
+
+  width: 76px !important;
+
+  /*
+    카드 바깥 위쪽에 완전히 위치
+  */
+  top: auto !important;
+  bottom: 100% !important;
+
+  /*
+    카드 왼쪽에서 살짝 안쪽
+  */
+  left: 28px !important;
+
+  right: auto !important;
+
+  /*
+    이미지의 아래쪽과 카드 윗선이 정확히 맞닿음
+  */
+  transform: translateY(0) rotate(-2deg) !important;
+
+  z-index: 30 !important;
+
+  pointer-events: none !important;
+}
+
+
+/* =========================================================
+   mobaxia-character2
+   바샤업up 카드 "왼쪽" 격자무늬에 위치
+   캐릭터 오른쪽이 카드 왼쪽 선에 딱 닿음
+========================================================= */
+
+.contentCard.upCard {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.contentCard.upCard
+> .cardCharacter.characterOne {
+  position: absolute !important;
+
+  width: 76px !important;
+
+  /*
+    카드 왼쪽 바깥으로 완전히 이동
+    캐릭터 오른쪽 끝 = 카드 왼쪽 선
+  */
+  left: auto !important;
+  right: 100% !important;
+
+  /*
+    카드 높이 기준 중앙보다 살짝 위
+  */
+  top: 43% !important;
+
+  bottom: auto !important;
+
+  transform:
+    translateY(-50%)
+    rotate(-3deg) !important;
+
+  z-index: 30 !important;
+
+  pointer-events: none !important;
+}
+
+
+/* =========================================================
+   mobaxia-character3
+   상단 프로필 카드 "오른쪽" 격자무늬에 위치
+   캐릭터 왼쪽이 프로필 카드 오른쪽 선에 딱 닿음
+========================================================= */
+
+.profileCard {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.profileCard
+> .mainCharacter.mainCharacterHang {
+  position: absolute !important;
+
+  width: 90px !important;
+
+  /*
+    프로필 카드 오른쪽 바깥
+    캐릭터 왼쪽 끝 = 카드 오른쪽 선
+  */
+  left: 100% !important;
+  right: auto !important;
+
+  /*
+    카드 오른쪽 위쪽에 배치
+    카드 윗선보다 높아지지 않음
+  */
+  top: 20px !important;
+
+  bottom: auto !important;
+
+  transform: rotate(3deg) !important;
+
+  z-index: 30 !important;
+
+  pointer-events: none !important;
+}
+
+
+/* =========================================================
+   캐릭터 공통
+========================================================= */
+
+.cardCharacter img,
+.mainCharacter img {
+  display: block !important;
+
+  width: 100% !important;
+  height: auto !important;
+
+  object-fit: contain !important;
+
+  filter:
+    drop-shadow(
+      0 7px 11px
+      rgba(86, 52, 67, 0.16)
+    ) !important;
+}
+
+
+/* =========================================================
+   태블릿
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  /* character1 */
+
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 68px !important;
+
+    left: 22px !important;
+  }
+
+
+  /* character2 */
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 67px !important;
+
+    right: 100% !important;
+    top: 43% !important;
+  }
+
+
+  /* character3 */
+
+  .profileCard
+  > .mainCharacter.mainCharacterHang {
+    width: 78px !important;
+
+    left: 100% !important;
+    top: 18px !important;
+  }
+}
+
+
+/* =========================================================
+   모바일
+========================================================= */
+
+@media (max-width: 768px) {
+
+  /*
+    모바일에서는 화면 폭이 좁기 때문에
+    너무 많이 바깥으로 튀어나가지 않도록 축소
+  */
+
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 60px !important;
+
+    bottom: 100% !important;
+    left: 18px !important;
+  }
+
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 58px !important;
+
+    right: 100% !important;
+    top: 40% !important;
+  }
+
+
+  .profileCard
+  > .mainCharacter.mainCharacterHang {
+    width: 58px !important;
+
+    left: 100% !important;
+    top: 14px !important;
+  }
+}
+
+
+/* =========================================================
+   작은 모바일
+========================================================= */
+
+@media (max-width: 420px) {
+
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 52px !important;
+
+    left: 15px !important;
+  }
+
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 50px !important;
+
+    right: 100% !important;
+  }
+
+
+  .profileCard
+  > .mainCharacter.mainCharacterHang {
+    width: 50px !important;
+
+    left: 100% !important;
+    top: 12px !important;
+  }
+}
