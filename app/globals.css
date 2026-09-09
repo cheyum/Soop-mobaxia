@@ -184,7 +184,6 @@ input {
   color: #c18a9f;
 
   font-size: 10px;
-
   letter-spacing: 1.8px;
 }
 
@@ -230,7 +229,10 @@ input {
     0 0 9px
     #ff518f;
 
-  animation: statusPulse 1.4s infinite;
+  animation:
+    statusPulse
+    1.4s
+    infinite;
 }
 
 .offlineDot {
@@ -240,7 +242,10 @@ input {
 .loadingDot {
   background: #f3aec8;
 
-  animation: statusPulse 1.4s infinite;
+  animation:
+    statusPulse
+    1.4s
+    infinite;
 }
 
 .errorDot {
@@ -289,7 +294,9 @@ input {
   background:
     rgba(255, 255, 255, 0.82);
 
-  border: 1px solid #ffc4da;
+  border:
+    1px solid
+    #ffc4da;
 
   box-shadow:
     0 25px 65px
@@ -357,7 +364,9 @@ input {
 
   background: #fff4f8;
 
-  border: 1px solid #f5bfd5;
+  border:
+    1px solid
+    #f5bfd5;
 
   box-shadow:
     0 15px 35px
@@ -393,7 +402,9 @@ input {
 }
 
 
-/* OFFLINE / CHECKING */
+/* ==========================================
+   OFFLINE / CHECKING
+========================================== */
 
 .streamPlaceholder {
   position: absolute;
@@ -680,8 +691,13 @@ input {
   display: none;
 }
 
+.pcDivider {
+  display: inline;
+}
+
 .scheduleMessage {
   margin-top: 16px;
+
   padding-top: 13px;
 
   border-top:
@@ -722,7 +738,9 @@ input {
 
   border-radius: 18px;
 
-  border: 1px solid #f3bfd4;
+  border:
+    1px solid
+    #f3bfd4;
 
   text-decoration: none;
 
@@ -797,6 +815,8 @@ input {
     repeat(3, 1fr);
 
   gap: 22px;
+
+  align-items: stretch;
 }
 
 .contentCard {
@@ -842,21 +862,32 @@ input {
   font-size: 9px;
 }
 
+
+/* ==========================================
+   일반 게시글
+========================================== */
+
 .postList {
   display: flex;
   flex-direction: column;
 
-  gap: 9px;
+  gap: 10px;
 }
 
 .postItem {
-  display: block;
+  display: flex;
+  align-items: center;
 
-  padding: 12px 13px;
+  width: 100%;
+
+  height: 48px;
+  min-height: 48px;
+
+  padding: 0 15px;
 
   overflow: hidden;
 
-  border-radius: 12px;
+  border-radius: 14px;
 
   border:
     1px solid
@@ -879,7 +910,7 @@ input {
     transform 0.2s;
 }
 
-.postItem:hover {
+a.postItem:hover {
   background: #fff0f6;
 
   transform: translateX(3px);
@@ -889,16 +920,74 @@ input {
   font-weight: 600;
 }
 
+
+/* ==========================================
+   바샤업up / 일정 안내
+
+   게시글은 항상 3칸
+   업보현황과 동일한 크기
+========================================== */
+
+.boardCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.boardCard .fixedPostList {
+  display: grid;
+
+  grid-template-rows:
+    repeat(3, 48px);
+
+  gap: 10px;
+
+  width: 100%;
+}
+
+.boardCard .fixedPostList .postItem {
+  width: 100%;
+
+  height: 48px;
+  min-height: 48px;
+
+  padding: 0 15px;
+
+  display: flex;
+  align-items: center;
+
+  border-radius: 14px;
+}
+
+.emptyPostItem {
+  pointer-events: none;
+
+  color: transparent;
+}
+
+.emptyPostItem:hover {
+  transform: none;
+  background: #fff9fb;
+}
+
+
+/* ==========================================
+   전체보기 버튼
+
+   업보현황의 한 줄과 같은 48px
+========================================== */
+
 .cardButton {
   width: 100%;
 
-  margin-top: 16px;
+  height: 48px;
 
-  padding: 12px;
+  margin-top: 10px;
+
+  padding: 0 15px;
 
   border: 0;
 
-  border-radius: 12px;
+  border-radius: 14px;
 
   background: #ffc0d7;
 
@@ -920,107 +1009,236 @@ input {
   transform: translateY(-2px);
 }
 
+.boardCard .cardButton {
+  margin-top: 10px;
+}
+
 
 /* ==========================================
-   배너
+   업보현황
 ========================================== */
 
-.mainBanner {
-  position: relative;
+.upboList {
+  display: grid;
 
-  min-height: 185px;
+  gap: 10px;
 
-  padding: 25px;
+  width: 100%;
+}
 
-  display: flex;
-  flex-direction: column;
+.upboRow {
+  width: 100%;
 
-  align-items: center;
-  justify-content: center;
+  height: 48px;
+  min-height: 48px;
 
-  overflow: hidden;
+  border:
+    1px solid
+    rgba(241, 154, 190, 0.35);
 
-  border-radius: 20px;
+  border-radius: 14px;
 
   background:
-    linear-gradient(
-      135deg,
-      #ffb1cf,
-      #ff82b3
-    );
+    rgba(255, 246, 250, 0.9);
+
+  box-sizing: border-box;
+}
+
+
+/* ==========================================
+   업보현황 링크
+========================================== */
+
+.upboLink {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 0 15px;
+
+  color: #7a3f59;
+
+  text-decoration: none;
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+a.upboLink:hover {
+  transform: translateY(-1px);
+
+  background: #fff0f6;
+}
+
+.upboLink strong {
+  font-size: 14px;
+}
+
+.upboLink span {
+  font-size: 12px;
+
+  opacity: 0.7;
+}
+
+
+/* ==========================================
+   업보현황 준비중
+========================================== */
+
+.upboDisabled {
+  cursor: default;
+
+  opacity: 0.7;
+}
+
+.upboDisabled:hover {
+  transform: none;
+
+  background:
+    rgba(255, 246, 250, 0.9);
+}
+
+
+/* ==========================================
+   업보현황 검색창
+========================================== */
+
+.upboSearchRow {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding: 7px;
+}
+
+.upboSearchInput {
+  min-width: 0;
+
+  flex: 1;
+
+  height: 32px;
+
+  border: none;
+
+  outline: none;
+
+  border-radius: 10px;
+
+  padding: 0 11px;
+
+  background: #ffffff;
+
+  color: #6f4055;
+
+  font: inherit;
+
+  font-size: 13px;
+}
+
+.upboSearchInput::placeholder {
+  color: #c79aac;
+}
+
+.upboSearchInput:disabled {
+  cursor: not-allowed;
+
+  opacity: 0.7;
+}
+
+.upboSearchButton {
+  flex: 0 0 auto;
+
+  height: 32px;
+
+  padding: 0 13px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #f4a7c5;
 
   color: white;
 
-  text-decoration: none;
-  text-align: center;
+  font: inherit;
 
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
 }
 
-.mainBanner:hover {
-  transform: translateY(-3px);
-
-  box-shadow:
-    0 13px 28px
-    rgba(240, 120, 169, 0.2);
+.upboSearchButton:hover {
+  filter: brightness(0.97);
 }
 
-.bannerSmall {
-  margin-bottom: 10px;
+.upboSearchButton:disabled {
+  cursor: not-allowed;
 
-  font-size: 9px;
+  opacity: 0.55;
 
-  letter-spacing: 1.5px;
+  filter: none;
 }
 
-.mainBanner strong {
-  font-size: 25px;
-}
 
-.mainBanner p {
-  margin: 9px 0 0;
+/* ==========================================
+   업보현황 검색 결과
+========================================== */
 
-  font-size: 11px;
-}
-
-.bannerHeart {
-  position: absolute;
-
-  right: 18px;
-  bottom: 13px;
-
-  font-size: 35px;
-
-  opacity: 0.3;
-}
-
-.subBanner {
-  min-height: 48px;
-
-  margin-top: 11px;
-
-  padding: 10px;
+.upboResultRow {
+  padding: 0 14px;
 
   display: flex;
 
   align-items: center;
-  justify-content: center;
 
-  border:
-    1px dashed
-    #efa9c5;
+  color: #755066;
 
-  border-radius: 13px;
+  font-size: 12px;
 
-  background: #fff8fa;
+  line-height: 1.55;
+}
 
-  color: #a46d84;
+.upboEmpty {
+  display: flex;
 
-  text-decoration: none;
+  width: 100%;
 
-  font-size: 10px;
+  align-items: center;
+}
+
+.upboResultList {
+  width: 100%;
+}
+
+.upboResultLine {
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+.upboResultLine + .upboResultLine {
+  margin-top: 5px;
+}
+
+.upboResultLine strong {
+  color: #a84e73;
+}
+
+.upboMoreResult {
+  margin-top: 7px;
+
+  color: #b67d96;
+
+  font-size: 11px;
 }
 
 
@@ -1030,6 +1248,7 @@ input {
 
 .footer {
   position: relative;
+
   z-index: 2;
 
   margin-top: 28px;
@@ -1074,11 +1293,16 @@ input {
 @media (max-width: 768px) {
 
   .page {
-    padding: 14px 13px 40px;
+    padding:
+      14px
+      13px
+      40px;
   }
 
 
-  /* HEADER */
+  /* ======================================
+     HEADER
+  ====================================== */
 
   .header {
     margin-bottom: 20px;
@@ -1118,18 +1342,24 @@ input {
   }
 
 
-  /* 메인 카드 */
+  /* ======================================
+     메인 카드
+  ====================================== */
 
   .profileCard {
     width: 100%;
+
     max-width: 420px;
 
     display: flex;
+
     flex-direction: column;
 
     gap: 22px;
 
-    padding: 27px 20px;
+    padding:
+      27px
+      20px;
 
     border-radius: 29px;
   }
@@ -1141,7 +1371,9 @@ input {
   }
 
 
-  /* 방송화면 */
+  /* ======================================
+     방송 화면
+  ====================================== */
 
   .profileMain {
     width: 100%;
@@ -1186,7 +1418,9 @@ input {
   }
 
 
-  /* 오른쪽 영역을 방송화면 아래로 */
+  /* ======================================
+     오른쪽 영역
+  ====================================== */
 
   .profileDetails {
     width: 100%;
@@ -1195,7 +1429,9 @@ input {
   }
 
 
-  /* 프로필 */
+  /* ======================================
+     프로필
+  ====================================== */
 
   .identityRow {
     gap: 11px;
@@ -1207,7 +1443,10 @@ input {
     width: 55px;
     height: 55px;
 
-    flex: 0 0 55px;
+    flex:
+      0
+      0
+      55px;
 
     padding: 3px;
   }
@@ -1239,10 +1478,14 @@ input {
   }
 
 
-  /* 스케줄 */
+  /* ======================================
+     스케줄
+  ====================================== */
 
   .scheduleBox {
-    padding: 14px 15px;
+    padding:
+      14px
+      15px;
 
     border-radius: 16px;
   }
@@ -1269,13 +1512,16 @@ input {
 
   .scheduleMessage {
     margin-top: 11px;
+
     padding-top: 9px;
 
     font-size: 7px;
   }
 
 
-  /* 네 개 링크 버튼 */
+  /* ======================================
+     네 개 링크 버튼
+  ====================================== */
 
   .linkButtonRow {
     gap: 8px;
@@ -1291,10 +1537,13 @@ input {
   }
 
 
-  /* 하단 게시판 */
+  /* ======================================
+     하단 카드
+  ====================================== */
 
   .contentGrid {
     width: 100%;
+
     max-width: 420px;
 
     grid-template-columns: 1fr;
@@ -1305,7 +1554,9 @@ input {
   }
 
   .contentCard {
-    padding: 20px 16px;
+    padding:
+      20px
+      16px;
 
     border-radius: 20px;
   }
@@ -1322,53 +1573,130 @@ input {
     font-size: 7px;
   }
 
+
+  /* ======================================
+     게시글 / 업보현황 줄 크기
+
+     모바일에서도 동일하게 46px
+  ====================================== */
+
   .postList {
-    gap: 7px;
+    gap: 10px;
   }
 
   .postItem {
-    padding: 9px 10px;
+    height: 46px;
 
-    border-radius: 9px;
+    min-height: 46px;
+
+    padding:
+      0
+      15px;
+
+    border-radius: 14px;
 
     font-size: 8px;
   }
+
+  .boardCard .fixedPostList {
+    grid-template-rows:
+      repeat(3, 46px);
+
+    gap: 10px;
+  }
+
+  .boardCard .fixedPostList .postItem {
+    height: 46px;
+
+    min-height: 46px;
+
+    padding:
+      0
+      15px;
+  }
+
+
+  /* ======================================
+     전체보기 버튼
+  ====================================== */
 
   .cardButton {
-    margin-top: 11px;
+    height: 46px;
 
-    padding: 9px;
+    margin-top: 10px;
 
-    border-radius: 9px;
+    padding:
+      0
+      15px;
+
+    border-radius: 14px;
 
     font-size: 8px;
   }
 
-  .mainBanner {
-    min-height: 130px;
 
-    padding: 18px;
+  /* ======================================
+     업보현황
+  ====================================== */
+
+  .upboList {
+    gap: 10px;
+  }
+
+  .upboRow {
+    height: 46px;
+
+    min-height: 46px;
 
     border-radius: 14px;
   }
 
-  .bannerSmall {
-    font-size: 7px;
+  .upboLink {
+    padding:
+      0
+      15px;
   }
 
-  .mainBanner strong {
-    font-size: 18px;
+  .upboLink strong {
+    font-size: 10px;
   }
 
-  .mainBanner p {
+  .upboLink span {
     font-size: 8px;
   }
 
-  .subBanner {
-    min-height: 37px;
+  .upboSearchInput {
+    height: 30px;
 
+    font-size: 9px;
+  }
+
+  .upboSearchButton {
+    height: 30px;
+
+    padding:
+      0
+      11px;
+
+    font-size: 8px;
+  }
+
+  .upboResultRow {
+    padding:
+      0
+      14px;
+
+    font-size: 8px;
+  }
+
+  .upboMoreResult {
     font-size: 7px;
   }
+
+
+  /* ======================================
+     FOOTER
+  ====================================== */
 
   .footer {
     margin-top: 20px;
@@ -1377,7 +1705,7 @@ input {
   }
 
 
-  /* 모바일에서는 배경 장식 약하게 */
+  /* 모바일 배경 장식 */
 
   .bgHeart,
   .bgStar {
@@ -1395,6 +1723,7 @@ input {
 
   .page {
     padding-left: 9px;
+
     padding-right: 9px;
   }
 
@@ -1405,7 +1734,9 @@ input {
   .topStatus {
     white-space: nowrap;
 
-    padding: 7px 9px;
+    padding:
+      7px
+      9px;
   }
 
   .profileCard {
@@ -1426,225 +1757,4 @@ input {
     border-radius: 10px;
   }
 
-}
-
-/* UP해줘 게시판 주소 확인 전 버튼 */
-.cardButton:disabled {
-  opacity: 0.55;
-  cursor: default;
-}
-
-.cardButton:disabled:hover {
-  background: #ffc0d7;
-  transform: none;
-}
-/* =========================================
-   업보현황
-========================================= */
-
-.upboList {
-  display: grid;
-  gap: 10px;
-}
-
-.upboRow {
-  width: 100%;
-  min-height: 48px;
-  border: 1px solid rgba(241, 154, 190, 0.35);
-  border-radius: 14px;
-  background: rgba(255, 246, 250, 0.9);
-  box-sizing: border-box;
-}
-
-.upboLink {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 0 15px;
-  color: #7a3f59;
-  text-decoration: none;
-  transition:
-    transform 0.18s ease,
-    background 0.18s ease;
-}
-
-.upboLink:hover {
-  transform: translateY(-1px);
-  background: #fff0f6;
-}
-
-.upboLink strong {
-  font-size: 14px;
-}
-
-.upboLink span {
-  font-size: 12px;
-  opacity: 0.7;
-}
-
-.upboSearchRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px;
-}
-
-.upboSearchInput {
-  min-width: 0;
-  flex: 1;
-  height: 34px;
-  border: none;
-  outline: none;
-  border-radius: 10px;
-  padding: 0 11px;
-  background: #ffffff;
-  color: #6f4055;
-  font: inherit;
-  font-size: 13px;
-}
-
-.upboSearchInput::placeholder {
-  color: #c79aac;
-}
-
-.upboSearchButton {
-  flex: 0 0 auto;
-  height: 34px;
-  padding: 0 13px;
-  border: none;
-  border-radius: 10px;
-  background: #f4a7c5;
-  color: white;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.upboSearchButton:hover {
-  filter: brightness(0.97);
-}
-
-.upboResultRow {
-  min-height: 58px;
-  padding: 11px 14px;
-  color: #755066;
-  font-size: 12px;
-  line-height: 1.55;
-}
-
-.upboEmpty {
-  display: flex;
-  min-height: 34px;
-  align-items: center;
-}
-
-.upboResultList {
-  width: 100%;
-}
-
-.upboResultLine {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.upboResultLine + .upboResultLine {
-  margin-top: 5px;
-}
-
-.upboResultLine strong {
-  color: #a84e73;
-}
-
-.upboMoreResult {
-  margin-top: 7px;
-  color: #b67d96;
-  font-size: 11px;
-}
-
-@media (max-width: 768px) {
-  .upboRow {
-    min-height: 46px;
-  }
-
-  .upboSearchInput {
-    font-size: 12px;
-  }
-
-  .upboSearchButton {
-    padding: 0 11px;
-  }
-}/* =========================================
-   업보현황 준비중 상태
-========================================= */
-
-.upboDisabled {
-  cursor: default;
-  opacity: 0.7;
-}
-
-.upboDisabled:hover {
-  transform: none;
-  background: rgba(255, 246, 250, 0.9);
-}
-
-.upboSearchInput:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.upboSearchButton:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-/* =========================================
-   바샤업up / 일정 안내 높이 통일
-========================================= */
-
-.boardCard {
-  display: flex;
-  flex-direction: column;
-}
-
-/* 게시글 영역은 항상 4칸 */
-
-.boardCard .fixedPostList {
-  display: grid;
-  grid-template-rows: repeat(3, minmax(42px, 1fr));
-  gap: 8px;
-}
-
-/* 모든 게시글 칸 높이 통일 */
-
-.boardCard .fixedPostList .postItem {
-  min-height: 42px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-}
-
-/* 빈 게시글 칸 */
-
-.emptyPostItem {
-  pointer-events: none;
-}
-
-/* 전체보기 버튼은 항상 카드 맨 아래 */
-
-.boardCard .cardButton {
-  margin-top: auto;
-}
-
-/* 모바일 */
-
-@media (max-width: 768px) {
-  .boardCard .fixedPostList {
-    grid-template-rows: repeat(3, minmax(40px, 1fr));
-  }
-
-  .boardCard .fixedPostList .postItem {
-    min-height: 40px;
-  }
 }
