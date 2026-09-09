@@ -3171,3 +3171,127 @@ a.upboLink:hover {
     top: 12px !important;
   }
 }
+/* =========================================================
+   DETAIL FIX
+   character1 / character2 미세 조정
+========================================================= */
+
+
+/* ---------------------------------------------------------
+   mobaxia-character1
+   - 조금 아래로 내려서
+   - 몸이 일정 안내 카드 상단 경계선에 닿게
+--------------------------------------------------------- */
+
+.contentCard.scheduleCard
+> .cardCharacter.characterTwo {
+  width: 76px !important;
+
+  left: 28px !important;
+  right: auto !important;
+
+  top: auto !important;
+
+  /*
+    기존: bottom: 100%
+    수정: 조금 아래로 내려 카드 윗 경계선에 몸이 붙게
+  */
+  bottom: calc(100% - 10px) !important;
+
+  transform: rotate(-2deg) !important;
+
+  z-index: 30 !important;
+  pointer-events: none !important;
+}
+
+
+/* ---------------------------------------------------------
+   mobaxia-character2
+   - 조금 더 우측으로 붙이기
+   - 몸이 바샤업up 카드 왼쪽 경계선에 닿게
+--------------------------------------------------------- */
+
+.contentCard.upCard
+> .cardCharacter.characterOne {
+  width: 76px !important;
+
+  left: auto !important;
+
+  /*
+    기존: right: 100%
+    수정: 조금 더 오른쪽(=카드 쪽)으로 붙이기
+  */
+  right: calc(100% - 10px) !important;
+
+  top: 43% !important;
+  bottom: auto !important;
+
+  transform:
+    translateY(-50%)
+    rotate(-3deg) !important;
+
+  z-index: 30 !important;
+  pointer-events: none !important;
+}
+
+
+/* ---------------------------------------------------------
+   TABLET
+--------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 68px !important;
+    left: 22px !important;
+    bottom: calc(100% - 8px) !important;
+  }
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 67px !important;
+    right: calc(100% - 8px) !important;
+    top: 43% !important;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   MOBILE
+--------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 60px !important;
+    left: 18px !important;
+    bottom: calc(100% - 6px) !important;
+  }
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 58px !important;
+    right: calc(100% - 6px) !important;
+    top: 40% !important;
+  }
+}
+
+
+/* ---------------------------------------------------------
+   SMALL MOBILE
+--------------------------------------------------------- */
+
+@media (max-width: 420px) {
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 52px !important;
+    left: 15px !important;
+    bottom: calc(100% - 5px) !important;
+  }
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 50px !important;
+    right: calc(100% - 5px) !important;
+  }
+}
