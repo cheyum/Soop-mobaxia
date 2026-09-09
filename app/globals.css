@@ -1612,7 +1612,7 @@ input {
 
 .boardCard .fixedPostList {
   display: grid;
-  grid-template-rows: repeat(4, minmax(42px, 1fr));
+  grid-template-rows: repeat(3, minmax(42px, 1fr));
   gap: 8px;
 }
 
@@ -1641,7 +1641,7 @@ input {
 
 @media (max-width: 768px) {
   .boardCard .fixedPostList {
-    grid-template-rows: repeat(4, minmax(40px, 1fr));
+    grid-template-rows: repeat(3, minmax(40px, 1fr));
   }
 
   .boardCard .fixedPostList .postItem {

@@ -47,7 +47,7 @@ const ROULETTE_URL =
 
 function makePostSlots(
   posts: SoopPost[],
-  count = 4
+  count = 3
 ) {
   return Array.from(
     { length: count },
@@ -171,7 +171,7 @@ function makePostSlots(
         setUpPosts(
           data.posts.slice(
             0,
-            4
+            3
           )
         );
       } else {
@@ -201,7 +201,7 @@ function makePostSlots(
         setSchedulePosts(
           data.schedulePosts.slice(
             0,
-            4
+            3
           )
         );
       } else {
@@ -575,9 +575,7 @@ function makePostSlots(
           &nbsp;
         </div>
 
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
+
       </>
     ) : postsError ? (
       <>
@@ -596,9 +594,7 @@ function makePostSlots(
           &nbsp;
         </div>
 
-        <div className="postItem emptyPostItem">
-          &nbsp;
-        </div>
+
       </>
     ) : (
       makePostSlots(
