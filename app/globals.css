@@ -2249,3 +2249,498 @@ a.upboLink:hover {
     margin-top: 8px;
   }
 }
+/* ==========================================
+   MOBAXIA 포즈 캐릭터 배치
+========================================== */
+
+
+/* ==========================================
+   공통
+========================================== */
+
+.mascotBoardCard {
+  position: relative;
+
+  /*
+    캐릭터가 카드 바깥으로 나올 수 있게
+  */
+  overflow: visible;
+}
+
+.boardMascot {
+  position: absolute;
+
+  z-index: 15;
+
+  pointer-events: none;
+  user-select: none;
+}
+
+.boardMascot img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(
+      0 9px 12px
+      rgba(90, 56, 70, 0.16)
+    );
+}
+
+
+/* ==========================================
+   1.
+   바샤업up
+   카드 위에 엎드려 누워있는 캐릭터
+========================================== */
+
+.boardMascotLie {
+  width: 165px;
+
+  left: 17px;
+
+  /*
+    발이 카드 윗부분에 살짝 걸치도록
+  */
+  top: -77px;
+
+  transform:
+    rotate(-2deg);
+
+  transform-origin:
+    center bottom;
+}
+
+
+/*
+  살짝 통통 튀는 효과
+*/
+
+.mascotBoardUp:hover
+.boardMascotLie {
+  animation:
+    mobaxiaLieBounce
+    1.3s
+    ease-in-out
+    infinite;
+}
+
+@keyframes mobaxiaLieBounce {
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      rotate(-2deg);
+  }
+
+  50% {
+    transform:
+      translateY(-4px)
+      rotate(-2deg);
+  }
+}
+
+
+/* ==========================================
+   2.
+   일정 안내
+   오른쪽 뒤에서 빼꼼
+========================================== */
+
+.boardMascotPeek {
+  width: 126px;
+
+  right: -39px;
+
+  top: 33px;
+
+  /*
+    캐릭터를 살짝 뒤로 보내서
+    카드 뒤에서 나타나는 느낌
+  */
+
+  z-index: 1;
+}
+
+
+/*
+  일정 카드의 실제 내용은
+  캐릭터보다 앞으로
+*/
+
+.mascotBoardSchedule
+.cardTitle,
+
+.mascotBoardSchedule
+.fixedPostList,
+
+.mascotBoardSchedule
+.cardButton {
+  position: relative;
+
+  z-index: 3;
+}
+
+
+/*
+  카드에 마우스 올리면
+  조금 더 빼꼼
+*/
+
+.boardMascotPeek {
+  transition:
+    transform
+    0.3s
+    ease;
+}
+
+.mascotBoardSchedule:hover
+.boardMascotPeek {
+  transform:
+    translateX(-8px);
+}
+
+
+/* ==========================================
+   3.
+   업보현황
+   업보 팻말을 입에 문 캐릭터
+========================================== */
+
+.boardMascotUpbo {
+  width: 128px;
+
+  right: 15px;
+
+  top: -72px;
+
+  transform:
+    rotate(2deg);
+
+  transform-origin:
+    center bottom;
+}
+
+
+/*
+  업보현황 제목과 겹치지 않도록
+  캐릭터를 오른쪽으로 배치
+*/
+
+.mascotBoardUpbo
+.cardTitle {
+  position: relative;
+
+  z-index: 3;
+}
+
+
+/*
+  업보 캐릭터 흔들흔들
+*/
+
+.mascotBoardUpbo:hover
+.boardMascotUpbo {
+  animation:
+    mobaxiaUpboWiggle
+    0.65s
+    ease-in-out;
+}
+
+@keyframes mobaxiaUpboWiggle {
+  0% {
+    transform:
+      rotate(2deg);
+  }
+
+  25% {
+    transform:
+      rotate(-4deg);
+  }
+
+  50% {
+    transform:
+      rotate(5deg);
+  }
+
+  75% {
+    transform:
+      rotate(-2deg);
+  }
+
+  100% {
+    transform:
+      rotate(2deg);
+  }
+}
+
+
+/* ==========================================
+   4.
+   메인 프로필 카드
+   왼쪽 가장자리에 매달린 캐릭터
+========================================== */
+
+.mainCardMascot {
+  position: absolute;
+
+  z-index: 8;
+
+  pointer-events: none;
+
+  user-select: none;
+}
+
+.mainCardMascot img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  object-fit: contain;
+
+  filter:
+    drop-shadow(
+      0 12px 17px
+      rgba(83, 52, 65, 0.15)
+    );
+}
+
+.mainCardMascotHang {
+  width: 145px;
+
+  /*
+    메인 카드 왼쪽에 매달리도록
+  */
+
+  left: -76px;
+
+  top: 105px;
+
+  transform:
+    rotate(-3deg);
+}
+
+
+/*
+  메인 카드 hover 시
+  캐릭터가 살짝 흔들림
+*/
+
+.profileCard:hover
+.mainCardMascotHang {
+  animation:
+    mobaxiaHang
+    1.5s
+    ease-in-out
+    infinite;
+}
+
+@keyframes mobaxiaHang {
+  0%,
+  100% {
+    transform:
+      rotate(-3deg)
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      rotate(1deg)
+      translateY(4px);
+  }
+}
+
+
+/* ==========================================
+   게시판 카드 제목
+   캐릭터가 있어도 가독성 유지
+========================================== */
+
+.mascotBoardCard
+.cardTitle {
+  position: relative;
+
+  z-index: 5;
+}
+
+
+/* ==========================================
+   바샤업up은 누운 캐릭터가 있어서
+   상단에 조금 여유 추가
+========================================== */
+
+.mascotBoardUp {
+  padding-top: 31px;
+}
+
+
+/* ==========================================
+   업보현황도 캐릭터 공간 조금 추가
+========================================== */
+
+.mascotBoardUpbo {
+  padding-top: 31px;
+}
+
+
+/* ==========================================
+   사이트 밖으로 삐져나온 캐릭터 때문에
+   가로 스크롤 생기는 것 방지
+========================================== */
+
+.page {
+  overflow-x: hidden;
+}
+
+
+/* ==========================================
+   태블릿
+========================================== */
+
+@media (max-width: 1000px) {
+
+  .boardMascotLie {
+    width: 135px;
+
+    top: -61px;
+
+    left: 10px;
+  }
+
+  .boardMascotPeek {
+    width: 105px;
+
+    right: -34px;
+
+    top: 35px;
+  }
+
+  .boardMascotUpbo {
+    width: 108px;
+
+    right: 9px;
+
+    top: -58px;
+  }
+
+  .mainCardMascotHang {
+    width: 115px;
+
+    left: -56px;
+
+    top: 125px;
+  }
+
+}
+
+
+/* ==========================================
+   모바일
+========================================== */
+
+@media (max-width: 768px) {
+
+  /*
+    모바일에서는 카드가 세로로 길게 나열되므로
+    캐릭터를 약간 작게
+  */
+
+  .mascotBoardUp {
+    padding-top: 27px;
+  }
+
+  .mascotBoardUpbo {
+    padding-top: 27px;
+  }
+
+
+  /* 누워있는 캐릭터 */
+
+  .boardMascotLie {
+    width: 117px;
+
+    left: 13px;
+
+    top: -53px;
+  }
+
+
+  /* 빼꼼 캐릭터 */
+
+  .boardMascotPeek {
+    width: 91px;
+
+    right: -24px;
+
+    top: 25px;
+  }
+
+
+  /* 업보 캐릭터 */
+
+  .boardMascotUpbo {
+    width: 91px;
+
+    right: 12px;
+
+    top: -49px;
+  }
+
+
+  /*
+    메인 카드 매달리기는
+    모바일에서 너무 바깥으로 빼면 잘리므로
+    카드 안쪽으로 이동
+  */
+
+  .mainCardMascotHang {
+    width: 85px;
+
+    left: -22px;
+
+    top: 78px;
+
+    opacity: 0.95;
+  }
+
+}
+
+
+/* ==========================================
+   아주 작은 모바일
+========================================== */
+
+@media (max-width: 420px) {
+
+  .boardMascotLie {
+    width: 102px;
+
+    top: -46px;
+  }
+
+  .boardMascotPeek {
+    width: 78px;
+
+    right: -18px;
+  }
+
+  .boardMascotUpbo {
+    width: 79px;
+
+    top: -42px;
+  }
+
+  .mainCardMascotHang {
+    width: 72px;
+
+    left: -17px;
+
+    top: 73px;
+  }
+
+}
