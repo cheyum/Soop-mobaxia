@@ -3004,10 +3004,10 @@ a.upboLink:hover {
 
 /* =========================================================
    mobaxia-character3
-   상단 프로필 카드 "오른쪽" 격자무늬에 위치
-   캐릭터 왼쪽이 프로필 카드 오른쪽 선에 딱 닿음
+   프로필 카드 오른쪽 위 둥근 호를 붙잡는 느낌
 ========================================================= */
 
+/* PC */
 .profileCard {
   position: relative !important;
   overflow: visible !important;
@@ -3017,28 +3017,78 @@ a.upboLink:hover {
 > .mainCharacter.mainCharacterHang {
   position: absolute !important;
 
-  width: 90px !important;
+  width: 96px !important;
 
   /*
-    프로필 카드 오른쪽 바깥
-    캐릭터 왼쪽 끝 = 카드 오른쪽 선
+    몸은 격자무늬 쪽에 두고,
+    왼손이 카드 오른쪽 위 둥근 호에 닿도록
   */
-  left: 100% !important;
-  right: auto !important;
+  top: 4px !important;
+  right: -14px !important;
 
-  /*
-    카드 오른쪽 위쪽에 배치
-    카드 윗선보다 높아지지 않음
-  */
-  top: 20px !important;
-
+  left: auto !important;
   bottom: auto !important;
 
-  transform: rotate(3deg) !important;
+  transform: rotate(2deg) !important;
+  transform-origin: center center !important;
 
   z-index: 30 !important;
-
   pointer-events: none !important;
+}
+
+.mainCharacter img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+
+  filter:
+    drop-shadow(
+      0 7px 11px
+      rgba(86, 52, 67, 0.16)
+    ) !important;
+}
+
+
+/* TABLET */
+@media (max-width: 1000px) {
+  .profileCard
+  > .mainCharacter.mainCharacterHang {
+    width: 84px !important;
+
+    top: 6px !important;
+    right: -12px !important;
+
+    transform: rotate(2deg) !important;
+  }
+}
+
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .profileCard
+  > .mainCharacter.mainCharacterHang {
+    width: 66px !important;
+
+    top: 6px !important;
+    right: -8px !important;
+
+    transform: rotate(2deg) !important;
+  }
+}
+
+
+/* SMALL MOBILE */
+@media (max-width: 420px) {
+  .profileCard
+  > .mainCharacter.mainCharacterHang {
+    width: 58px !important;
+
+    top: 5px !important;
+    right: -6px !important;
+
+    transform: rotate(2deg) !important;
+  }
 }
 
 
