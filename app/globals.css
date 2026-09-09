@@ -3551,7 +3551,7 @@ a.upboLink:hover {
     캐릭터의 손 부분만 카드 둥근 호에 걸치고,
     몸통은 대부분 격자무늬 쪽으로 빠지게 함
   */
-  left: calc(100% - 30px) !important;
+  left: calc(100% - 33px) !important;
   right: auto !important;
 
   /*
