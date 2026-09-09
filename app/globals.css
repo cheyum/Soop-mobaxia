@@ -1758,3 +1758,494 @@ a.upboLink:hover {
   }
 
 }
+/* ==========================================
+   MOBAXIA 캐릭터 테마
+========================================== */
+
+:root {
+  --mobaxia-brown: #a75f61;
+  --mobaxia-dark: #4d3540;
+  --mobaxia-soft-pink: #ffd9e6;
+  --mobaxia-pink: #ffb7cf;
+  --mobaxia-cream: #fffafc;
+  --mobaxia-sky: #8fd8ef;
+  --mobaxia-deep-sky: #245a70;
+  --mobaxia-line: rgba(214, 193, 201, 0.42);
+}
+
+/* 전체 배경을 캐릭터 시트 느낌의 격자로 */
+body {
+  background:
+    linear-gradient(var(--mobaxia-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--mobaxia-line) 1px, transparent 1px),
+    radial-gradient(
+      circle at 12% 10%,
+      rgba(255, 204, 223, 0.38),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(143, 216, 239, 0.18),
+      transparent 25%
+    ),
+    linear-gradient(
+      135deg,
+      #fffafc 0%,
+      #fff1f6 55%,
+      #fffdfd 100%
+    );
+
+  background-size:
+    26px 26px,
+    26px 26px,
+    auto,
+    auto,
+    auto;
+}
+
+/* 기존 배경 장식은 약하게 */
+.bgHeart,
+.bgStar {
+  opacity: 0.12;
+}
+
+
+/* ==========================================
+   캐릭터 배경 장식
+========================================== */
+
+.siteMascot {
+  position: fixed;
+
+  z-index: 1;
+
+  pointer-events: none;
+  user-select: none;
+
+  opacity: 0.16;
+}
+
+.siteMascotLeft {
+  left: 18px;
+  bottom: 34px;
+
+  width: 170px;
+
+  transform: rotate(-6deg);
+}
+
+.siteMascotRight {
+  right: 22px;
+  top: 120px;
+
+  width: 180px;
+
+  transform: rotate(6deg);
+}
+
+.siteMascotImage {
+  display: block;
+  width: 100%;
+  height: auto;
+
+  filter: drop-shadow(
+    0 12px 24px rgba(120, 83, 99, 0.12)
+  );
+}
+
+
+/* ==========================================
+   메인 카드 안 캐릭터 워터마크
+========================================== */
+
+.profileCard {
+  overflow: hidden;
+}
+
+.profileCharacterDeco {
+  position: absolute;
+
+  right: 18px;
+  bottom: 8px;
+
+  width: 210px;
+
+  z-index: 1;
+
+  opacity: 0.12;
+
+  pointer-events: none;
+}
+
+.profileCharacterImage {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* 실제 내용은 장식보다 위 */
+.profileMain,
+.profileDetails {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* ==========================================
+   메인 카드 / 하단 카드 색감
+========================================== */
+
+.profileCard {
+  background:
+    rgba(255, 255, 255, 0.87);
+
+  border:
+    1px solid
+    rgba(242, 184, 206, 0.85);
+
+  box-shadow:
+    0 26px 60px rgba(197, 130, 157, 0.12);
+}
+
+.contentCard {
+  position: relative;
+  overflow: hidden;
+
+  background:
+    rgba(255, 255, 255, 0.88);
+
+  border:
+    1px solid
+    rgba(244, 195, 214, 0.82);
+
+  box-shadow:
+    0 14px 35px rgba(201, 140, 165, 0.08);
+}
+
+/* 카드에 은은한 포인트 */
+.contentCard::before {
+  content: "";
+
+  position: absolute;
+
+  top: 12px;
+  right: 14px;
+
+  width: 64px;
+  height: 64px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 40% 40%,
+      rgba(143, 216, 239, 0.28),
+      transparent 62%
+    );
+
+  pointer-events: none;
+}
+
+
+/* ==========================================
+   헤더 / 태그 / 상태
+========================================== */
+
+.brandIcon {
+  background:
+    linear-gradient(
+      135deg,
+      #ff93bb,
+      #ff6ea7
+    );
+}
+
+.brand h1 {
+  color: var(--mobaxia-dark);
+}
+
+.brand p {
+  color: #c78fa5;
+}
+
+.topStatus {
+  background:
+    rgba(255, 255, 255, 0.8);
+
+  border:
+    1px solid
+    rgba(239, 183, 206, 0.8);
+
+  color: #9d6a80;
+}
+
+.welcomeTag {
+  background:
+    linear-gradient(
+      135deg,
+      #fff3f7,
+      #ffe8f1
+    );
+
+  color: #cd7f9f;
+
+  box-shadow:
+    0 6px 18px rgba(226, 148, 182, 0.12);
+}
+
+
+/* ==========================================
+   방송화면 / 프로필 박스
+========================================== */
+
+.streamScreen {
+  background:
+    linear-gradient(
+      180deg,
+      #fff8fb 0%,
+      #fff1f6 100%
+    );
+
+  border-color: #f1bfd3;
+}
+
+.streamOnline {
+  border-color: #f39fc0;
+
+  box-shadow:
+    0 16px 40px rgba(255, 115, 170, 0.18);
+}
+
+.streamPlaceholder strong {
+  color: #9a6c7f;
+}
+
+.streamPlaceholder p {
+  color: #c895aa;
+}
+
+.scheduleBox {
+  background:
+    linear-gradient(
+      135deg,
+      #fff7fa 0%,
+      #ffedf5 60%,
+      #eefaff 100%
+    );
+
+  color: #93687a;
+}
+
+.scheduleBox strong {
+  color: #8d6072;
+}
+
+.scheduleMessage {
+  color: #c38ea4;
+}
+
+
+/* ==========================================
+   제목 스타일
+========================================== */
+
+.cardTitle h3 {
+  color: #5a3f49;
+}
+
+.cardTitle span {
+  color: #cd97ae;
+
+  letter-spacing: 1.2px;
+}
+
+/* 제목 아래 캐릭터 느낌 바 */
+.cardTitle h3::after {
+  content: "";
+
+  display: block;
+
+  width: 42px;
+  height: 6px;
+
+  margin: 10px auto 0;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ffbfd4 0%,
+      #8fd8ef 55%,
+      #245a70 100%
+    );
+
+  opacity: 0.9;
+}
+
+
+/* ==========================================
+   게시글 / 업보현황 줄 스타일
+========================================== */
+
+.postItem,
+.upboRow {
+  background:
+    rgba(255, 252, 253, 0.98);
+
+  border-color:
+    rgba(240, 201, 217, 0.95);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+a.postItem:hover,
+a.upboLink:hover {
+  background: #fff3f8;
+}
+
+.postItem {
+  color: #835f6d;
+}
+
+.upboLink {
+  color: #764858;
+}
+
+.upboResultRow {
+  color: #755066;
+}
+
+.emptyPostItem:hover {
+  background:
+    rgba(255, 252, 253, 0.98);
+  transform: none;
+}
+
+
+/* ==========================================
+   버튼 / 링크 버튼
+========================================== */
+
+.cardButton {
+  background:
+    linear-gradient(
+      135deg,
+      #ffb5cf 0%,
+      #ffd5e3 45%,
+      #8fd8ef 100%
+    );
+
+  color: #553845;
+
+  box-shadow:
+    0 10px 22px rgba(210, 154, 180, 0.16);
+}
+
+.cardButton:hover {
+  background:
+    linear-gradient(
+      135deg,
+      #ffa9c8 0%,
+      #ffcfe0 45%,
+      #84d2ec 100%
+    );
+}
+
+.homeButton {
+  background:
+    linear-gradient(
+      135deg,
+      #ff94bc 0%,
+      #ff74a9 55%,
+      #8fd8ef 100%
+    );
+
+  box-shadow:
+    0 12px 28px rgba(233, 128, 173, 0.24);
+}
+
+.emptyLinkButton {
+  background:
+    rgba(255, 252, 253, 0.82);
+
+  border:
+    1px dashed
+    #eab4ca;
+}
+
+.emptyLinkButton:hover {
+  background: #fff4f8;
+}
+
+
+/* ==========================================
+   업보현황 검색
+========================================== */
+
+.upboSearchInput {
+  background: #ffffff;
+  color: #6f4055;
+}
+
+.upboSearchInput::placeholder {
+  color: #c79aac;
+}
+
+.upboSearchButton {
+  background:
+    linear-gradient(
+      135deg,
+      #f6adc9,
+      #8fd8ef
+    );
+
+  color: #ffffff;
+}
+
+
+/* ==========================================
+   푸터
+========================================== */
+
+.footer {
+  color: #c997ac;
+
+  letter-spacing: 2px;
+}
+
+
+/* ==========================================
+   모바일
+========================================== */
+
+@media (max-width: 768px) {
+  .siteMascot {
+    display: none;
+  }
+
+  .profileCharacterDeco {
+    width: 120px;
+
+    right: 10px;
+    bottom: 8px;
+
+    opacity: 0.1;
+  }
+
+  .contentCard::before {
+    width: 48px;
+    height: 48px;
+
+    top: 10px;
+    right: 10px;
+  }
+
+  .cardTitle h3::after {
+    width: 34px;
+    height: 5px;
+
+    margin-top: 8px;
+  }
+}
