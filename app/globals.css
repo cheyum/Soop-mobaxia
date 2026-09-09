@@ -3558,7 +3558,7 @@ a.upboLink:hover {
     카드 상단 둥근 호 높이에 맞춤
     캐릭터가 카드보다 너무 위로 올라가지 않게 조정
   */
-  top: -40px !important;
+  top: -38px !important;
   bottom: auto !important;
 
   /*
