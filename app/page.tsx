@@ -33,7 +33,7 @@ type MobaxiaApiResponse = {
 };
 
 /* =========================================
-   링크
+   게시판 / 외부 링크
 ========================================= */
 
 const UP_BOARD_URL =
@@ -60,11 +60,13 @@ function makePostSlots(
 }
 
 /* =========================================
-   페이지
+   메인 페이지
 ========================================= */
 
 export default function Home() {
-  /* LIVE */
+  /* =========================================
+     LIVE 상태
+  ========================================= */
 
   const [status, setStatus] =
     useState<LiveStatus>({
@@ -75,7 +77,9 @@ export default function Home() {
   const [loading, setLoading] =
     useState(true);
 
-  /* 바샤업up */
+  /* =========================================
+     바샤업up
+  ========================================= */
 
   const [upPosts, setUpPosts] =
     useState<SoopPost[]>([]);
@@ -83,7 +87,9 @@ export default function Home() {
   const [postsError, setPostsError] =
     useState<string | null>(null);
 
-  /* 일정 */
+  /* =========================================
+     일정 안내
+  ========================================= */
 
   const [
     schedulePosts,
@@ -101,17 +107,18 @@ export default function Home() {
   ] = useState(true);
 
   /* =========================================
-     SOOP 정보 가져오기
+     SOOP 데이터 새로고침
   ========================================= */
 
   async function refreshMobaxia() {
     try {
-      const response = await fetch(
-        "/api/live/mobaxia",
-        {
-          cache: "no-store",
-        }
-      );
+      const response =
+        await fetch(
+          "/api/live/mobaxia",
+          {
+            cache: "no-store",
+          }
+        );
 
       const text =
         await response.text();
@@ -144,7 +151,9 @@ export default function Home() {
           text
         ) as MobaxiaApiResponse;
 
-      /* LIVE */
+      /* =============================
+         LIVE
+      ============================= */
 
       setStatus({
         live: Boolean(data.live),
@@ -153,10 +162,14 @@ export default function Home() {
         ),
       });
 
-      /* 바샤업 */
+      /* =============================
+         바샤업up
+      ============================= */
 
       if (
-        Array.isArray(data.posts)
+        Array.isArray(
+          data.posts
+        )
       ) {
         setUpPosts(
           data.posts.slice(
@@ -168,7 +181,9 @@ export default function Home() {
         setUpPosts([]);
       }
 
-      if (data.postsError) {
+      if (
+        data.postsError
+      ) {
         setPostsError(
           data.postsMessage ||
             "게시글을 불러오지 못했어요"
@@ -177,7 +192,9 @@ export default function Home() {
         setPostsError(null);
       }
 
-      /* 일정 */
+      /* =============================
+         일정 안내
+      ============================= */
 
       if (
         Array.isArray(
@@ -232,7 +249,7 @@ export default function Home() {
   }
 
   /* =========================================
-     30초 자동 업데이트
+     30초 자동 갱신
   ========================================= */
 
   useEffect(() => {
@@ -243,15 +260,16 @@ export default function Home() {
         refreshMobaxia();
       }, 30000);
 
-    return () =>
+    return () => {
       clearInterval(timer);
+    };
   }, []);
 
   return (
     <main className="page">
 
       {/* =================================
-          기본 배경장식
+          배경 장식
       ================================= */}
 
       <div className="bgHeart bgHeart1">
@@ -283,6 +301,7 @@ export default function Home() {
           </div>
 
           <div>
+
             <h1>
               MOBAXIA
             </h1>
@@ -290,30 +309,45 @@ export default function Home() {
             <p>
               SOOP VIRTUAL STREAMER
             </p>
+
           </div>
 
         </div>
+
+        {/* 방송 상태 */}
 
         <div className="topStatus">
 
           {loading ? (
             <>
-              <span className="statusDot loadingDot" />
+              <span
+                className="statusDot loadingDot"
+              />
+
               방송 상태 확인 중
             </>
           ) : status.error ? (
             <>
-              <span className="statusDot errorDot" />
+              <span
+                className="statusDot errorDot"
+              />
+
               상태 확인 중
             </>
           ) : status.live ? (
             <>
-              <span className="statusDot liveDot" />
+              <span
+                className="statusDot liveDot"
+              />
+
               바샤좀 놀아줘!
             </>
           ) : (
             <>
-              <span className="statusDot offlineDot" />
+              <span
+                className="statusDot offlineDot"
+              />
+
               바샤는 쉬는중
             </>
           )}
@@ -329,22 +363,26 @@ export default function Home() {
       <section className="profileCard">
 
         {/* =================================
-            CHARACTER 4
-            메인 카드 왼쪽에 매달림
+            CHARACTER 3
+
+            프로필 전체 칸 오른쪽 위
         ================================= */}
 
         <div
-          className="mainCharacter mainCharacterHang"
+          className="
+            mainCharacter
+            mainCharacterHang
+          "
           aria-hidden="true"
         >
           <img
-            src="/mobaxia-character4.png"
+            src="/mobaxia-character3.png"
             alt=""
           />
         </div>
 
         {/* =================================
-            방송 화면
+            왼쪽 방송 화면
         ================================= */}
 
         <div className="profileMain">
@@ -365,7 +403,9 @@ export default function Home() {
 
               <div className="streamPlaceholder">
 
-                <span className="loadingStreamDot" />
+                <span
+                  className="loadingStreamDot"
+                />
 
                 <strong>
                   CHECKING
@@ -379,7 +419,12 @@ export default function Home() {
 
             ) : status.error ? (
 
-              <div className="streamPlaceholder offlineScreen">
+              <div
+                className="
+                  streamPlaceholder
+                  offlineScreen
+                "
+              >
 
                 <span className="offlineHeart">
                   ♡
@@ -407,7 +452,12 @@ export default function Home() {
 
             ) : (
 
-              <div className="streamPlaceholder offlineScreen">
+              <div
+                className="
+                  streamPlaceholder
+                  offlineScreen
+                "
+              >
 
                 <span className="offlineHeart">
                   ♡
@@ -430,7 +480,7 @@ export default function Home() {
         </div>
 
         {/* =================================
-            오른쪽 정보
+            오른쪽 프로필 정보
         ================================= */}
 
         <div className="profileDetails">
@@ -490,7 +540,7 @@ export default function Home() {
           </div>
 
           {/* =================================
-              스케줄
+              상시 스케줄
           ================================= */}
 
           <div className="scheduleBox">
@@ -500,6 +550,7 @@ export default function Home() {
             </strong>
 
             <p>
+
               매주 월~금 오후 6시
 
               <br className="mobileBreak" />
@@ -513,6 +564,7 @@ export default function Home() {
               <br />
 
               (주1회 휴방) 바샤 등장(˶ᵔ ᵕ ᵔ˶)♥
+
             </p>
 
             <div className="scheduleMessage">
@@ -522,16 +574,21 @@ export default function Home() {
           </div>
 
           {/* =================================
-              링크 버튼
+              링크 버튼 4개
           ================================= */}
 
           <div className="linkButtonRow">
+
+            {/* SOOP */}
 
             <a
               href="https://www.sooplive.com/station/mobaxia"
               target="_blank"
               rel="noopener noreferrer"
-              className="squareLinkButton homeButton"
+              className="
+                squareLinkButton
+                homeButton
+              "
               aria-label="모바샤 방송국"
               title="모바샤 방송국"
             >
@@ -541,6 +598,7 @@ export default function Home() {
                 className="linkIcon"
                 aria-hidden="true"
               >
+
                 <path
                   d="M3 10.8 12 3l9 7.8v9.7a.5.5 0 0 1-.5.5H15v-6H9v6H3.5a.5.5 0 0 1-.5-.5v-9.7Z"
                   fill="none"
@@ -549,22 +607,34 @@ export default function Home() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
+
               </svg>
 
             </a>
 
+            {/* 추후 링크 */}
+
             <div
-              className="squareLinkButton emptyLinkButton"
+              className="
+                squareLinkButton
+                emptyLinkButton
+              "
               title="링크 추가 예정"
             />
 
             <div
-              className="squareLinkButton emptyLinkButton"
+              className="
+                squareLinkButton
+                emptyLinkButton
+              "
               title="링크 추가 예정"
             />
 
             <div
-              className="squareLinkButton emptyLinkButton"
+              className="
+                squareLinkButton
+                emptyLinkButton
+              "
               title="링크 추가 예정"
             />
 
@@ -575,13 +645,16 @@ export default function Home() {
       </section>
 
       {/* =================================
-          하단
+          하단 콘텐츠
       ================================= */}
 
       <section className="contentGrid">
 
         {/* =================================
             바샤업up
+
+            CHARACTER 2
+            카드 왼쪽에 붙어있는 캐릭터
         ================================= */}
 
         <article
@@ -593,16 +666,19 @@ export default function Home() {
           "
         >
 
-          {/* CHARACTER 1 */}
-
           <div
-            className="cardCharacter characterOne"
+            className="
+              cardCharacter
+              characterOne
+            "
             aria-hidden="true"
           >
+
             <img
-              src="/mobaxia-character1.png"
+              src="/mobaxia-character2.png"
               alt=""
             />
+
           </div>
 
           <div className="cardTitle">
@@ -617,7 +693,14 @@ export default function Home() {
 
           </div>
 
-          <div className="postList fixedPostList">
+          {/* 게시글 3칸 */}
+
+          <div
+            className="
+              postList
+              fixedPostList
+            "
+          >
 
             {postsLoading ? (
 
@@ -626,11 +709,21 @@ export default function Home() {
                   최신 글을 불러오는 중이에요 ♡
                 </div>
 
-                <div className="postItem emptyPostItem">
+                <div
+                  className="
+                    postItem
+                    emptyPostItem
+                  "
+                >
                   &nbsp;
                 </div>
 
-                <div className="postItem emptyPostItem">
+                <div
+                  className="
+                    postItem
+                    emptyPostItem
+                  "
+                >
                   &nbsp;
                 </div>
               </>
@@ -645,11 +738,21 @@ export default function Home() {
                   게시글을 불러오지 못했어요
                 </div>
 
-                <div className="postItem emptyPostItem">
+                <div
+                  className="
+                    postItem
+                    emptyPostItem
+                  "
+                >
                   &nbsp;
                 </div>
 
-                <div className="postItem emptyPostItem">
+                <div
+                  className="
+                    postItem
+                    emptyPostItem
+                  "
+                >
                   &nbsp;
                 </div>
               </>
@@ -659,7 +762,10 @@ export default function Home() {
               makePostSlots(
                 upPosts
               ).map(
-                (post, index) =>
+                (
+                  post,
+                  index
+                ) =>
                   post ? (
 
                     <a
@@ -676,7 +782,10 @@ export default function Home() {
                   ) : (
 
                     <div
-                      className="postItem emptyPostItem"
+                      className="
+                        postItem
+                        emptyPostItem
+                      "
                       key={`up-empty-${index}`}
                     >
                       &nbsp;
@@ -693,11 +802,13 @@ export default function Home() {
             type="button"
             className="cardButton"
             onClick={() => {
+
               window.open(
                 UP_BOARD_URL,
                 "_blank",
                 "noopener,noreferrer"
               );
+
             }}
           >
             바샤업up 전체보기
@@ -707,6 +818,9 @@ export default function Home() {
 
         {/* =================================
             일정 안내
+
+            CHARACTER 1
+            일정 안내 칸 위에 붙는 캐릭터
         ================================= */}
 
         <article
@@ -718,16 +832,19 @@ export default function Home() {
           "
         >
 
-          {/* CHARACTER 2 */}
-
           <div
-            className="cardCharacter characterTwo"
+            className="
+              cardCharacter
+              characterTwo
+            "
             aria-hidden="true"
           >
+
             <img
-              src="/mobaxia-character2.png"
+              src="/mobaxia-character1.png"
               alt=""
             />
+
           </div>
 
           <div className="cardTitle">
@@ -742,7 +859,14 @@ export default function Home() {
 
           </div>
 
-          <div className="postList fixedPostList">
+          {/* 일정 3칸 */}
+
+          <div
+            className="
+              postList
+              fixedPostList
+            "
+          >
 
             {postsLoading ? (
 
@@ -751,11 +875,21 @@ export default function Home() {
                   최신 일정을 불러오는 중이에요 ♡
                 </div>
 
-                <div className="postItem emptyPostItem">
+                <div
+                  className="
+                    postItem
+                    emptyPostItem
+                  "
+                >
                   &nbsp;
                 </div>
 
-                <div className="postItem emptyPostItem">
+                <div
+                  className="
+                    postItem
+                    emptyPostItem
+                  "
+                >
                   &nbsp;
                 </div>
               </>
@@ -770,11 +904,21 @@ export default function Home() {
                   일정을 불러오지 못했어요
                 </div>
 
-                <div className="postItem emptyPostItem">
+                <div
+                  className="
+                    postItem
+                    emptyPostItem
+                  "
+                >
                   &nbsp;
                 </div>
 
-                <div className="postItem emptyPostItem">
+                <div
+                  className="
+                    postItem
+                    emptyPostItem
+                  "
+                >
                   &nbsp;
                 </div>
               </>
@@ -784,14 +928,20 @@ export default function Home() {
               makePostSlots(
                 schedulePosts
               ).map(
-                (post, index) =>
+                (
+                  post,
+                  index
+                ) =>
                   post ? (
 
                     <a
                       href={post.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="postItem noticeItem"
+                      className="
+                        postItem
+                        noticeItem
+                      "
                       key={post.id}
                       title={post.title}
                     >
@@ -801,7 +951,10 @@ export default function Home() {
                   ) : (
 
                     <div
-                      className="postItem emptyPostItem"
+                      className="
+                        postItem
+                        emptyPostItem
+                      "
                       key={`schedule-empty-${index}`}
                     >
                       &nbsp;
@@ -818,11 +971,13 @@ export default function Home() {
             type="button"
             className="cardButton"
             onClick={() => {
+
               window.open(
                 SCHEDULE_BOARD_URL,
                 "_blank",
                 "noopener,noreferrer"
               );
+
             }}
           >
             일정 전체보기
@@ -832,6 +987,9 @@ export default function Home() {
 
         {/* =================================
             업보현황
+
+            CHARACTER 4
+            제목 오른쪽 캐릭터
         ================================= */}
 
         <article
@@ -842,16 +1000,19 @@ export default function Home() {
           "
         >
 
-          {/* CHARACTER 3 */}
-
           <div
-            className="cardCharacter characterThree"
+            className="
+              cardCharacter
+              characterThree
+            "
             aria-hidden="true"
           >
+
             <img
-              src="/mobaxia-character3.png"
+              src="/mobaxia-character4.png"
               alt=""
             />
+
           </div>
 
           <div className="cardTitle">
@@ -868,13 +1029,18 @@ export default function Home() {
 
           <div className="upboList">
 
-            {/* 1 */}
+            {/* =================================
+                1. 룰렛 확률
+            ================================= */}
 
             <a
               href={ROULETTE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="upboRow upboLink"
+              className="
+                upboRow
+                upboLink
+              "
             >
 
               <strong>
@@ -887,7 +1053,9 @@ export default function Home() {
 
             </a>
 
-            {/* 2 */}
+            {/* =================================
+                2. 엑셀표
+            ================================= */}
 
             <div
               className="
@@ -907,7 +1075,9 @@ export default function Home() {
 
             </div>
 
-            {/* 3 */}
+            {/* =================================
+                3. 검색
+            ================================= */}
 
             <div
               className="
@@ -934,7 +1104,9 @@ export default function Home() {
 
             </div>
 
-            {/* 4 */}
+            {/* =================================
+                4. 결과
+            ================================= */}
 
             <div
               className="
@@ -955,7 +1127,9 @@ export default function Home() {
 
       </section>
 
-      {/* FOOTER */}
+      {/* =================================
+          FOOTER
+      ================================= */}
 
       <footer className="footer">
         ♡ &nbsp; MOBAXIA FAN PAGE &nbsp; ♡
@@ -966,10 +1140,11 @@ export default function Home() {
 }
 
 /* =========================================
-   SOOP 프로필
+   SOOP 프로필 이미지
 ========================================= */
 
 function ProfileImage() {
+
   const streamerId =
     "mobaxia";
 
@@ -979,37 +1154,56 @@ function ProfileImage() {
       .toLowerCase();
 
   const sources = [
+
     `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/m/${streamerId}.webp`,
+
     `https://profile.img.sooplive.com/LOGO/${prefix}/${streamerId}/m/${streamerId}.jpg`,
+
     `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/${streamerId}.jpg`,
+
     `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/${streamerId}.webp`,
+
   ];
 
-  const [index, setIndex] =
+  const [
+    index,
+    setIndex,
+  ] =
     useState(0);
 
-  const [failed, setFailed] =
+  const [
+    failed,
+    setFailed,
+  ] =
     useState(false);
 
   function handleError() {
+
     if (
       index + 1 <
       sources.length
     ) {
+
       setIndex(
         index + 1
       );
+
     } else {
+
       setFailed(true);
+
     }
+
   }
 
   if (failed) {
+
     return (
       <div className="profileFallback">
         모
       </div>
     );
+
   }
 
   return (

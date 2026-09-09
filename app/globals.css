@@ -2359,3 +2359,254 @@ a.upboLink:hover {
   }
 
 }
+/* =========================================================
+   MOBAXIA CHARACTER FINAL POSITION OVERRIDE
+   globals.css 맨 마지막에 추가
+========================================================= */
+
+/* 공통 */
+.profileCard,
+.contentCard,
+.characterCard {
+  overflow: visible !important;
+}
+
+.mainCharacter,
+.cardCharacter {
+  position: absolute !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+.mainCharacter img,
+.cardCharacter img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+
+/* =========================================================
+   mobaxia-character3
+   프로필 칸 오른쪽 위
+   - 프로필 바깥 테두리보다 높게 올라가지 않음
+========================================================= */
+
+.profileCard > .mainCharacter.mainCharacterHang {
+  width: 120px !important;
+
+  top: 18px !important;
+  right: 26px !important;
+
+  left: auto !important;
+  bottom: auto !important;
+
+  transform: rotate(2deg) !important;
+
+  z-index: 25 !important;
+}
+
+
+/* =========================================================
+   mobaxia-character2
+   바샤업up 칸 왼쪽에 붙어있게
+========================================================= */
+
+.contentCard.upCard {
+  padding-top: 26px !important;
+}
+
+.contentCard.upCard > .cardCharacter.characterOne {
+  width: 120px !important;
+
+  left: -34px !important;
+  top: 116px !important;
+
+  right: auto !important;
+  bottom: auto !important;
+
+  transform: rotate(-2deg) !important;
+
+  z-index: 25 !important;
+}
+
+
+/* =========================================================
+   mobaxia-character1
+   일정 안내 칸 위에 붙어있게
+   - 크기는 프로필 칸을 넘어가지 않게 적당히 축소
+========================================================= */
+
+.contentCard.scheduleCard {
+  padding-top: 42px !important;
+  position: relative !important;
+}
+
+.contentCard.scheduleCard > .cardCharacter.characterTwo {
+  width: 95px !important;
+
+  top: -28px !important;
+  left: 18px !important;
+
+  right: auto !important;
+  bottom: auto !important;
+
+  transform: rotate(-3deg) !important;
+
+  z-index: 25 !important;
+}
+
+.scheduleCard .cardTitle,
+.scheduleCard .postList,
+.scheduleCard .cardButton {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+
+/* =========================================================
+   mobaxia-character4
+   업보현황 글씨 오른쪽
+   - 머리는 카드 밖으로 조금 나와도 됨
+   - 하지만 프로필 칸 영역까지 침범하지 않게 제한
+========================================================= */
+
+.contentCard.upboCard {
+  padding-top: 34px !important;
+  position: relative !important;
+}
+
+.contentCard.upboCard > .cardCharacter.characterThree {
+  width: 105px !important;
+
+  top: -18px !important;
+  right: 14px !important;
+
+  left: auto !important;
+  bottom: auto !important;
+
+  transform: rotate(4deg) !important;
+
+  z-index: 25 !important;
+}
+
+.upboCard .cardTitle,
+.upboCard .postList,
+.upboCard .upboList,
+.upboCard .cardButton {
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1000px) {
+  .profileCard > .mainCharacter.mainCharacterHang {
+    width: 102px !important;
+    top: 18px !important;
+    right: 20px !important;
+  }
+
+  .contentCard.upCard > .cardCharacter.characterOne {
+    width: 104px !important;
+    left: -28px !important;
+    top: 122px !important;
+  }
+
+  .contentCard.scheduleCard > .cardCharacter.characterTwo {
+    width: 84px !important;
+    top: -23px !important;
+    left: 16px !important;
+  }
+
+  .contentCard.upboCard > .cardCharacter.characterThree {
+    width: 92px !important;
+    top: -14px !important;
+    right: 10px !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+  .profileCard > .mainCharacter.mainCharacterHang {
+    width: 72px !important;
+
+    top: 14px !important;
+    right: 14px !important;
+
+    left: auto !important;
+    transform: rotate(2deg) !important;
+  }
+
+  .contentCard.upCard {
+    padding-top: 18px !important;
+  }
+
+  .contentCard.upCard > .cardCharacter.characterOne {
+    width: 86px !important;
+
+    left: -20px !important;
+    top: 118px !important;
+  }
+
+  .contentCard.scheduleCard {
+    padding-top: 34px !important;
+  }
+
+  .contentCard.scheduleCard > .cardCharacter.characterTwo {
+    width: 72px !important;
+
+    top: -20px !important;
+    left: 14px !important;
+  }
+
+  .contentCard.upboCard {
+    padding-top: 28px !important;
+  }
+
+  .contentCard.upboCard > .cardCharacter.characterThree {
+    width: 78px !important;
+
+    top: -10px !important;
+    right: 8px !important;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+  .profileCard > .mainCharacter.mainCharacterHang {
+    width: 64px !important;
+    top: 12px !important;
+    right: 10px !important;
+  }
+
+  .contentCard.upCard > .cardCharacter.characterOne {
+    width: 76px !important;
+    left: -16px !important;
+    top: 120px !important;
+  }
+
+  .contentCard.scheduleCard > .cardCharacter.characterTwo {
+    width: 64px !important;
+    top: -16px !important;
+    left: 12px !important;
+  }
+
+  .contentCard.upboCard > .cardCharacter.characterThree {
+    width: 70px !important;
+    top: -8px !important;
+    right: 6px !important;
+  }
+}
