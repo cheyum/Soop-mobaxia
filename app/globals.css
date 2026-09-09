@@ -3618,3 +3618,40 @@ a.upboLink:hover {
     transform: rotate(2deg) !important;
   }
 }
+/* =========================================================
+   mobaxia-character3
+   반응형 위치 최종 조정
+========================================================= */
+
+/* PC */
+.profileCard > .mainCharacter.mainCharacterHang {
+  left: calc(100% - 33px) !important;
+  top: -38px !important;
+}
+
+
+/* TABLET */
+@media (max-width: 1000px) {
+  .profileCard > .mainCharacter.mainCharacterHang {
+    left: calc(100% - 29px) !important;
+    top: -33px !important;
+  }
+}
+
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .profileCard > .mainCharacter.mainCharacterHang {
+    left: calc(100% - 23px) !important;
+    top: -26px !important;
+  }
+}
+
+
+/* MINI MOBILE */
+@media (max-width: 420px) {
+  .profileCard > .mainCharacter.mainCharacterHang {
+    left: calc(100% - 20px) !important;
+    top: -23px !important;
+  }
+}
