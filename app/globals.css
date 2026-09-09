@@ -3410,3 +3410,118 @@ a.upboLink:hover {
     right: calc(100% - 15px) !important;
   }
 }
+/* =========================================================
+   DETAIL FIX +8px
+   character1 / character2 추가 이동
+========================================================= */
+
+/* mobaxia-character1
+   기존보다 아래로 8px 더
+*/
+.contentCard.scheduleCard
+> .cardCharacter.characterTwo {
+  width: 76px !important;
+
+  left: 28px !important;
+  right: auto !important;
+  top: auto !important;
+
+  /* 기존: calc(100% - 10px) */
+  bottom: calc(100% - 18px) !important;
+
+  transform: rotate(-2deg) !important;
+
+  z-index: 30 !important;
+  pointer-events: none !important;
+}
+
+
+/* mobaxia-character2
+   기존보다 오른쪽으로 8px 더
+*/
+.contentCard.upCard
+> .cardCharacter.characterOne {
+  width: 76px !important;
+
+  left: auto !important;
+
+  /* 기존: calc(100% - 10px) */
+  right: calc(100% - 18px) !important;
+
+  top: 43% !important;
+  bottom: auto !important;
+
+  transform:
+    translateY(-50%)
+    rotate(-3deg) !important;
+
+  z-index: 30 !important;
+  pointer-events: none !important;
+}
+
+
+/* TABLET */
+@media (max-width: 1000px) {
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 68px !important;
+    left: 22px !important;
+
+    /* 기존: calc(100% - 8px) */
+    bottom: calc(100% - 16px) !important;
+  }
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 67px !important;
+
+    /* 기존: calc(100% - 8px) */
+    right: calc(100% - 16px) !important;
+
+    top: 43% !important;
+  }
+}
+
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 60px !important;
+    left: 18px !important;
+
+    /* 기존: calc(100% - 6px) */
+    bottom: calc(100% - 14px) !important;
+  }
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 58px !important;
+
+    /* 기존: calc(100% - 6px) */
+    right: calc(100% - 14px) !important;
+
+    top: 40% !important;
+  }
+}
+
+
+/* SMALL MOBILE */
+@media (max-width: 420px) {
+  .contentCard.scheduleCard
+  > .cardCharacter.characterTwo {
+    width: 52px !important;
+    left: 15px !important;
+
+    /* 기존: calc(100% - 5px) */
+    bottom: calc(100% - 13px) !important;
+  }
+
+  .contentCard.upCard
+  > .cardCharacter.characterOne {
+    width: 50px !important;
+
+    /* 기존: calc(100% - 5px) */
+    right: calc(100% - 13px) !important;
+  }
+}
