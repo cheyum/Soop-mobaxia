@@ -1,5 +1,5 @@
 /* ==========================================
-   기본 설정
+   RESET
 ========================================== */
 
 * {
@@ -19,46 +19,40 @@ html {
 body {
   min-height: 100vh;
 
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  color: #4d3540;
+
   background:
     linear-gradient(
-      rgba(225, 190, 204, 0.38) 1px,
+      rgba(226, 194, 207, 0.42) 1px,
       transparent 1px
     ),
     linear-gradient(
       90deg,
-      rgba(225, 190, 204, 0.38) 1px,
+      rgba(226, 194, 207, 0.42) 1px,
       transparent 1px
     ),
     radial-gradient(
       circle at 10% 10%,
-      rgba(255, 194, 218, 0.35),
-      transparent 32%
-    ),
-    radial-gradient(
-      circle at 90% 20%,
-      rgba(143, 216, 239, 0.16),
+      rgba(255, 198, 220, 0.35),
       transparent 30%
     ),
     linear-gradient(
       135deg,
-      #fff9fb 0%,
-      #fff0f6 50%,
-      #fffafd 100%
+      #fff9fb,
+      #fff0f5,
+      #fffafd
     );
 
   background-size:
     26px 26px,
     26px 26px,
     auto,
-    auto,
     auto;
-
-  color: #4d3540;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
 }
 
 button,
@@ -68,7 +62,7 @@ input {
 
 
 /* ==========================================
-   전체 페이지
+   PAGE
 ========================================== */
 
 .page {
@@ -87,30 +81,30 @@ input {
 
 
 /* ==========================================
-   배경 장식
+   배경장식
 ========================================== */
 
 .bgHeart,
 .bgStar {
   position: fixed;
 
+  z-index: 0;
+
   pointer-events: none;
   user-select: none;
 
   color:
     rgba(
-      242,
-      139,
-      180,
+      239,
+      138,
+      178,
       0.08
     );
-
-  z-index: 0;
 }
 
 .bgHeart1 {
-  left: 4%;
   top: 30%;
+  left: 4%;
 
   font-size: 100px;
 }
@@ -123,8 +117,8 @@ input {
 }
 
 .bgStar1 {
-  right: 12%;
   top: 40%;
+  right: 12%;
 
   font-size: 55px;
 }
@@ -143,6 +137,7 @@ input {
 
 .header {
   position: relative;
+
   z-index: 30;
 
   width: 100%;
@@ -192,12 +187,7 @@ input {
 
   box-shadow:
     0 10px 30px
-    rgba(
-      244,
-      104,
-      163,
-      0.24
-    );
+    rgba(244, 104, 163, 0.24);
 }
 
 .brand h1 {
@@ -212,10 +202,7 @@ input {
 }
 
 .brand p {
-  margin:
-    4px
-    0
-    0;
+  margin: 4px 0 0;
 
   color: #c18a9f;
 
@@ -226,7 +213,7 @@ input {
 
 
 /* ==========================================
-   방송 상태
+   STATUS
 ========================================== */
 
 .topStatus {
@@ -239,44 +226,23 @@ input {
     12px
     18px;
 
+  border:
+    1px solid
+    rgba(239, 183, 206, 0.7);
+
   border-radius: 30px;
 
   background:
-    rgba(
-      255,
-      255,
-      255,
-      0.76
-    );
-
-  border:
-    1px solid
-    rgba(
-      239,
-      183,
-      206,
-      0.7
-    );
+    rgba(255, 255, 255, 0.78);
 
   color: #a06a80;
 
   font-size: 12px;
-
-  box-shadow:
-    0 8px 25px
-    rgba(
-      224,
-      142,
-      177,
-      0.08
-    );
 }
 
 .statusDot {
   width: 7px;
   height: 7px;
-
-  flex-shrink: 0;
 
   border-radius: 50%;
 }
@@ -324,19 +290,18 @@ input {
 
 
 /* ==========================================
-   메인 카드
+   PROFILE CARD
 ========================================== */
 
 .profileCard {
   position: relative;
+
   z-index: 10;
 
   width: 100%;
   max-width: 1180px;
 
-  margin:
-    0
-    auto;
+  margin: 0 auto;
 
   display: grid;
 
@@ -354,31 +319,18 @@ input {
 
   overflow: visible;
 
-  border-radius: 38px;
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.86
-    );
-
   border:
     1px solid
     #ffc4da;
 
+  border-radius: 38px;
+
+  background:
+    rgba(255, 255, 255, 0.87);
+
   box-shadow:
     0 25px 65px
-    rgba(
-      215,
-      113,
-      157,
-      0.12
-    );
-
-  backdrop-filter:
-    blur(15px);
+    rgba(215, 113, 157, 0.12);
 }
 
 .profileCard::after {
@@ -388,20 +340,15 @@ input {
 
   inset: 9px;
 
+  z-index: 0;
+
   border:
     1px dashed
-    rgba(
-      242,
-      163,
-      197,
-      0.45
-    );
+    rgba(242, 163, 197, 0.45);
 
   border-radius: 30px;
 
   pointer-events: none;
-
-  z-index: 0;
 }
 
 .profileMain,
@@ -414,10 +361,9 @@ input {
 
 /* ==========================================
    CHARACTER 4
-   메인 카드 왼쪽에 매달린 캐릭터
 ========================================== */
 
-.mainMascot {
+.mainCharacter {
   position: absolute;
 
   z-index: 20;
@@ -426,66 +372,29 @@ input {
   user-select: none;
 }
 
-.mainMascot img {
+.mainCharacter img {
   display: block;
 
   width: 100%;
   height: auto;
 
-  object-fit: contain;
-
   filter:
     drop-shadow(
-      0 12px 18px
-      rgba(
-        89,
-        53,
-        68,
-        0.18
-      )
+      0 10px 16px
+      rgba(85, 52, 68, 0.18)
     );
 }
 
-.mainMascotHang {
-  width: 150px;
+.mainCharacterHang {
+  width: 145px;
 
-  left: -78px;
-  top: 110px;
-
-  transform:
-    rotate(-2deg);
-
-  transform-origin:
-    center;
-}
-
-.profileCard:hover
-.mainMascotHang {
-  animation:
-    mainMascotSwing
-    1.7s
-    ease-in-out
-    infinite;
-}
-
-@keyframes mainMascotSwing {
-  0%,
-  100% {
-    transform:
-      translateY(0)
-      rotate(-2deg);
-  }
-
-  50% {
-    transform:
-      translateY(4px)
-      rotate(2deg);
-  }
+  left: -72px;
+  top: 115px;
 }
 
 
 /* ==========================================
-   방송 영역
+   방송
 ========================================== */
 
 .profileMain {
@@ -506,27 +415,13 @@ input {
 
   border-radius: 20px;
 
-  background:
-    linear-gradient(
-      135deg,
-      #fff3f7,
-      #ffe8f1
-    );
+  background: #fff0f6;
 
   color: #d986a8;
 
   font-size: 11px;
 
   white-space: nowrap;
-
-  box-shadow:
-    0 6px 18px
-    rgba(
-      226,
-      148,
-      182,
-      0.1
-    );
 }
 
 .streamScreen {
@@ -539,41 +434,21 @@ input {
 
   overflow: hidden;
 
-  border-radius: 24px;
-
-  background:
-    linear-gradient(
-      180deg,
-      #fff8fb,
-      #fff1f6
-    );
-
   border:
     1px solid
     #f5bfd5;
 
+  border-radius: 24px;
+
+  background: #fff4f8;
+
   box-shadow:
     0 15px 35px
-    rgba(
-      225,
-      127,
-      168,
-      0.12
-    );
+    rgba(225, 127, 168, 0.12);
 }
 
 .streamOnline {
-  border-color:
-    #ff8fba;
-
-  box-shadow:
-    0 15px 40px
-    rgba(
-      255,
-      93,
-      157,
-      0.22
-    );
+  border-color: #ff8fba;
 }
 
 .streamOffline {
@@ -593,13 +468,8 @@ input {
 
   border: 0;
 
-  background: #000;
+  background: black;
 }
-
-
-/* ==========================================
-   OFFLINE / CHECKING
-========================================== */
 
 .streamPlaceholder {
   position: absolute;
@@ -618,8 +488,6 @@ input {
 }
 
 .streamPlaceholder strong {
-  color: #9a6c7f;
-
   font-size: 25px;
   font-weight: 800;
 
@@ -655,35 +523,15 @@ input {
 
   background: #ff91bc;
 
-  box-shadow:
-    0 0 13px
-    rgba(
-      255,
-      105,
-      165,
-      0.6
-    );
-
   animation:
-    streamLoading
+    statusPulse
     1.3s
     infinite;
 }
 
-@keyframes streamLoading {
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.25;
-  }
-}
-
 
 /* ==========================================
-   오른쪽 영역
+   PROFILE DETAILS
 ========================================== */
 
 .profileDetails {
@@ -695,14 +543,7 @@ input {
   gap: 20px;
 }
 
-
-/* ==========================================
-   프로필
-========================================== */
-
 .identityRow {
-  width: 100%;
-
   display: flex;
   align-items: center;
 
@@ -733,44 +574,6 @@ input {
       #ffffff,
       #ff93bb
     );
-
-  box-shadow:
-    0 9px 25px
-    rgba(
-      224,
-      119,
-      162,
-      0.18
-    );
-}
-
-.smallProfileRing
-.profileImage,
-
-.smallProfileRing
-.profileFallback {
-  width: 100%;
-  height: 100%;
-
-  border-radius: 50%;
-}
-
-.smallProfileLive {
-  box-shadow:
-    0 0 0 3px
-    rgba(
-      255,
-      89,
-      151,
-      0.1
-    ),
-    0 0 22px
-    rgba(
-      255,
-      89,
-      151,
-      0.35
-    );
 }
 
 .profileImage {
@@ -782,8 +585,6 @@ input {
   object-fit: cover;
 
   border-radius: 50%;
-
-  background: white;
 }
 
 .profileFallback {
@@ -796,17 +597,18 @@ input {
 
   border-radius: 50%;
 
-  background:
-    linear-gradient(
-      135deg,
-      #ffd3e4,
-      #ffffff
-    );
+  background: #ffe5ef;
 
   color: #dd709e;
 
   font-size: 28px;
   font-weight: 900;
+}
+
+.smallProfileLive {
+  box-shadow:
+    0 0 22px
+    rgba(255, 89, 151, 0.35);
 }
 
 .identityText {
@@ -848,45 +650,26 @@ input {
 
   font-size: 8px;
   font-weight: 900;
-
-  letter-spacing: 1px;
-
-  box-shadow:
-    0 5px 15px
-    rgba(
-      255,
-      92,
-      154,
-      0.25
-    );
 }
 
 .basicInfo {
-  margin: 0;
-
   color: #c17f9a;
 
   font-size: 10px;
-
-  line-height: 1.6;
 }
 
 .basicInfo span {
   margin:
     0
     5px;
-
-  color: #dfb2c5;
 }
 
 
 /* ==========================================
-   상시 스케줄
+   SCHEDULE BOX
 ========================================== */
 
 .scheduleBox {
-  width: 100%;
-
   padding:
     25px
     28px;
@@ -896,9 +679,9 @@ input {
   background:
     linear-gradient(
       135deg,
-      #fff7fa 0%,
-      #ffedf5 63%,
-      #eefaff 100%
+      #fff7fa,
+      #ffedf5 65%,
+      #eefaff
     );
 
   color: #9c687b;
@@ -939,28 +722,19 @@ input {
 
   border-top:
     1px dashed
-    rgba(
-      226,
-      158,
-      187,
-      0.55
-    );
+    rgba(226, 158, 187, 0.55);
 
   color: #cf98ae;
 
   font-size: 10px;
-
-  text-align: center;
 }
 
 
 /* ==========================================
-   링크 버튼 4개
+   LINKS
 ========================================== */
 
 .linkButtonRow {
-  width: 100%;
-
   display: grid;
 
   grid-template-columns:
@@ -972,62 +746,37 @@ input {
 .squareLinkButton {
   width: 100%;
 
-  aspect-ratio:
-    1 / 1;
+  aspect-ratio: 1;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 18px;
-
   border:
     1px solid
     #f3bfd4;
 
-  text-decoration: none;
+  border-radius: 18px;
 
   transition:
-    transform 0.2s,
-    box-shadow 0.2s,
-    background 0.2s;
+    0.2s;
 }
 
 .homeButton {
   background:
     linear-gradient(
       135deg,
-      #ff94bc 0%,
+      #ff94bc,
       #ff74a9 55%,
-      #8fd8ef 100%
+      #8fd8ef
     );
 
   color: white;
-
-  box-shadow:
-    0 10px 25px
-    rgba(
-      239,
-      111,
-      165,
-      0.22
-    );
-
-  cursor: pointer;
 }
 
 .homeButton:hover {
   transform:
     translateY(-4px);
-
-  box-shadow:
-    0 15px 30px
-    rgba(
-      239,
-      111,
-      165,
-      0.34
-    );
 }
 
 .linkIcon {
@@ -1036,41 +785,29 @@ input {
 }
 
 .emptyLinkButton {
-  background:
-    rgba(
-      255,
-      250,
-      252,
-      0.75
-    );
-
   border:
     1px dashed
     #edb4cc;
-}
 
-.emptyLinkButton:hover {
   background:
-    #fff1f7;
-
-  transform:
-    translateY(-2px);
+    rgba(255, 250, 252, 0.75);
 }
 
 
 /* ==========================================
-   하단 카드 3개
+   CONTENT
 ========================================== */
 
 .contentGrid {
   position: relative;
+
   z-index: 10;
 
   width: 100%;
   max-width: 1180px;
 
   margin:
-    28px
+    48px
     auto
     0;
 
@@ -1095,32 +832,19 @@ input {
 
   overflow: visible;
 
-  border-radius: 27px;
-
-  background:
-    rgba(
-      255,
-      255,
-      255,
-      0.88
-    );
-
   border:
     1px solid
     #f6c5d9;
 
+  border-radius: 27px;
+
+  background:
+    rgba(255, 255, 255, 0.9);
+
   box-shadow:
     0 14px 35px
-    rgba(
-      209,
-      121,
-      158,
-      0.07
-    );
+    rgba(209, 121, 158, 0.07);
 }
-
-
-/* 오른쪽 위 하늘색 장식 */
 
 .contentCard::before {
   content: "";
@@ -1138,27 +862,103 @@ input {
   background:
     radial-gradient(
       circle,
-      rgba(
-        143,
-        216,
-        239,
-        0.24
-      ),
+      rgba(143, 216, 239, 0.24),
       transparent 70%
     );
 
   pointer-events: none;
-
-  z-index: 0;
 }
 
 
 /* ==========================================
-   카드 제목
+   CHARACTER COMMON
+========================================== */
+
+.characterCard {
+  position: relative;
+
+  overflow: visible;
+}
+
+.cardCharacter {
+  position: absolute;
+
+  z-index: 20;
+
+  pointer-events: none;
+  user-select: none;
+}
+
+.cardCharacter img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  filter:
+    drop-shadow(
+      0 10px 15px
+      rgba(85, 53, 67, 0.17)
+    );
+}
+
+
+/* ==========================================
+   CHARACTER 1
+   바샤업up 위
+========================================== */
+
+.characterOne {
+  width: 165px;
+
+  top: -78px;
+  left: 15px;
+}
+
+
+/* ==========================================
+   CHARACTER 2
+   일정 옆에서 빼꼼
+========================================== */
+
+.characterTwo {
+  width: 120px;
+
+  top: 58px;
+  right: -55px;
+
+  z-index: 2;
+}
+
+.scheduleCard .cardTitle,
+.scheduleCard .postList,
+.scheduleCard .cardButton {
+  position: relative;
+
+  z-index: 5;
+}
+
+
+/* ==========================================
+   CHARACTER 3
+   업보현황 위
+========================================== */
+
+.characterThree {
+  width: 135px;
+
+  top: -78px;
+  right: 13px;
+}
+
+
+/* ==========================================
+   CARD TITLE
 ========================================== */
 
 .cardTitle {
   position: relative;
+
   z-index: 5;
 
   margin-bottom: 18px;
@@ -1192,9 +992,9 @@ input {
   background:
     linear-gradient(
       90deg,
-      #ffbfd4 0%,
+      #ffbfd4,
       #8fd8ef 55%,
-      #245a70 100%
+      #245a70
     );
 }
 
@@ -1206,17 +1006,16 @@ input {
   color: #cc91aa;
 
   font-size: 9px;
-
-  letter-spacing: 1px;
 }
 
 
 /* ==========================================
-   게시글
+   POSTS
 ========================================== */
 
 .postList {
   position: relative;
+
   z-index: 5;
 
   display: flex;
@@ -1226,9 +1025,6 @@ input {
 }
 
 .postItem {
-  display: flex;
-  align-items: center;
-
   width: 100%;
 
   height: 48px;
@@ -1238,21 +1034,18 @@ input {
     0
     15px;
 
-  overflow: hidden;
+  display: flex;
+  align-items: center;
 
-  border-radius: 14px;
+  overflow: hidden;
 
   border:
     1px solid
     #f2cadb;
 
-  background:
-    rgba(
-      255,
-      252,
-      253,
-      0.98
-    );
+  border-radius: 14px;
+
+  background: #fff9fb;
 
   color: #865f6e;
 
@@ -1263,18 +1056,10 @@ input {
   white-space: nowrap;
 
   text-overflow: ellipsis;
-
-  transition:
-    background 0.2s,
-    transform 0.2s;
 }
 
 a.postItem:hover {
-  background:
-    #fff0f6;
-
-  transform:
-    translateX(3px);
+  background: #fff0f6;
 }
 
 .noticeItem {
@@ -1287,58 +1072,34 @@ a.postItem:hover {
   pointer-events: none;
 }
 
-
-/* ==========================================
-   바샤업up / 일정 안내
-   3칸 고정
-========================================== */
-
 .boardCard {
   display: flex;
   flex-direction: column;
 }
 
-.boardCard
 .fixedPostList {
   display: grid;
 
-  width: 100%;
-
   grid-template-rows:
-    repeat(
-      3,
-      48px
-    );
+    repeat(3, 48px);
 
   gap: 10px;
 }
 
-.boardCard
-.fixedPostList
-.postItem {
-  width: 100%;
-
-  height: 48px;
-  min-height: 48px;
-}
-
 
 /* ==========================================
-   전체보기 버튼
+   BUTTON
 ========================================== */
 
 .cardButton {
   position: relative;
+
   z-index: 5;
 
   width: 100%;
   height: 48px;
 
   margin-top: 10px;
-
-  padding:
-    0
-    15px;
 
   border: 0;
 
@@ -1347,9 +1108,9 @@ a.postItem:hover {
   background:
     linear-gradient(
       135deg,
-      #ffb5cf 0%,
+      #ffb5cf,
       #ffd3e1 45%,
-      #8fd8ef 100%
+      #8fd8ef
     );
 
   color: #553845;
@@ -1358,265 +1119,46 @@ a.postItem:hover {
   font-weight: 800;
 
   cursor: pointer;
-
-  box-shadow:
-    0 8px 18px
-    rgba(
-      210,
-      154,
-      180,
-      0.12
-    );
-
-  transition:
-    transform 0.2s,
-    filter 0.2s;
 }
 
 .cardButton:hover {
   transform:
     translateY(-2px);
-
-  filter:
-    brightness(0.98);
 }
 
 
 /* ==========================================
-   캐릭터 공통
-   character1 / 2 / 3
-========================================== */
-
-.characterCard {
-  position: relative;
-
-  overflow: visible;
-}
-
-.cardCharacter {
-  position: absolute;
-
-  z-index: 20;
-
-  pointer-events: none;
-  user-select: none;
-}
-
-.cardCharacter img {
-  display: block;
-
-  width: 100%;
-  height: auto;
-
-  object-fit: contain;
-
-  filter:
-    drop-shadow(
-      0 10px 15px
-      rgba(
-        85,
-        53,
-        67,
-        0.17
-      )
-    );
-}
-
-
-/* ==========================================
-   CHARACTER 1
-   바샤업up 위에 누워있는 모습
-========================================== */
-
-.characterUpCard {
-  padding-top: 34px;
-}
-
-.characterLie {
-  width: 170px;
-
-  left: 13px;
-  top: -78px;
-
-  transform:
-    rotate(-2deg);
-
-  transform-origin:
-    center bottom;
-}
-
-.characterUpCard:hover
-.characterLie {
-  animation:
-    characterLieBounce
-    1.4s
-    ease-in-out
-    infinite;
-}
-
-@keyframes characterLieBounce {
-  0%,
-  100% {
-    transform:
-      translateY(0)
-      rotate(-2deg);
-  }
-
-  50% {
-    transform:
-      translateY(-4px)
-      rotate(-2deg);
-  }
-}
-
-
-/* ==========================================
-   CHARACTER 2
-   일정 안내 오른쪽에서 빼꼼
-========================================== */
-
-.characterScheduleCard {
-  position: relative;
-}
-
-.characterPeek {
-  width: 125px;
-
-  right: -45px;
-  top: 34px;
-
-  z-index: 2;
-
-  transition:
-    transform 0.3s ease;
-}
-
-.characterScheduleCard:hover
-.characterPeek {
-  transform:
-    translateX(-8px);
-}
-
-.characterScheduleCard
-.cardTitle,
-
-.characterScheduleCard
-.fixedPostList,
-
-.characterScheduleCard
-.cardButton {
-  position: relative;
-
-  z-index: 5;
-}
-
-
-/* ==========================================
-   CHARACTER 3
-   업보 팻말 캐릭터
-========================================== */
-
-.characterUpboCard {
-  padding-top: 34px;
-}
-
-.characterUpbo {
-  width: 132px;
-
-  right: 14px;
-  top: -76px;
-
-  transform:
-    rotate(2deg);
-
-  transform-origin:
-    center bottom;
-}
-
-.characterUpboCard:hover
-.characterUpbo {
-  animation:
-    characterUpboWiggle
-    0.7s
-    ease-in-out;
-}
-
-@keyframes characterUpboWiggle {
-  0% {
-    transform:
-      rotate(2deg);
-  }
-
-  25% {
-    transform:
-      rotate(-4deg);
-  }
-
-  50% {
-    transform:
-      rotate(5deg);
-  }
-
-  75% {
-    transform:
-      rotate(-2deg);
-  }
-
-  100% {
-    transform:
-      rotate(2deg);
-  }
-}
-
-
-/* ==========================================
-   업보현황
+   UPBO
 ========================================== */
 
 .upboList {
   position: relative;
+
   z-index: 5;
 
   display: grid;
 
   gap: 10px;
-
-  width: 100%;
 }
 
 .upboRow {
   width: 100%;
 
   height: 48px;
-  min-height: 48px;
 
   border:
     1px solid
-    rgba(
-      241,
-      154,
-      190,
-      0.35
-    );
+    rgba(241, 154, 190, 0.35);
 
   border-radius: 14px;
 
-  background:
-    rgba(
-      255,
-      252,
-      253,
-      0.98
-    );
+  background: #fff9fb;
 }
 
 .upboLink {
   display: flex;
-
   align-items: center;
   justify-content: space-between;
-
-  gap: 12px;
 
   padding:
     0
@@ -1625,18 +1167,6 @@ a.postItem:hover {
   color: #7a3f59;
 
   text-decoration: none;
-
-  transition:
-    transform 0.18s,
-    background 0.18s;
-}
-
-a.upboLink:hover {
-  background:
-    #fff0f6;
-
-  transform:
-    translateY(-1px);
 }
 
 .upboLink strong {
@@ -1650,19 +1180,11 @@ a.upboLink:hover {
 }
 
 .upboDisabled {
-  cursor: default;
-
   opacity: 0.7;
 }
 
-
-/* ==========================================
-   업보 검색
-========================================== */
-
 .upboSearchRow {
   display: flex;
-
   align-items: center;
 
   gap: 8px;
@@ -1682,38 +1204,24 @@ a.upboLink:hover {
     11px;
 
   border: none;
-  outline: none;
 
   border-radius: 10px;
 
   background: white;
 
-  color: #6f4055;
+  outline: none;
 
   font-size: 13px;
 }
 
-.upboSearchInput::placeholder {
-  color: #c79aac;
-}
-
-.upboSearchInput:disabled {
-  cursor:
-    not-allowed;
-
-  opacity: 0.7;
-}
-
 .upboSearchButton {
-  flex: 0 0 auto;
-
   height: 32px;
 
   padding:
     0
     13px;
 
-  border: none;
+  border: 0;
 
   border-radius: 10px;
 
@@ -1726,27 +1234,18 @@ a.upboLink:hover {
 
   color: white;
 
-  font-size: 12px;
   font-weight: 700;
-
-  cursor: pointer;
 }
 
+.upboSearchInput:disabled,
 .upboSearchButton:disabled {
-  cursor:
-    not-allowed;
+  opacity: 0.6;
 
-  opacity: 0.55;
+  cursor: not-allowed;
 }
-
-
-/* ==========================================
-   검색결과
-========================================== */
 
 .upboResultRow {
   display: flex;
-
   align-items: center;
 
   padding:
@@ -1756,12 +1255,6 @@ a.upboLink:hover {
   color: #755066;
 
   font-size: 12px;
-
-  line-height: 1.55;
-}
-
-.upboEmpty {
-  width: 100%;
 }
 
 
@@ -1787,7 +1280,7 @@ a.upboLink:hover {
 
 
 /* ==========================================
-   태블릿
+   TABLET
 ========================================== */
 
 @media (max-width: 1000px) {
@@ -1799,44 +1292,38 @@ a.upboLink:hover {
 
     gap: 30px;
 
-    padding:
-      35px;
+    padding: 35px;
   }
 
-  .contentGrid {
-    gap: 15px;
+  .mainCharacterHang {
+    width: 115px;
+
+    left: -55px;
   }
 
-  .mainMascotHang {
-    width: 118px;
+  .characterOne {
+    width: 135px;
 
-    left: -57px;
-    top: 120px;
+    top: -63px;
   }
 
-  .characterLie {
-    width: 140px;
+  .characterTwo {
+    width: 100px;
 
-    top: -64px;
+    right: -40px;
   }
 
-  .characterPeek {
-    width: 105px;
-
-    right: -34px;
-  }
-
-  .characterUpbo {
+  .characterThree {
     width: 108px;
 
-    top: -59px;
+    top: -60px;
   }
 
 }
 
 
 /* ==========================================
-   모바일
+   MOBILE
 ========================================== */
 
 @media (max-width: 768px) {
@@ -1848,17 +1335,8 @@ a.upboLink:hover {
       40px;
   }
 
-
-  /* HEADER */
-
   .header {
     margin-bottom: 20px;
-
-    gap: 10px;
-  }
-
-  .brand {
-    gap: 8px;
   }
 
   .brandIcon {
@@ -1866,8 +1344,6 @@ a.upboLink:hover {
     height: 36px;
 
     border-radius: 12px;
-
-    font-size: 13px;
   }
 
   .brand h1 {
@@ -1875,11 +1351,7 @@ a.upboLink:hover {
   }
 
   .brand p {
-    margin-top: 2px;
-
     font-size: 6px;
-
-    letter-spacing: 1px;
   }
 
   .topStatus {
@@ -1889,9 +1361,6 @@ a.upboLink:hover {
 
     font-size: 8px;
   }
-
-
-  /* 메인 카드 */
 
   .profileCard {
     width: 100%;
@@ -1909,82 +1378,25 @@ a.upboLink:hover {
     border-radius: 29px;
   }
 
-  .profileCard::after {
-    inset: 7px;
+  .mainCharacterHang {
+    width: 80px;
 
-    border-radius: 22px;
-  }
-
-
-  /* 캐릭터4 */
-
-  .mainMascotHang {
-    width: 84px;
-
-    left: -24px;
-    top: 74px;
-  }
-
-
-  /* 방송 */
-
-  .profileMain {
-    width: 100%;
+    left: -22px;
+    top: 75px;
   }
 
   .welcomeTag {
     max-width: 100%;
 
-    margin-bottom: 15px;
-
-    padding:
-      7px
-      11px;
+    font-size: 8px;
 
     overflow: hidden;
-
-    font-size: 8px;
 
     text-overflow: ellipsis;
   }
 
-  .streamScreen {
-    width: 100%;
-
-    border-radius: 17px;
-  }
-
-  .streamPlaceholder strong {
-    font-size: 18px;
-
-    letter-spacing: 3px;
-  }
-
-  .streamPlaceholder p {
-    margin-top: 6px;
-
-    font-size: 8px;
-  }
-
-  .offlineHeart {
-    font-size: 18px;
-  }
-
-
-  /* 프로필 */
-
-  .profileDetails {
-    width: 100%;
-
-    gap: 14px;
-  }
-
   .identityRow {
     gap: 11px;
-
-    padding:
-      0
-      2px;
   }
 
   .smallProfileRing {
@@ -1995,61 +1407,28 @@ a.upboLink:hover {
       0
       0
       55px;
-
-    padding: 3px;
-  }
-
-  .identityName {
-    gap: 7px;
-
-    margin-bottom: 4px;
   }
 
   .identityName h2 {
     font-size: 21px;
-
-    letter-spacing: 2px;
-  }
-
-  .identityLiveBadge {
-    padding:
-      4px
-      6px;
-
-    font-size: 6px;
   }
 
   .basicInfo {
     font-size: 7px;
   }
 
-  .basicInfo span {
-    margin:
-      0
-      3px;
-  }
-
-
-  /* 스케줄 */
-
   .scheduleBox {
     padding:
       14px
       15px;
-
-    border-radius: 16px;
   }
 
   .scheduleBox strong {
-    margin-bottom: 6px;
-
     font-size: 9px;
   }
 
   .scheduleBox p {
     font-size: 8px;
-
-    line-height: 1.7;
   }
 
   .mobileBreak {
@@ -2061,42 +1440,18 @@ a.upboLink:hover {
   }
 
   .scheduleMessage {
-    margin-top: 11px;
-
-    padding-top: 9px;
-
     font-size: 7px;
   }
 
-
-  /* 링크 */
-
-  .linkButtonRow {
-    gap: 8px;
-  }
-
-  .squareLinkButton {
-    border-radius: 12px;
-  }
-
-  .linkIcon {
-    width: 22px;
-    height: 22px;
-  }
-
-
-  /* 하단 */
-
   .contentGrid {
-    width: 100%;
     max-width: 420px;
+
+    margin-top: 45px;
 
     grid-template-columns:
       1fr;
 
-    gap: 38px;
-
-    margin-top: 30px;
+    gap: 48px;
   }
 
   .contentCard {
@@ -2107,214 +1462,93 @@ a.upboLink:hover {
     border-radius: 20px;
   }
 
-  .contentCard::before {
-    width: 48px;
-    height: 48px;
+  .characterOne {
+    width: 115px;
+
+    top: -53px;
   }
 
-  .cardTitle {
-    margin-bottom: 13px;
+  .characterTwo {
+    width: 83px;
+
+    top: 52px;
+    right: -24px;
+  }
+
+  .characterThree {
+    width: 90px;
+
+    top: -48px;
   }
 
   .cardTitle h3 {
     font-size: 15px;
   }
 
-  .cardTitle h3::after {
-    width: 34px;
-
-    margin-top: 8px;
-  }
-
   .cardTitle span {
     font-size: 7px;
   }
 
-
-  /* 캐릭터1 */
-
-  .characterUpCard {
-    padding-top: 28px;
-  }
-
-  .characterLie {
-    width: 116px;
-
-    left: 10px;
-    top: -53px;
-  }
-
-
-  /* 캐릭터2 */
-
-  .characterPeek {
-    width: 88px;
-
-    right: -25px;
-    top: 26px;
-  }
-
-
-  /* 캐릭터3 */
-
-  .characterUpboCard {
-    padding-top: 28px;
-  }
-
-  .characterUpbo {
-    width: 91px;
-
-    right: 10px;
-    top: -49px;
-  }
-
-
-  /* 줄 */
-
-  .postItem {
-    height: 46px;
-    min-height: 46px;
-
-    padding:
-      0
-      15px;
-
-    font-size: 8px;
-  }
-
-  .boardCard
-  .fixedPostList {
-    grid-template-rows:
-      repeat(
-        3,
-        46px
-      );
-  }
-
-  .boardCard
-  .fixedPostList
-  .postItem {
-    height: 46px;
-    min-height: 46px;
-  }
-
-  .cardButton {
-    height: 46px;
-
-    font-size: 8px;
-  }
-
-
-  /* 업보 */
-
+  .postItem,
+  .cardButton,
   .upboRow {
     height: 46px;
     min-height: 46px;
+  }
+
+  .fixedPostList {
+    grid-template-rows:
+      repeat(3, 46px);
+  }
+
+  .postItem {
+    font-size: 8px;
+  }
+
+  .cardButton {
+    font-size: 8px;
   }
 
   .upboLink strong {
     font-size: 10px;
   }
 
-  .upboLink span {
-    font-size: 8px;
-  }
-
-  .upboSearchInput {
-    height: 30px;
-
-    font-size: 9px;
-  }
-
-  .upboSearchButton {
-    height: 30px;
-
-    font-size: 8px;
-  }
-
+  .upboLink span,
   .upboResultRow {
     font-size: 8px;
-  }
-
-
-  /* FOOTER */
-
-  .footer {
-    margin-top: 20px;
-
-    font-size: 7px;
   }
 
 }
 
 
 /* ==========================================
-   아주 작은 스마트폰
+   SMALL MOBILE
 ========================================== */
 
 @media (max-width: 420px) {
 
-  .page {
-    padding-left: 9px;
-    padding-right: 9px;
+  .mainCharacterHang {
+    width: 68px;
+
+    left: -16px;
   }
 
-  .header {
-    align-items: flex-start;
-  }
-
-  .topStatus {
-    white-space: nowrap;
-
-    padding:
-      7px
-      9px;
-  }
-
-  .profileCard {
-    padding:
-      25px
-      17px;
-  }
-
-  .identityName h2 {
-    font-size: 19px;
-  }
-
-  .linkButtonRow {
-    gap: 6px;
-  }
-
-  .squareLinkButton {
-    border-radius: 10px;
-  }
-
-
-  /* 캐릭터 */
-
-  .mainMascotHang {
-    width: 70px;
-
-    left: -17px;
-    top: 72px;
-  }
-
-  .characterLie {
-    width: 102px;
+  .characterOne {
+    width: 100px;
 
     top: -46px;
   }
 
-  .characterPeek {
-    width: 76px;
+  .characterTwo {
+    width: 72px;
 
-    right: -18px;
+    right: -17px;
   }
 
-  .characterUpbo {
-    width: 79px;
+  .characterThree {
+    width: 78px;
 
-    top: -42px;
+    top: -41px;
   }
 
 }

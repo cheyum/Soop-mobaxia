@@ -60,7 +60,7 @@ function makePostSlots(
 }
 
 /* =========================================
-   메인
+   페이지
 ========================================= */
 
 export default function Home() {
@@ -83,7 +83,7 @@ export default function Home() {
   const [postsError, setPostsError] =
     useState<string | null>(null);
 
-  /* 일정 안내 */
+  /* 일정 */
 
   const [
     schedulePosts,
@@ -101,18 +101,17 @@ export default function Home() {
   ] = useState(true);
 
   /* =========================================
-     데이터 갱신
+     SOOP 정보 가져오기
   ========================================= */
 
   async function refreshMobaxia() {
     try {
-      const response =
-        await fetch(
-          "/api/live/mobaxia",
-          {
-            cache: "no-store",
-          }
-        );
+      const response = await fetch(
+        "/api/live/mobaxia",
+        {
+          cache: "no-store",
+        }
+      );
 
       const text =
         await response.text();
@@ -149,16 +148,21 @@ export default function Home() {
 
       setStatus({
         live: Boolean(data.live),
-        error: Boolean(data.liveError),
+        error: Boolean(
+          data.liveError
+        ),
       });
 
-      /* 바샤업up */
+      /* 바샤업 */
 
       if (
         Array.isArray(data.posts)
       ) {
         setUpPosts(
-          data.posts.slice(0, 3)
+          data.posts.slice(
+            0,
+            3
+          )
         );
       } else {
         setUpPosts([]);
@@ -173,7 +177,7 @@ export default function Home() {
         setPostsError(null);
       }
 
-      /* 일정 안내 */
+      /* 일정 */
 
       if (
         Array.isArray(
@@ -228,7 +232,7 @@ export default function Home() {
   }
 
   /* =========================================
-     30초 갱신
+     30초 자동 업데이트
   ========================================= */
 
   useEffect(() => {
@@ -245,8 +249,9 @@ export default function Home() {
 
   return (
     <main className="page">
+
       {/* =================================
-          배경 장식
+          기본 배경장식
       ================================= */}
 
       <div className="bgHeart bgHeart1">
@@ -270,7 +275,9 @@ export default function Home() {
       ================================= */}
 
       <header className="header">
+
         <div className="brand">
+
           <div className="brandIcon">
             ♥
           </div>
@@ -284,9 +291,11 @@ export default function Home() {
               SOOP VIRTUAL STREAMER
             </p>
           </div>
+
         </div>
 
         <div className="topStatus">
+
           {loading ? (
             <>
               <span className="statusDot loadingDot" />
@@ -308,21 +317,24 @@ export default function Home() {
               바샤는 쉬는중
             </>
           )}
+
         </div>
+
       </header>
 
       {/* =================================
-          메인 카드
+          메인 프로필 카드
       ================================= */}
 
       <section className="profileCard">
+
         {/* =================================
-            캐릭터 4
+            CHARACTER 4
             메인 카드 왼쪽에 매달림
         ================================= */}
 
         <div
-          className="mainMascot mainMascotHang"
+          className="mainCharacter mainCharacterHang"
           aria-hidden="true"
         >
           <img
@@ -332,10 +344,11 @@ export default function Home() {
         </div>
 
         {/* =================================
-            왼쪽 방송화면
+            방송 화면
         ================================= */}
 
         <div className="profileMain">
+
           <div className="welcomeTag">
             ♡ S급 서민영애 청설모 모씨 모바샤🐿️ ♡
           </div>
@@ -347,8 +360,11 @@ export default function Home() {
                 : "streamOffline"
             }`}
           >
+
             {loading ? (
+
               <div className="streamPlaceholder">
+
                 <span className="loadingStreamDot" />
 
                 <strong>
@@ -358,9 +374,13 @@ export default function Home() {
                 <p>
                   방송 상태를 확인하고 있어요
                 </p>
+
               </div>
+
             ) : status.error ? (
+
               <div className="streamPlaceholder offlineScreen">
+
                 <span className="offlineHeart">
                   ♡
                 </span>
@@ -372,8 +392,11 @@ export default function Home() {
                 <p>
                   방송 상태를 확인하고 있어요
                 </p>
+
               </div>
+
             ) : status.live ? (
+
               <iframe
                 src="https://play.sooplive.com/mobaxia/embed"
                 title="모바샤 SOOP LIVE"
@@ -381,8 +404,11 @@ export default function Home() {
                 allow="autoplay; fullscreen; picture-in-picture"
                 allowFullScreen
               />
+
             ) : (
+
               <div className="streamPlaceholder offlineScreen">
+
                 <span className="offlineHeart">
                   ♡
                 </span>
@@ -394,9 +420,13 @@ export default function Home() {
                 <p>
                   지금은 방송을 쉬고 있어요
                 </p>
+
               </div>
+
             )}
+
           </div>
+
         </div>
 
         {/* =================================
@@ -404,7 +434,11 @@ export default function Home() {
         ================================= */}
 
         <div className="profileDetails">
+
+          {/* 프로필 */}
+
           <div className="identityRow">
+
             <div
               className={`smallProfileRing ${
                 status.live
@@ -416,7 +450,9 @@ export default function Home() {
             </div>
 
             <div className="identityText">
+
               <div className="identityName">
+
                 <h2>
                   모바샤
                 </h2>
@@ -428,25 +464,37 @@ export default function Home() {
                       LIVE
                     </span>
                   )}
+
               </div>
 
               <div className="basicInfo">
+
                 생일 · 8월25일
 
-                <span>/</span>
+                <span>
+                  /
+                </span>
 
                 언제나 24살
 
-                <span>/</span>
+                <span>
+                  /
+                </span>
 
                 감성파 ESTJ
+
               </div>
+
             </div>
+
           </div>
 
-          {/* 스케줄 */}
+          {/* =================================
+              스케줄
+          ================================= */}
 
           <div className="scheduleBox">
+
             <strong>
               🌸 상시 스케줄은 캘린더 참고 🌸
             </strong>
@@ -470,11 +518,15 @@ export default function Home() {
             <div className="scheduleMessage">
               ✦ 오늘도 모바샤와 함께 행복한 하루 ✦
             </div>
+
           </div>
 
-          {/* 링크 버튼 */}
+          {/* =================================
+              링크 버튼
+          ================================= */}
 
           <div className="linkButtonRow">
+
             <a
               href="https://www.sooplive.com/station/mobaxia"
               target="_blank"
@@ -483,6 +535,7 @@ export default function Home() {
               aria-label="모바샤 방송국"
               title="모바샤 방송국"
             >
+
               <svg
                 viewBox="0 0 24 24"
                 className="linkIcon"
@@ -497,6 +550,7 @@ export default function Home() {
                   strokeLinejoin="round"
                 />
               </svg>
+
             </a>
 
             <div
@@ -513,15 +567,19 @@ export default function Home() {
               className="squareLinkButton emptyLinkButton"
               title="링크 추가 예정"
             />
+
           </div>
+
         </div>
+
       </section>
 
       {/* =================================
-          하단 콘텐츠
+          하단
       ================================= */}
 
       <section className="contentGrid">
+
         {/* =================================
             바샤업up
         ================================= */}
@@ -531,13 +589,14 @@ export default function Home() {
             contentCard
             boardCard
             characterCard
-            characterUpCard
+            upCard
           "
         >
-          {/* 캐릭터 1 - 누워있기 */}
+
+          {/* CHARACTER 1 */}
 
           <div
-            className="cardCharacter characterLie"
+            className="cardCharacter characterOne"
             aria-hidden="true"
           >
             <img
@@ -547,6 +606,7 @@ export default function Home() {
           </div>
 
           <div className="cardTitle">
+
             <h3>
               바샤업up
             </h3>
@@ -554,10 +614,13 @@ export default function Home() {
             <span>
               BASHA UP
             </span>
+
           </div>
 
           <div className="postList fixedPostList">
+
             {postsLoading ? (
+
               <>
                 <div className="postItem">
                   최신 글을 불러오는 중이에요 ♡
@@ -571,7 +634,9 @@ export default function Home() {
                   &nbsp;
                 </div>
               </>
+
             ) : postsError ? (
+
               <>
                 <div
                   className="postItem"
@@ -588,12 +653,15 @@ export default function Home() {
                   &nbsp;
                 </div>
               </>
+
             ) : (
+
               makePostSlots(
                 upPosts
               ).map(
                 (post, index) =>
                   post ? (
+
                     <a
                       href={post.url}
                       target="_blank"
@@ -604,16 +672,21 @@ export default function Home() {
                     >
                       {post.title}
                     </a>
+
                   ) : (
+
                     <div
                       className="postItem emptyPostItem"
                       key={`up-empty-${index}`}
                     >
                       &nbsp;
                     </div>
+
                   )
               )
+
             )}
+
           </div>
 
           <button
@@ -629,6 +702,7 @@ export default function Home() {
           >
             바샤업up 전체보기
           </button>
+
         </article>
 
         {/* =================================
@@ -640,13 +714,14 @@ export default function Home() {
             contentCard
             boardCard
             characterCard
-            characterScheduleCard
+            scheduleCard
           "
         >
-          {/* 캐릭터 2 - 빼꼼 */}
+
+          {/* CHARACTER 2 */}
 
           <div
-            className="cardCharacter characterPeek"
+            className="cardCharacter characterTwo"
             aria-hidden="true"
           >
             <img
@@ -656,6 +731,7 @@ export default function Home() {
           </div>
 
           <div className="cardTitle">
+
             <h3>
               일정 안내
             </h3>
@@ -663,10 +739,13 @@ export default function Home() {
             <span>
               Schedule
             </span>
+
           </div>
 
           <div className="postList fixedPostList">
+
             {postsLoading ? (
+
               <>
                 <div className="postItem">
                   최신 일정을 불러오는 중이에요 ♡
@@ -680,7 +759,9 @@ export default function Home() {
                   &nbsp;
                 </div>
               </>
+
             ) : scheduleError ? (
+
               <>
                 <div
                   className="postItem"
@@ -697,12 +778,15 @@ export default function Home() {
                   &nbsp;
                 </div>
               </>
+
             ) : (
+
               makePostSlots(
                 schedulePosts
               ).map(
                 (post, index) =>
                   post ? (
+
                     <a
                       href={post.url}
                       target="_blank"
@@ -713,16 +797,21 @@ export default function Home() {
                     >
                       {post.title}
                     </a>
+
                   ) : (
+
                     <div
                       className="postItem emptyPostItem"
                       key={`schedule-empty-${index}`}
                     >
                       &nbsp;
                     </div>
+
                   )
               )
+
             )}
+
           </div>
 
           <button
@@ -738,6 +827,7 @@ export default function Home() {
           >
             일정 전체보기
           </button>
+
         </article>
 
         {/* =================================
@@ -748,13 +838,14 @@ export default function Home() {
           className="
             contentCard
             characterCard
-            characterUpboCard
+            upboCard
           "
         >
-          {/* 캐릭터 3 - 업보 팻말 */}
+
+          {/* CHARACTER 3 */}
 
           <div
-            className="cardCharacter characterUpbo"
+            className="cardCharacter characterThree"
             aria-hidden="true"
           >
             <img
@@ -764,6 +855,7 @@ export default function Home() {
           </div>
 
           <div className="cardTitle">
+
             <h3>
               업보현황
             </h3>
@@ -771,10 +863,12 @@ export default function Home() {
             <span>
               Roulette
             </span>
+
           </div>
 
           <div className="upboList">
-            {/* 1줄 */}
+
+            {/* 1 */}
 
             <a
               href={ROULETTE_URL}
@@ -782,6 +876,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="upboRow upboLink"
             >
+
               <strong>
                 룰렛확률
               </strong>
@@ -789,9 +884,10 @@ export default function Home() {
               <span>
                 바로가기 ›
               </span>
+
             </a>
 
-            {/* 2줄 */}
+            {/* 2 */}
 
             <div
               className="
@@ -800,6 +896,7 @@ export default function Home() {
                 upboDisabled
               "
             >
+
               <strong>
                 룰렛 결과 엑셀표
               </strong>
@@ -807,9 +904,10 @@ export default function Home() {
               <span>
                 준비중
               </span>
+
             </div>
 
-            {/* 3줄 */}
+            {/* 3 */}
 
             <div
               className="
@@ -817,6 +915,7 @@ export default function Home() {
                 upboSearchRow
               "
             >
+
               <input
                 type="text"
                 className="upboSearchInput"
@@ -832,9 +931,10 @@ export default function Home() {
               >
                 검색
               </button>
+
             </div>
 
-            {/* 4줄 */}
+            {/* 4 */}
 
             <div
               className="
@@ -842,27 +942,31 @@ export default function Home() {
                 upboResultRow
               "
             >
+
               <span className="upboEmpty">
                 엑셀 연결 후 검색 결과가 표시됩니다 ♡
               </span>
+
             </div>
+
           </div>
+
         </article>
+
       </section>
 
-      {/* =================================
-          FOOTER
-      ================================= */}
+      {/* FOOTER */}
 
       <footer className="footer">
         ♡ &nbsp; MOBAXIA FAN PAGE &nbsp; ♡
       </footer>
+
     </main>
   );
 }
 
 /* =========================================
-   SOOP 프로필 이미지
+   SOOP 프로필
 ========================================= */
 
 function ProfileImage() {
@@ -876,24 +980,15 @@ function ProfileImage() {
 
   const sources = [
     `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/m/${streamerId}.webp`,
-
     `https://profile.img.sooplive.com/LOGO/${prefix}/${streamerId}/m/${streamerId}.jpg`,
-
     `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/${streamerId}.jpg`,
-
     `https://stimg.sooplive.com/LOGO/${prefix}/${streamerId}/${streamerId}.webp`,
   ];
 
-  const [
-    index,
-    setIndex,
-  ] =
+  const [index, setIndex] =
     useState(0);
 
-  const [
-    failed,
-    setFailed,
-  ] =
+  const [failed, setFailed] =
     useState(false);
 
   function handleError() {
